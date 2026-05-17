@@ -5,7 +5,9 @@ import { signInWithPopup } from 'firebase/auth';
 
 // LINE OAuth config
 const LINE_CHANNEL_ID = '2009934655';
-const LINE_REDIRECT_URI = 'https://br-cargo-app.vercel.app/';
+const LINE_REDIRECT_URI = window.location.hostname === 'localhost'
+  ? 'http://localhost:5173/'
+  : 'https://br-cargo-app.vercel.app/';
 const LINE_AUTH_URL = `https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=${LINE_CHANNEL_ID}&redirect_uri=${encodeURIComponent(LINE_REDIRECT_URI)}&state=br_cargo_line&scope=profile%20openid`;
 
 const thFont = `'IBM Plex Sans Thai', 'Inter', -apple-system, system-ui, sans-serif`;
@@ -122,14 +124,20 @@ const LoginScreen = ({ onLogin }) => {
     if (code && state === 'br_cargo_line') {
       window.history.replaceState({}, '', window.location.pathname);
       setLoading(true);
-      supabase.functions.invoke('lineLogin', { body: { code, redirect_uri: LINE_REDIRECT_URI } })
-        .then(({ data }) => {
-          if (data?.success) {
-            onLogin && onLogin(data.user);
-          } else {
+      supabase.functions.invoke('lineLogin', { body: { code } })
+        .then(async ({ data, error }) => {
+          if (error || !data?.success) {
             setLoginErr('LINE Login ไม่สำเร็จ กรุณาลองใหม่');
             setLoading(false);
+            return;
           }
+          if (data.session) {
+            await supabase.auth.setSession({
+              access_token: data.session.access_token,
+              refresh_token: data.session.refresh_token,
+            });
+          }
+          onLogin && onLogin(data.user);
         })
         .catch(() => { setLoginErr('LINE Login ผิดพลาด กรุณาลองใหม่'); setLoading(false); });
     }
