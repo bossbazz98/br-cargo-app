@@ -5,7 +5,8 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const LINE_CHANNEL_ID = '2009934655';
-const LINE_CHANNEL_SECRET = '8c9c258502702c9860ddf0560d5779fd';
+const LINE_CHANNEL_SECRET = '406c063bceeae1c3e4f1ee5b3e774ac1';
+const LINE_REDIRECT_URI = 'https://br-cargo-app.vercel.app/';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -18,7 +19,7 @@ serve(async (req) => {
   }
 
   try {
-    const { code, redirect_uri } = await req.json();
+    const { code } = await req.json();
 
     // 1. แลก code เอา access_token จาก LINE
     const tokenRes = await fetch('https://api.line.me/oauth2/v2.1/token', {
@@ -27,7 +28,7 @@ serve(async (req) => {
       body: new URLSearchParams({
         grant_type: 'authorization_code',
         code,
-        redirect_uri,
+        redirect_uri: LINE_REDIRECT_URI,
         client_id: LINE_CHANNEL_ID,
         client_secret: LINE_CHANNEL_SECRET,
       }),
