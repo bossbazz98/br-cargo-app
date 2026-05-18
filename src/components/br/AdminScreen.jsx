@@ -551,7 +551,7 @@ const ScheduleManager = () => {
   );
 };
 
-// ─── Announcement Tab ──────────────────────────────────────
+// ─── แจ้งเตือน Tab ──────────────────────────────────────
 const ICON_LIST = ['megaphone','bell','warn','info','box','plane','ship','truck','shield','check','sparkle','globe','mail','calendar','doc'];
 
 const AnnounceTab = () => {
@@ -587,8 +587,8 @@ const AnnounceTab = () => {
 
   return (
     <div style={{ position: 'relative' }}>
-      <DeleteModal open={deleteTarget !== null} message="ต้องการลบประกาศนี้?" onConfirm={async () => { await base44.entities.Announcement.delete(deleteTarget); setDeleteTarget(null); load(); }} onCancel={() => setDeleteTarget(null)}/>
-      <SectionHead title="จัดการประกาศ" sub="เปิด/ปิดประกาศ" action={<PrimaryBtn icon="plus" onClick={() => setOpen(true)}>เพิ่มประกาศ</PrimaryBtn>}/>
+      <DeleteModal open={deleteTarget !== null} message="ต้องการลบแจ้งเตือนนี้?" onConfirm={async () => { await base44.entities.Announcement.delete(deleteTarget); setDeleteTarget(null); load(); }} onCancel={() => setDeleteTarget(null)}/>
+      <SectionHead title="จัดการแจ้งเตือน" sub="เปิด/ปิดแจ้งเตือน" action={<PrimaryBtn icon="plus" onClick={() => setOpen(true)}>เพิ่มแจ้งเตือน</PrimaryBtn>}/>
       <div style={{ padding: '12px 20px 12px', display: 'flex', flexDirection: 'column', gap: 10 }}>
         {items.map(i => (
           <div key={i.id} style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 16, padding: '14px 14px', display: 'flex', gap: 12, alignItems: 'center', opacity: i.is_active ? 1 : 0.55 }}>
@@ -606,11 +606,11 @@ const AnnounceTab = () => {
           </div>
         ))}
       </div>
-      <Modal open={open} onClose={() => setOpen(false)} title="เพิ่มประกาศใหม่">
-        <Input label="หัวข้อ" value={form.title} onChange={v => setForm(f => ({ ...f, title: v }))} placeholder="หัวข้อประกาศ"/>
+      <Modal open={open} onClose={() => setOpen(false)} title="เพิ่มแจ้งเตือนใหม่">
+        <Input label="หัวข้อ" value={form.title} onChange={v => setForm(f => ({ ...f, title: v }))} placeholder="หัวข้อแจ้งเตือน"/>
         <Textarea label="ข้อความ" value={form.message} onChange={v => setForm(f => ({ ...f, message: v }))} placeholder="รายละเอียด" rows={3}/>
 
-        {/* Icon picker - icon only */}
+        {/* Icon picker */}
         <div>
           <div style={{ fontSize: 12.5, fontWeight: 700, color: C.ink, marginBottom: 8 }}>ไอคอน</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
@@ -647,7 +647,7 @@ const AnnounceTab = () => {
             })}
           </div>
         </div>
-        <PrimaryBtn full onClick={create}>สร้าง</PrimaryBtn>
+        <PrimaryBtn full onClick={create}>สร้างแจ้งเตือน</PrimaryBtn>
       </Modal>
     </div>
   );
@@ -1336,7 +1336,7 @@ const AdminScreen = ({ onNavigate, isAdmin }) => {
 
   const tabs = [
     { key: 'schedules', label: 'ตารางรอบส่ง', icon: 'calendar' },
-    { key: 'announcements', label: 'ประกาศ', icon: 'megaphone' },
+    { key: 'announcements', label: 'แจ้งเตือน', icon: 'megaphone' },
     { key: 'news', label: 'ข่าวขนส่ง', icon: 'doc' },
     { key: 'banner', label: 'โปรโมชั่น', icon: 'image' },
     { key: 'gallery', label: 'แกลลอรี่', icon: 'image' },
