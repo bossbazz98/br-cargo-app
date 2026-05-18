@@ -30,8 +30,12 @@ serve(async (req) => {
     });
     const tokenData = await tokenRes.json();
     if (!tokenData.access_token) {
-      return new Response(JSON.stringify({ success: false, error: `LINE token error: ${JSON.stringify(tokenData)}` }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400,
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: `LINE token error: ${JSON.stringify(tokenData)}` 
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }, 
+        status: 400,
       });
     }
 
@@ -44,32 +48,56 @@ serve(async (req) => {
     const lineEmail = `line_${profile.userId}@line.user`;
     const linePassword = `line_${profile.userId}_${LINE_CHANNEL_SECRET.slice(0, 8)}`;
 
-    // 3. Supabase client ด้วย service role
+    // 3. Supabase admin client
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
     );
 
-    // 4. หา user เดิมด้วย listUsers แทน getUserByEmail
-    const { data: listData } = await supabase.auth.admin.listUsers({ perPage: 1000 });
-    const existingUser = listData?.users?.find((u: any) => u.email === lineEmail);
-
+    // 4. ลอง sign in ก่อน ถ้าไม่ได้ค่อย create user
     let userId: string;
-    if (existingUser) {
-      userId = existingUser.id;
-      // อัปเดต password ให้ตรงเสมอ
-      await supabase.auth.admin.updateUserById(userId, { password: linePassword });
-    } else {
-      const { data: newUser, error: createError } = await supabase.auth.admin.createUser({
+    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+      email: lineEmail,
+      password: linePassword,
+    });
+
+    if (!signInError && signInData.user) {
+      // user มีอยู่แล้ว
+      userId = signInData.user.id;
+
+      // อัปเดต profile
+      await supabase.from('users').upsert({
+        id: userId,
         email: lineEmail,
-        password: linePassword,
-        email_confirm: true,
+        full_name: profile.displayName,
+        picture_url: profile.pictureUrl,
+        line_user_id: profile.userId,
       });
-      if (createError) throw createError;
-      userId = newUser.user.id;
+
+      return new Response(JSON.stringify({
+        success: true,
+        user: {
+          id: userId,
+          email: lineEmail,
+          full_name: profile.displayName,
+          picture_url: profile.pictureUrl,
+          line_user_id: profile.userId,
+        },
+        session: signInData.session,
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    // 5. บันทึก profile
+    // 5. user ยังไม่มี — สร้างใหม่
+    const { data: newUser, error: createError } = await supabase.auth.admin.createUser({
+      email: lineEmail,
+      password: linePassword,
+      email_confirm: true,
+    });
+
+    if (createError) throw new Error(`Create user failed: ${createError.message}`);
+    userId = newUser.user.id;
+
+    // 6. บันทึก profile
     await supabase.from('users').upsert({
       id: userId,
       email: lineEmail,
@@ -78,12 +106,12 @@ serve(async (req) => {
       line_user_id: profile.userId,
     });
 
-    // 6. Sign in เพื่อได้ session จริง
-    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+    // 7. Sign in หลัง create
+    const { data: newSignIn, error: newSignInError } = await supabase.auth.signInWithPassword({
       email: lineEmail,
       password: linePassword,
     });
-    if (signInError) throw signInError;
+    if (newSignInError) throw new Error(`Sign in after create failed: ${newSignInError.message}`);
 
     return new Response(JSON.stringify({
       success: true,
@@ -94,12 +122,16 @@ serve(async (req) => {
         picture_url: profile.pictureUrl,
         line_user_id: profile.userId,
       },
-      session: signInData.session,
+      session: newSignIn.session,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
   } catch (err) {
-    return new Response(JSON.stringify({ success: false, error: String(err) }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500,
+    return new Response(JSON.stringify({ 
+      success: false, 
+      error: String(err) 
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }, 
+      status: 500,
     });
   }
 });

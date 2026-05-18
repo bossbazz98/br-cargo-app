@@ -29,7 +29,7 @@ serve(async (req) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'BR CARGO <noreply@yourdomain.com>', // เปลี่ยนเป็น domain ของคุณ
+        from: 'BR CARGO <noreply@br-cargo.com>',
         to: [to],
         subject,
         text: body,

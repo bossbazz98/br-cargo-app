@@ -107,22 +107,24 @@ const AnnouncementBanner = () => {
   };
 
   useEffect(() => {
-    // Do NOT fetch existing announcements on mount — only listen for NEW ones via real-time
     const unsubscribe = base44.entities.Announcement.subscribe((event) => {
-      if (event.type === 'create' && event.data?.is_active) {
-        // Only show if created after session started (prevents showing pre-existing on subscribe flush)
-        const createdAt = event.data?.created_date ? new Date(event.data.created_date).getTime() : Date.now();
-        if (createdAt < sessionStartTime.current) return;
+      // Supabase realtime ใช้ eventType = 'INSERT' ไม่ใช่ 'create'
+      const isNew = event.eventType === 'INSERT' || event.type === 'INSERT' || event.type === 'create';
+      const data = event.new || event.data;
+      if (isNew && data?.is_active) {
+        // เช็ค created_at แทน created_date
+        const createdAt = data?.created_at ? new Date(data.created_at).getTime() : Date.now();
+        if (createdAt < sessionStartTime.current - 5000) return; // ให้ tolerance 5 วิ
 
         const currentDismissed = getDismissed();
-        if (!currentDismissed.includes(event.data.id)) {
-          setQueue((q) => [...q, event.data]);
+        if (!currentDismissed.includes(data.id)) {
+          setQueue((q) => [...q, data]);
           playSound();
         }
       }
     });
     return () => unsubscribe();
-  }, []); // Only runs once on mount
+  }, []);
 
   const dismiss = (id) => {
     const next = [...dismissed, id];

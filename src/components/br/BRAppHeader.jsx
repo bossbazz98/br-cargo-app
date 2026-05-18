@@ -1,45 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { C, thaiFont } from '../../lib/brColors';
 import BRIcon from './BRIcon';
 import { BrandLogo, iconBtnStyle } from './BRShared';
 import { loadAvatarConfig, AvatarDisplay } from './ProfileScreen';
 
 const BRAppHeader = ({ title, subtitle, back, onBack, right, variant = 'default', onProfile }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    // โหลดจาก localStorage ก่อนทันที ไม่ต้องรอ async
+    try {
+      const saved = localStorage.getItem('br_session_user');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return null;
+  });
 
   useEffect(() => {
     if (variant !== 'brand') return;
-    base44.auth.me().then(u => {
-      if (u) { setUser(u); return; }
-      try {
-        const saved = localStorage.getItem('br_session_user');
-        if (saved) setUser(JSON.parse(saved));
-      } catch {}
-    }).catch(() => {
-      try {
-        const saved = localStorage.getItem('br_session_user');
-        if (saved) setUser(JSON.parse(saved));
-      } catch {}
-    });
+    supabase.auth.getUser().then(({ data: { user: u } }) => {
+      if (u) {
+        // ดึง profile เพิ่มเติม
+        supabase.from('users').select('*').eq('id', u.id).single()
+          .then(({ data: profile }) => {
+            const merged = profile ? { ...u, ...profile } : u;
+            setUser(merged);
+            try { localStorage.setItem('br_session_user', JSON.stringify(merged)); } catch {}
+          }).catch(() => setUser(u));
+      }
+    }).catch(() => {});
   }, [variant]);
-
-
 
   // Android back button support
   useEffect(() => {
     if (!back || !onBack) return;
     window.history.pushState({ brBack: true }, '');
-    const handler = (e) => {
-      onBack();
-    };
+    const handler = () => onBack();
     window.addEventListener('popstate', handler);
-    return () => {
-      window.removeEventListener('popstate', handler);
-    };
+    return () => window.removeEventListener('popstate', handler);
   }, []);
 
   if (variant === 'brand') {
+    const initial = user?.full_name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U';
     return (
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -47,15 +48,14 @@ const BRAppHeader = ({ title, subtitle, back, onBack, right, variant = 'default'
         background: C.card, borderBottom: `1px solid ${C.line}`,
       }}>
         <BrandLogo />
-        {user && (
-          <button onClick={() => onProfile && onProfile(user)} style={{ background: 'transparent', border: 0, cursor: 'pointer', padding: 0 }}>
-            <AvatarDisplay
-              config={loadAvatarConfig()}
-              size={36}
-              userInitial={user.full_name?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || 'U'}
-            />
-          </button>
-        )}
+        {/* แสดงปุ่มเสมอ ไม่ซ่อนแม้ user ยังโหลดไม่เสร็จ */}
+        <button onClick={() => onProfile && onProfile(user)} style={{ background: 'transparent', border: 0, cursor: 'pointer', padding: 0 }}>
+          <AvatarDisplay
+            config={loadAvatarConfig()}
+            size={36}
+            userInitial={initial}
+          />
+        </button>
       </div>
     );
   }
