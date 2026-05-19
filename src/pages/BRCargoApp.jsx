@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { C, thaiFont } from '../lib/brColors';
 import LoginScreen from '../components/br/LoginScreen';
 import HomeScreen, { AnnouncementBanner } from '../components/br/HomeScreen';
@@ -9,8 +9,7 @@ import AdminScreen from '../components/br/AdminScreen';
 import BRTabBar from '../components/br/BRTabBar';
 import { DetailsPage, AddressPage, NoCodePage, NewsArticlePage } from '../components/br/DetailPages';
 import ProfileScreen from '../components/br/ProfileScreen';
-
-
+import BRAppHeader from '../components/br/BRAppHeader';
 
 const BRCargoApp = () => {
   const [user, setUser] = useState(null);
@@ -18,53 +17,45 @@ const BRCargoApp = () => {
   const [active, setActive] = useState('home');
   const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    // Restore from localStorage immediately to avoid flicker, then verify in background
-    let localUser = null;
-    try {
-      const saved = localStorage.getItem('br_session_user');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed?.email) localUser = parsed;
-      }
-    } catch {}
+  const [profileUser, setProfileUser] = useState(null);
 
-    if (localUser) {
-      setUser(localUser);
+  // ── ข้อ 1: ใช้ Supabase session จริง ไม่ logout เมื่อ refresh ──
+  useEffect(() => {
+    // ดึง session ปัจจุบันก่อนเลย
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setUser(session.user);
+        try { localStorage.setItem('br_session_user', JSON.stringify(session.user)); } catch {}
+      } else {
+        // ไม่มี session — ให้ไปหน้า login
+        setUser(null);
+      }
       setLoading(false);
-      // Verify session is still valid in background (silent)
-      base44.auth.me().then(u => {
-        if (u) {
-          try { localStorage.setItem('br_session_user', JSON.stringify(u)); } catch {}
-          setUser(u);
-        }
-        // If u is null, don't force logout — keep local session
-      }).catch(() => {});
-    } else {
-      base44.auth.me()
-        .then(u => {
-          if (u) {
-            try { localStorage.setItem('br_session_user', JSON.stringify(u)); } catch {}
-          }
-          setUser(u);
-        })
-        .catch(() => {})
-        .finally(() => setLoading(false));
-    }
+    });
+
+    // ฟัง auth state เปลี่ยน
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+        try { localStorage.setItem('br_session_user', JSON.stringify(session.user)); } catch {}
+      } else if (_event === 'SIGNED_OUT') {
+        setUser(null);
+        try { localStorage.removeItem('br_session_user'); } catch {}
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
+  // ── เช็ค admin ──
   useEffect(() => {
     if (!user) { setIsAdmin(false); return; }
-    base44.entities.AdminEmail.list()
-      .then(adminEmails => {
-        const adminList = adminEmails.map(e => e.email.toLowerCase());
-        setIsAdmin(adminList.includes((user.email || '').toLowerCase()) || user.role === 'admin');
-      }).catch(() => {
-        setIsAdmin(user.role === 'admin');
-      });
+    supabase.from('admin_emails').select('email')
+      .then(({ data }) => {
+        const adminList = (data || []).map(e => e.email.toLowerCase());
+        setIsAdmin(adminList.includes((user.email || '').toLowerCase()));
+      }).catch(() => setIsAdmin(false));
   }, [user]);
-
-  const [profileUser, setProfileUser] = useState(null);
 
   const navigate = (target) => {
     if (typeof target === 'string' && target.startsWith('article:')) { setDetail(target); return; }
@@ -79,12 +70,23 @@ const BRCargoApp = () => {
     setProfileUser(null);
   };
 
-  const handleProfileOpen = (u) => setProfileUser(u);
+  // ── ข้อ 2: handleProfileOpen ส่ง user จริงไป ProfileScreen ──
+  const handleProfileOpen = () => {
+    supabase.auth.getUser().then(({ data: { user: u } }) => {
+      if (u) {
+        supabase.from('users').select('*').eq('id', u.id).single()
+          .then(({ data: profile }) => {
+            setProfileUser(profile ? { ...u, ...profile } : u);
+          }).catch(() => setProfileUser(u));
+      }
+    });
+  };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setProfileUser(null);
     try { localStorage.removeItem('br_session_user'); } catch {}
-    base44.auth.logout();
+    await supabase.auth.signOut();
+    setUser(null);
   };
 
   if (loading) {
@@ -128,9 +130,7 @@ const BRCargoApp = () => {
         position: 'relative',
         boxShadow: '0 0 60px rgba(0,0,0,0.18)',
       }}>
-        {/* AnnouncementBanner lives outside content so it's never unmounted on navigation */}
         <AnnouncementBanner />
-        {/* Main scrollable content — pad bottom so tab bar doesn't cover content */}
         <div style={{
           flex: 1, overflowY: 'auto', overflowX: 'hidden',
           WebkitOverflowScrolling: 'touch',
@@ -138,7 +138,6 @@ const BRCargoApp = () => {
         }}>
           {getContent()}
         </div>
-        {/* Tab bar is always shown (fixed position handles placement) */}
         <BRTabBar active={active} onNavigate={navigate} isAdmin={isAdmin}/>
       </div>
     </div>

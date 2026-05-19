@@ -92,7 +92,7 @@ const Modal = ({ open, onClose, title, children }) => {
   if (!open) return null;
   return (
     <div onClick={onClose} style={{
-      position: 'fixed', inset: 0, zIndex: 100,
+      position: 'absolute', inset: 0, zIndex: 100,
       background: 'rgba(8,12,20,0.55)',
       display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
       padding: `20px 16px calc(${TAB_BAR_H + 20}px + env(safe-area-inset-bottom, 0px)) 16px`,
@@ -101,7 +101,7 @@ const Modal = ({ open, onClose, title, children }) => {
     }}>
       <div onClick={e => e.stopPropagation()} style={{
         background: C.card, borderRadius: 18, width: '100%', maxWidth: 400,
-        maxHeight: `calc(100vh - ${TAB_BAR_H + 40}px - env(safe-area-inset-bottom, 0px))`,
+        maxHeight: `calc(100% - ${TAB_BAR_H + 40}px - env(safe-area-inset-bottom, 0px))`,
         overflowY: 'auto', boxShadow: '0 20px 60px -10px rgba(0,0,0,0.35)',
         flexShrink: 0,
       }}>
