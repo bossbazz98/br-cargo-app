@@ -116,40 +116,6 @@ const LoginScreen = ({ onLogin }) => {
 
   // Handle Google redirect result
   useEffect(() => {
-    getRedirectResult(auth).then(async (result) => {
-      if (!result?.user) return;
-      const firebaseUser = result.user;
-      setLoading(true);
-      try {
-        const tempPassword = `google_${firebaseUser.uid}_${firebaseUser.email}`;
-        let { data, error } = await supabase.auth.signInWithPassword({
-          email: firebaseUser.email,
-          password: tempPassword,
-        });
-        if (error) {
-          const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-            email: firebaseUser.email,
-            password: tempPassword,
-            options: { data: { full_name: firebaseUser.displayName, picture_url: firebaseUser.photoURL } }
-          });
-          if (signUpError) throw signUpError;
-          if (signUpData.user) {
-            await supabase.from('users').upsert({
-              id: signUpData.user.id,
-              email: firebaseUser.email,
-              full_name: firebaseUser.displayName,
-              picture_url: firebaseUser.photoURL,
-            }, { onConflict: 'id' });
-          }
-          data = signUpData;
-        }
-        onLogin && onLogin(data.user);
-      } catch (err) {
-        setLoginErr('Google Login ไม่สำเร็จ กรุณาลองใหม่');
-      }
-      setLoading(false);
-    }).catch(() => {});
-  }, []);
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
