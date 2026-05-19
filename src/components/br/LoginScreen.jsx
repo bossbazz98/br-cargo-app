@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { auth, googleProvider } from '@/api/firebaseClient';
-import { signInWithPopup } from 'firebase/auth';
+import { signInWithPopup, signInWithRedirect, getRedirectResult } from 'firebase/auth';
 
 // LINE OAuth config
 const LINE_CHANNEL_ID = '2009934655';
@@ -116,7 +116,42 @@ const LoginScreen = ({ onLogin }) => {
     } catch {}
   }, []);
 
-  // Handle LINE OAuth callback
+  // Handle Google redirect result
+  useEffect(() => {
+    getRedirectResult(auth).then(async (result) => {
+      if (!result?.user) return;
+      const firebaseUser = result.user;
+      setLoading(true);
+      try {
+        const tempPassword = `google_${firebaseUser.uid}_${firebaseUser.email}`;
+        let { data, error } = await supabase.auth.signInWithPassword({
+          email: firebaseUser.email,
+          password: tempPassword,
+        });
+        if (error) {
+          const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+            email: firebaseUser.email,
+            password: tempPassword,
+            options: { data: { full_name: firebaseUser.displayName, picture_url: firebaseUser.photoURL } }
+          });
+          if (signUpError) throw signUpError;
+          if (signUpData.user) {
+            await supabase.from('users').upsert({
+              id: signUpData.user.id,
+              email: firebaseUser.email,
+              full_name: firebaseUser.displayName,
+              picture_url: firebaseUser.photoURL,
+            }, { onConflict: 'id' });
+          }
+          data = signUpData;
+        }
+        onLogin && onLogin(data.user);
+      } catch (err) {
+        setLoginErr('Google Login ไม่สำเร็จ กรุณาลองใหม่');
+      }
+      setLoading(false);
+    }).catch(() => {});
+  }, []);
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
@@ -186,47 +221,12 @@ const LoginScreen = ({ onLogin }) => {
     setLoginErr('');
     setLoading(true);
     try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const firebaseUser = result.user;
-      // ใช้ Supabase OAuth sign-in ด้วย email จาก Google
-      const tempPassword = `google_${firebaseUser.uid}_${firebaseUser.email}`;
-      let { data, error } = await supabase.auth.signInWithPassword({
-        email: firebaseUser.email,
-        password: tempPassword,
-      });
-      if (error) {
-        // user ยังไม่มี — sign up ก่อน
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-          email: firebaseUser.email,
-          password: tempPassword,
-          options: {
-            data: {
-              full_name: firebaseUser.displayName,
-              picture_url: firebaseUser.photoURL,
-            }
-          }
-        });
-        if (signUpError) throw signUpError;
-        // upsert profile
-        if (signUpData.user) {
-          await supabase.from('users').upsert({
-            id: signUpData.user.id,
-            email: firebaseUser.email,
-            full_name: firebaseUser.displayName,
-            picture_url: firebaseUser.photoURL,
-          });
-        }
-        data = signUpData;
-      }
-      onLogin && onLogin(data.user);
+      await signInWithRedirect(auth, googleProvider);
+      // หน้าจะ redirect ไป Google แล้วกลับมา — จัดการใน getRedirectResult ข้างบน
     } catch (err) {
-      if (err?.code === 'auth/popup-closed-by-user') {
-        setLoginErr('');
-      } else {
-        setLoginErr('Google Login ไม่สำเร็จ กรุณาลองใหม่');
-      }
+      setLoginErr('Google Login ไม่สำเร็จ กรุณาลองใหม่');
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   // ── Register ────────────────────────────────────────────

@@ -46,7 +46,7 @@ const authModule = {
     const profileUpdates = { ...updates };
     delete profileUpdates.password;
     if (Object.keys(profileUpdates).length > 0) {
-      const { error } = await supabase.from('users').upsert({ id: user.id, ...profileUpdates });
+      const { error } = await supabase.from('users').upsert({ id: user.id, ...profileUpdates }, { onConflict: 'id' });
       if (error) throw error;
     }
   },
@@ -70,7 +70,7 @@ const authModule = {
           email: firebaseUser.email,
           full_name: firebaseUser.displayName,
           picture_url: firebaseUser.photoURL,
-        });
+        }, { onConflict: 'id' });
         return signUpData;
       }
       return data;
