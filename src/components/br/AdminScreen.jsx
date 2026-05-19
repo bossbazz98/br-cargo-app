@@ -92,22 +92,23 @@ const Modal = ({ open, onClose, title, children }) => {
   if (!open) return null;
   return (
     <div onClick={onClose} style={{
-      position: 'absolute', inset: 0, zIndex: 100,
+      position: 'fixed', inset: 0, zIndex: 9999,
       background: 'rgba(8,12,20,0.55)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: `16px 16px calc(${TAB_BAR_H + 16}px + env(safe-area-inset-bottom, 0px)) 16px`,
       backdropFilter: 'blur(2px)',
     }}>
       <div onClick={e => e.stopPropagation()} style={{
-        background: C.card, borderRadius: 18, width: '100%', maxWidth: 400,
-        height: `calc(100% - ${TAB_BAR_H + 32}px - env(safe-area-inset-bottom, 0px))`,
+        background: C.card, borderRadius: 18,
+        width: 'calc(min(100vw, 430px) - 32px)',
+        maxHeight: `calc(100dvh - ${TAB_BAR_H + 32}px - env(safe-area-inset-bottom, 0px))`,
         display: 'flex', flexDirection: 'column',
         boxShadow: '0 20px 60px -10px rgba(0,0,0,0.35)',
         overflow: 'hidden',
+        marginBottom: `calc(${TAB_BAR_H}px + env(safe-area-inset-bottom, 0px))`,
       }}>
-        {/* Header — fixed */}
+        {/* Header */}
         <div style={{ padding: '16px 18px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: `1px solid ${C.line}`, flexShrink: 0, background: C.card }}>
           <div style={{ fontSize: 16, fontWeight: 700, color: C.ink }}>{title}</div>
           <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: 99, background: 'transparent', border: 0, cursor: 'pointer', fontSize: 16, color: C.ink3 }}>✕</button>
@@ -1357,7 +1358,7 @@ const AdminScreen = ({ onNavigate, isAdmin }) => {
   const Pane = paneMap[tab];
 
   return (
-    <div style={{ fontFamily: thaiFont, background: C.bg, minHeight: '100%' }}>
+    <div style={{ fontFamily: thaiFont, background: C.bg, minHeight: '100%', position: 'relative' }}>
       <div style={{ position: 'sticky', top: 0, zIndex: 10 }}>
         <div style={{ padding: '16px 18px 14px', background: C.card, borderBottom: `1px solid ${C.line}`, display: 'flex', alignItems: 'center', gap: 12 }}>
           <button onClick={() => onNavigate && onNavigate('home')} style={{ ...iconBtnStyle, background: 'transparent' }}>
