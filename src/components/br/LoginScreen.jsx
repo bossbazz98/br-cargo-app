@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
-import { auth, googleProvider } from '@/api/firebaseClient';
-import { signInWithPopup, signInWithRedirect, getRedirectResult } from 'firebase/auth';
 
 // LINE OAuth config
 const LINE_CHANNEL_ID = '2009934655';
@@ -216,13 +214,19 @@ const LoginScreen = ({ onLogin }) => {
     setLoading(false);
   };
 
-  // ── Google Login ────────────────────────────────────────
+  // ── Google Login — ใช้ Supabase OAuth แทน Firebase ────────
   const handleGoogleLogin = async () => {
     setLoginErr('');
     setLoading(true);
     try {
-      await signInWithRedirect(auth, googleProvider);
-      // หน้าจะ redirect ไป Google แล้วกลับมา — จัดการใน getRedirectResult ข้างบน
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin + '/',
+        },
+      });
+      if (error) throw error;
+      // จะ redirect ไป Google แล้วกลับมาที่ br-cargo.com อัตโนมัติ
     } catch (err) {
       setLoginErr('Google Login ไม่สำเร็จ กรุณาลองใหม่');
       setLoading(false);
