@@ -113,9 +113,6 @@ const LoginScreen = ({ onLogin }) => {
       if (saved) { setEmail(saved); setRememberMe(true); }
     } catch {}
   }, []);
-
-  // Handle Google redirect result
-  useEffect(() => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
