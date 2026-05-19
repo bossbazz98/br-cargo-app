@@ -80,7 +80,7 @@ const Textarea = ({ label, value, onChange, placeholder, rows = 4 }) => (
   </div>
 );
 
-const TAB_BAR_H = 65; // ความสูงของ Tab Bar ด้านล่าง
+const TAB_BAR_H = 65;
 
 const Modal = ({ open, onClose, title, children }) => {
   useEffect(() => {
@@ -94,22 +94,28 @@ const Modal = ({ open, onClose, title, children }) => {
     <div onClick={onClose} style={{
       position: 'absolute', inset: 0, zIndex: 100,
       background: 'rgba(8,12,20,0.55)',
-      display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
-      padding: `20px 16px calc(${TAB_BAR_H + 20}px + env(safe-area-inset-bottom, 0px)) 16px`,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: `16px 16px calc(${TAB_BAR_H + 16}px + env(safe-area-inset-bottom, 0px)) 16px`,
       backdropFilter: 'blur(2px)',
-      overflowY: 'auto',
     }}>
       <div onClick={e => e.stopPropagation()} style={{
         background: C.card, borderRadius: 18, width: '100%', maxWidth: 400,
-        maxHeight: `calc(100% - ${TAB_BAR_H + 40}px - env(safe-area-inset-bottom, 0px))`,
-        overflowY: 'auto', boxShadow: '0 20px 60px -10px rgba(0,0,0,0.35)',
-        flexShrink: 0,
+        height: `calc(100% - ${TAB_BAR_H + 32}px - env(safe-area-inset-bottom, 0px))`,
+        display: 'flex', flexDirection: 'column',
+        boxShadow: '0 20px 60px -10px rgba(0,0,0,0.35)',
+        overflow: 'hidden',
       }}>
-        <div style={{ padding: '16px 18px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: `1px solid ${C.line}`, position: 'sticky', top: 0, background: C.card, zIndex: 1 }}>
+        {/* Header — fixed */}
+        <div style={{ padding: '16px 18px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: `1px solid ${C.line}`, flexShrink: 0, background: C.card }}>
           <div style={{ fontSize: 16, fontWeight: 700, color: C.ink }}>{title}</div>
           <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: 99, background: 'transparent', border: 0, cursor: 'pointer', fontSize: 16, color: C.ink3 }}>✕</button>
         </div>
-        <div style={{ padding: '18px 18px', display: 'flex', flexDirection: 'column', gap: 14 }}>{children}</div>
+        {/* Scrollable content */}
+        <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', padding: '18px 18px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {children}
+        </div>
       </div>
     </div>
   );
