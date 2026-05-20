@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { C, thaiFont } from '../../lib/brColors';
 import BRIcon from './BRIcon';
 
@@ -260,8 +261,8 @@ const AvatarPicker = ({ current, onSelect, onClose, userInitial }) => {
 };
 
 // ─── Editable Row ─────────────────────────────────────────
-const EditableRow = ({ icon, label, value, onSave }) => {
-  const [editing, setEditing] = useState(false);
+const EditableRow = ({ icon, label, value, onSave, editingKey, activeEdit, setActiveEdit }) => {
+  const editing = activeEdit === editingKey;
   const [draft, setDraft] = useState(value || '');
   const [saving, setSaving] = useState(false);
 
@@ -271,7 +272,7 @@ const EditableRow = ({ icon, label, value, onSave }) => {
     setSaving(true);
     await onSave(draft);
     setSaving(false);
-    setEditing(false);
+    setActiveEdit(null);
   };
 
   return (
@@ -285,7 +286,7 @@ const EditableRow = ({ icon, label, value, onSave }) => {
           {!editing && <div style={{ fontSize: 14, color: C.ink, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{value || '-'}</div>}
         </div>
         {!editing && (
-          <button onClick={() => { setDraft(value || ''); setEditing(true); }} style={{ flexShrink: 0, width: 32, height: 32, borderRadius: 9, background: C.primarySoft, border: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <button onClick={() => { setDraft(value || ''); setActiveEdit(editingKey); }} style={{ flexShrink: 0, width: 32, height: 32, borderRadius: 9, background: C.primarySoft, border: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <BRIcon name="edit" size={14} color={C.primary} stroke={2}/>
           </button>
         )}
@@ -295,7 +296,7 @@ const EditableRow = ({ icon, label, value, onSave }) => {
           <input type="text" value={draft} onChange={e => setDraft(e.target.value)} placeholder={label}
             style={inputStyle} autoFocus onKeyDown={e => e.key === 'Enter' && handleSave()}/>
           <button onClick={handleSave} disabled={saving} style={{ flexShrink: 0, padding: '0 14px', borderRadius: 10, background: `linear-gradient(180deg, ${C.primary}, ${C.primaryDark})`, border: 0, cursor: 'pointer', color: '#fff', fontFamily: thaiFont, fontSize: 13, fontWeight: 700 }}>{saving ? '...' : 'บันทึก'}</button>
-          <button onClick={() => setEditing(false)} style={{ flexShrink: 0, padding: '0 12px', borderRadius: 10, background: C.card, border: `1px solid ${C.line}`, cursor: 'pointer', color: C.ink2, fontFamily: thaiFont, fontSize: 13, fontWeight: 600 }}>ยกเลิก</button>
+          <button onClick={() => setActiveEdit(null)} style={{ flexShrink: 0, padding: '0 12px', borderRadius: 10, background: C.card, border: `1px solid ${C.line}`, cursor: 'pointer', color: C.ink2, fontFamily: thaiFont, fontSize: 13, fontWeight: 600 }}>ยกเลิก</button>
         </div>
       )}
     </div>
@@ -394,12 +395,16 @@ const ProfileScreen = ({ user, onBack, onLogout }) => {
   });
   const [avatarConfig, setAvatarConfig] = useState(loadAvatarConfig);
   const [showPicker, setShowPicker] = useState(false);
+  const [activeEdit, setActiveEdit] = useState(null); // ข้อ 3: จัดการ edit เดียวกัน
 
   useEffect(() => {
-    base44.auth.me().then(u => {
-      if (u) setProfile({ phone: u.phone || '', code_name: u.code_name || '' });
-    }).catch(() => {});
-  }, []);
+    if (user?.id) {
+      supabase.from('users').select('phone,code_name').eq('id', user.id).single()
+        .then(({ data }) => {
+          if (data) setProfile({ phone: data.phone || '', code_name: data.code_name || '' });
+        }).catch(() => {});
+    }
+  }, [user?.id]);
 
   // Android back button support
   useEffect(() => {
@@ -409,14 +414,23 @@ const ProfileScreen = ({ user, onBack, onLogout }) => {
     return () => window.removeEventListener('popstate', handler);
   }, []);
 
+  // ข้อ 1: save ลง Supabase โดยตรง
   const saveField = async (field, value) => {
-    await base44.auth.updateMe({ [field]: value });
+    if (!user?.id) return;
+    await supabase.from('users').upsert({ id: user.id, [field]: value }, { onConflict: 'id' });
     setProfile(p => ({ ...p, [field]: value }));
   };
 
-  const handleAvatarSelect = (cfg) => {
+  // ข้อ 1: save avatar ลง Supabase ด้วย
+  const handleAvatarSelect = async (cfg) => {
     setAvatarConfig(cfg);
     saveAvatarConfig(cfg);
+    if (user?.id) {
+      await supabase.from('users').upsert({
+        id: user.id,
+        avatar_config: JSON.stringify(cfg),
+      }, { onConflict: 'id' }).catch(() => {});
+    }
   };
 
   const userInitial = user?.full_name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U';
@@ -433,30 +447,20 @@ const ProfileScreen = ({ user, onBack, onLogout }) => {
 
       {/* Avatar section */}
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, padding: '36px 20px 28px', background: `linear-gradient(180deg, ${C.primarySoft} 0%, ${C.bg} 100%)`, borderBottom: `1px solid ${C.line}` }}>
-        {/* Tappable avatar */}
         <div style={{ position: 'relative', cursor: 'pointer' }} onClick={() => setShowPicker(true)}>
           <AvatarDisplay config={avatarConfig} size={88} userInitial={userInitial}/>
-          {/* Edit badge */}
-          <div style={{
-            position: 'absolute', bottom: 0, right: 0,
-            width: 28, height: 28, borderRadius: 99,
-            background: C.primary, border: '2px solid #fff',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: `0 2px 8px ${C.primary}60`,
-          }}>
+          <div style={{ position: 'absolute', bottom: 0, right: 0, width: 28, height: 28, borderRadius: 99, background: C.primary, border: '2px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 2px 8px ${C.primary}60` }}>
             <BRIcon name="edit" size={12} color="#fff" stroke={2.5}/>
           </div>
         </div>
-
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: 20, fontWeight: 800, color: C.ink }}>{user?.full_name || 'ผู้ใช้งาน'}</div>
           {profile.code_name && <div style={{ fontSize: 13, color: C.ink3, marginTop: 3 }}>@{profile.code_name}</div>}
         </div>
       </div>
 
-      {/* Fields */}
-      <div style={{ padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 'calc(90px + env(safe-area-inset-bottom, 0px))' }}>
-        {/* Email (read-only) */}
+      {/* Fields — ข้อ 2: paddingBottom พอดีกับ tab bar */}
+      <div style={{ padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}>
         <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 16, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 14 }}>
           <div style={{ width: 40, height: 40, borderRadius: 12, flexShrink: 0, background: C.primarySoft, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <BRIcon name="mail" size={18} color={C.primary} stroke={2}/>
@@ -467,31 +471,22 @@ const ProfileScreen = ({ user, onBack, onLogout }) => {
           </div>
         </div>
 
-        <EditableRow icon="phone" label="เบอร์โทร" value={profile.phone} onSave={v => saveField('phone', v)}/>
-        <EditableRow icon="sparkle" label="Code Name" value={profile.code_name} onSave={v => saveField('code_name', v)}/>
-        <PasswordRow onSave={v => base44.auth.updateMe({ password: v })}/>
+        {/* ข้อ 3: ส่ง activeEdit/setActiveEdit เพื่อให้เปิดแค่อันเดียว */}
+        <EditableRow icon="phone" label="เบอร์โทร" value={profile.phone} onSave={v => saveField('phone', v)} editingKey="phone" activeEdit={activeEdit} setActiveEdit={setActiveEdit}/>
+        <EditableRow icon="sparkle" label="Code Name" value={profile.code_name} onSave={v => saveField('code_name', v)} editingKey="code_name" activeEdit={activeEdit} setActiveEdit={setActiveEdit}/>
+        <PasswordRow onSave={async (newPw) => {
+          const { error } = await supabase.auth.updateUser({ password: newPw });
+          if (error) throw error;
+        }}/>
 
-        {/* Logout */}
-        <button onClick={onLogout} style={{
-          width: '100%', padding: '14px', marginTop: 6,
-          background: C.dangerSoft, border: `1px solid ${C.danger}33`,
-          borderRadius: 16, cursor: 'pointer',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-          fontFamily: thaiFont, fontSize: 15, fontWeight: 700, color: C.danger,
-        }}>
+        <button onClick={onLogout} style={{ width: '100%', padding: '14px', marginTop: 6, background: C.dangerSoft, border: `1px solid ${C.danger}33`, borderRadius: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: thaiFont, fontSize: 15, fontWeight: 700, color: C.danger }}>
           <BRIcon name="logout" size={18} color={C.danger} stroke={2}/>
           ออกจากระบบ
         </button>
       </div>
 
-      {/* Full-screen Avatar Picker */}
       {showPicker && (
-        <AvatarPicker
-          current={avatarConfig}
-          onSelect={handleAvatarSelect}
-          onClose={() => setShowPicker(false)}
-          userInitial={userInitial}
-        />
+        <AvatarPicker current={avatarConfig} onSelect={handleAvatarSelect} onClose={() => setShowPicker(false)} userInitial={userInitial}/>
       )}
     </div>
   );

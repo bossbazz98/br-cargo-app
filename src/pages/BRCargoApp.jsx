@@ -65,6 +65,9 @@ const BRCargoApp = () => {
   };
 
   const navigate = (target) => {
+    // บันทึก scroll position ของหน้าปัจจุบัน
+    saveScrollPos(detail || active);
+
     if (typeof target === 'string' && target.startsWith('article:')) {
       track('ข่าวสาร', 'view', `ดูบทความ ${target.slice(8)}`);
       setDetail(target); return;
@@ -77,6 +80,7 @@ const BRCargoApp = () => {
     setProfileUser(null);
     track(pageNames[target] || target, 'navigate');
     setActive(target);
+    restoreScrollPos(target);
   };
 
   const back = () => {
@@ -94,6 +98,26 @@ const BRCargoApp = () => {
           }).catch(() => setProfileUser(u));
       }
     });
+  };
+
+  const scrollRefs = React.useRef({});
+  const scrollPositions = React.useRef({});
+  const contentRef = React.useRef(null);
+
+  // บันทึก scroll position ก่อนเปลี่ยนหน้า
+  const saveScrollPos = (key) => {
+    if (contentRef.current) {
+      scrollPositions.current[key] = contentRef.current.scrollTop;
+    }
+  };
+
+  // restore scroll position
+  const restoreScrollPos = (key) => {
+    setTimeout(() => {
+      if (contentRef.current && scrollPositions.current[key] !== undefined) {
+        contentRef.current.scrollTop = scrollPositions.current[key];
+      }
+    }, 0);
   };
 
   const handleLogout = async () => {
@@ -145,7 +169,7 @@ const BRCargoApp = () => {
         boxShadow: '0 0 60px rgba(0,0,0,0.18)',
       }}>
         <AnnouncementBanner />
-        <div style={{
+        <div ref={contentRef} style={{
           flex: 1, overflowY: 'auto', overflowX: 'hidden',
           WebkitOverflowScrolling: 'touch',
           paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))',
