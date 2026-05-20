@@ -10,6 +10,7 @@ import BRTabBar from '../components/br/BRTabBar';
 import { DetailsPage, AddressPage, NoCodePage, NewsArticlePage } from '../components/br/DetailPages';
 import ProfileScreen from '../components/br/ProfileScreen';
 import BRAppHeader from '../components/br/BRAppHeader';
+import { initTracker, track } from '../lib/tracker';
 
 const BRCargoApp = () => {
   const [user, setUser] = useState(null);
@@ -25,18 +26,19 @@ const BRCargoApp = () => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         setUser(session.user);
+        initTracker(session.user);
+        track('app', 'session_start', 'เข้าสู่ระบบ');
         try { localStorage.setItem('br_session_user', JSON.stringify(session.user)); } catch {}
       } else {
-        // ไม่มี session — ให้ไปหน้า login
         setUser(null);
       }
       setLoading(false);
     });
 
-    // ฟัง auth state เปลี่ยน
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         setUser(session.user);
+        initTracker(session.user);
         try { localStorage.setItem('br_session_user', JSON.stringify(session.user)); } catch {}
       } else if (_event === 'SIGNED_OUT') {
         setUser(null);
@@ -57,11 +59,23 @@ const BRCargoApp = () => {
       }).catch(() => setIsAdmin(false));
   }, [user]);
 
+  const pageNames = {
+    home: 'หน้าแรก', schedule: 'ตารางรอบส่ง', notifications: 'แจ้งเตือน',
+    admin: 'หน้าจัดการ', details: 'รายละเอียด', address: 'ที่อยู่', nocode: 'ตามหาเจ้าของ',
+  };
+
   const navigate = (target) => {
-    if (typeof target === 'string' && target.startsWith('article:')) { setDetail(target); return; }
-    if (['details', 'address', 'nocode'].includes(target)) { setDetail(target); return; }
+    if (typeof target === 'string' && target.startsWith('article:')) {
+      track('ข่าวสาร', 'view', `ดูบทความ ${target.slice(8)}`);
+      setDetail(target); return;
+    }
+    if (['details', 'address', 'nocode'].includes(target)) {
+      track(pageNames[target] || target, 'view');
+      setDetail(target); return;
+    }
     setDetail(null);
     setProfileUser(null);
+    track(pageNames[target] || target, 'navigate');
     setActive(target);
   };
 

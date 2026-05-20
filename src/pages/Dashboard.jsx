@@ -136,10 +136,12 @@ const DashboardMain = ({ user, onLogout }) => {
   const [newAdminEmail, setNewAdminEmail] = useState('');
   const [adminMsg, setAdminMsg] = useState('');
   const [onlineCount, setOnlineCount] = useState(1);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [userActivity, setUserActivity] = useState([]);
+  const [activityLoading, setActivityLoading] = useState(false);
 
   useEffect(() => {
     loadAll();
-    // Track online users via Supabase Presence
     const channel = supabase.channel('online_users', {
       config: { presence: { key: user.id } }
     });
@@ -155,6 +157,19 @@ const DashboardMain = ({ user, onLogout }) => {
       });
     return () => supabase.removeChannel(channel);
   }, []);
+
+  const loadUserActivity = async (u) => {
+    setSelectedUser(u);
+    setActivityLoading(true);
+    const { data } = await supabase
+      .from('user_activity')
+      .select('*')
+      .eq('user_id', u.id)
+      .order('created_at', { ascending: false })
+      .limit(200);
+    setUserActivity(data || []);
+    setActivityLoading(false);
+  };
 
   const loadAll = async () => {
     setLoading(true);
@@ -321,13 +336,145 @@ const DashboardMain = ({ user, onLogout }) => {
             {/* Users */}
             {tab === 'users' && (
               <div>
-                <SectionHeader title="ผู้ใช้งานทั้งหมด" sub={`${users.length} บัญชี`}/>
+                <SectionHeader title="ผู้ใช้งานทั้งหมด" sub={`${users.length} บัญชี — คลิกเพื่อดูพฤติกรรม`}/>
+
+                {/* User Activity Modal */}
+                {selectedUser && (
+                  <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }} onClick={() => setSelectedUser(null)}>
+                    <div style={{ background: C.card, borderRadius: 20, width: '100%', maxWidth: 700, maxHeight: '85vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }} onClick={e => e.stopPropagation()}>
+                      {/* Header */}
+                      <div style={{ padding: '20px 24px 16px', borderBottom: `1px solid ${C.line}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                          <div style={{ width: 42, height: 42, borderRadius: 99, background: C.primarySoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 800, color: C.primary, overflow: 'hidden' }}>
+                            {selectedUser.picture_url ? <img src={selectedUser.picture_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/> : (selectedUser.full_name?.[0] || selectedUser.email?.[0] || '?').toUpperCase()}
+                          </div>
+                          <div>
+                            <div style={{ fontSize: 15, fontWeight: 700, color: C.ink }}>{selectedUser.full_name || selectedUser.email}</div>
+                            <div style={{ fontSize: 12, color: C.ink3 }}>{selectedUser.email}</div>
+                          </div>
+                        </div>
+                        <button onClick={() => setSelectedUser(null)} style={{ background: 'transparent', border: 0, cursor: 'pointer', fontSize: 20, color: C.ink3 }}>✕</button>
+                      </div>
+
+                      {activityLoading ? (
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 40 }}>
+                          <div style={{ width: 28, height: 28, border: `3px solid ${C.line}`, borderTopColor: C.primary, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}/>
+                        </div>
+                      ) : userActivity.length === 0 ? (
+                        <div style={{ textAlign: 'center', padding: 40, color: C.ink3 }}>
+                          <div style={{ fontSize: 32, marginBottom: 8 }}>📊</div>
+                          <div>ยังไม่มีข้อมูลพฤติกรรม</div>
+                          <div style={{ fontSize: 12, marginTop: 4 }}>จะเริ่มเก็บข้อมูลเมื่อ user เปิดแอปครั้งต่อไป</div>
+                        </div>
+                      ) : (() => {
+                        // คำนวณสถิติ
+                        const pageCounts = {};
+                        const actionCounts = {};
+                        const dailyCounts = {};
+                        const monthlyCounts = {};
+                        const yearlyCounts = {};
+
+                        userActivity.forEach(a => {
+                          pageCounts[a.page] = (pageCounts[a.page] || 0) + 1;
+                          actionCounts[a.action] = (actionCounts[a.action] || 0) + 1;
+                          const d = new Date(a.created_at);
+                          const day = d.toLocaleDateString('th-TH', { day: '2-digit', month: '2-digit', year: '2-digit' });
+                          const month = d.toLocaleDateString('th-TH', { month: 'long', year: 'numeric' });
+                          const year = d.getFullYear();
+                          dailyCounts[day] = (dailyCounts[day] || 0) + 1;
+                          monthlyCounts[month] = (monthlyCounts[month] || 0) + 1;
+                          yearlyCounts[year] = (yearlyCounts[year] || 0) + 1;
+                        });
+
+                        const sortedPages = Object.entries(pageCounts).sort((a, b) => b[1] - a[1]);
+                        const todayKey = new Date().toLocaleDateString('th-TH', { day: '2-digit', month: '2-digit', year: '2-digit' });
+                        const todayCount = dailyCounts[todayKey] || 0;
+                        const avgDaily = Math.round(userActivity.length / Math.max(Object.keys(dailyCounts).length, 1));
+
+                        return (
+                          <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+                            {/* Summary stats */}
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
+                              {[
+                                { label: 'ทั้งหมด', value: userActivity.length, icon: '📋' },
+                                { label: 'วันนี้', value: todayCount, icon: '📅' },
+                                { label: 'เฉลี่ย/วัน', value: avgDaily, icon: '📈' },
+                                { label: 'หน้าที่เข้า', value: Object.keys(pageCounts).length, icon: '📱' },
+                              ].map((s, i) => (
+                                <div key={i} style={{ background: C.bg, borderRadius: 12, padding: '12px 14px', textAlign: 'center' }}>
+                                  <div style={{ fontSize: 20 }}>{s.icon}</div>
+                                  <div style={{ fontSize: 20, fontWeight: 800, color: C.ink }}>{s.value}</div>
+                                  <div style={{ fontSize: 11, color: C.ink3 }}>{s.label}</div>
+                                </div>
+                              ))}
+                            </div>
+
+                            {/* หน้าที่เข้าดู */}
+                            <div>
+                              <div style={{ fontSize: 14, fontWeight: 700, color: C.ink, marginBottom: 10 }}>หน้าที่เข้าดูบ่อย</div>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                                {sortedPages.map(([page, count], i) => (
+                                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                    <div style={{ fontSize: 13, color: C.ink, minWidth: 120 }}>{page}</div>
+                                    <div style={{ flex: 1, height: 8, borderRadius: 99, background: C.line, overflow: 'hidden' }}>
+                                      <div style={{ height: '100%', borderRadius: 99, background: C.primary, width: `${(count / sortedPages[0][1]) * 100}%`, transition: 'width 0.5s' }}/>
+                                    </div>
+                                    <div style={{ fontSize: 13, fontWeight: 700, color: C.primary, minWidth: 40, textAlign: 'right' }}>{count} ครั้ง</div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* การใช้งานต่อวัน/เดือน/ปี */}
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                              <div>
+                                <div style={{ fontSize: 14, fontWeight: 700, color: C.ink, marginBottom: 8 }}>ต่อเดือน</div>
+                                {Object.entries(monthlyCounts).slice(0, 6).map(([month, count], i) => (
+                                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 0', borderBottom: `1px solid ${C.line}`, fontSize: 12 }}>
+                                    <span style={{ color: C.ink2 }}>{month}</span>
+                                    <span style={{ fontWeight: 700, color: C.primary }}>{count} ครั้ง</span>
+                                  </div>
+                                ))}
+                              </div>
+                              <div>
+                                <div style={{ fontSize: 14, fontWeight: 700, color: C.ink, marginBottom: 8 }}>ต่อปี</div>
+                                {Object.entries(yearlyCounts).map(([year, count], i) => (
+                                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 0', borderBottom: `1px solid ${C.line}`, fontSize: 12 }}>
+                                    <span style={{ color: C.ink2 }}>{year}</span>
+                                    <span style={{ fontWeight: 700, color: C.primary }}>{count} ครั้ง</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Activity log */}
+                            <div>
+                              <div style={{ fontSize: 14, fontWeight: 700, color: C.ink, marginBottom: 8 }}>กิจกรรมล่าสุด</div>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: 4, maxHeight: 200, overflowY: 'auto' }}>
+                                {userActivity.slice(0, 30).map((a, i) => (
+                                  <div key={i} style={{ display: 'flex', gap: 10, padding: '6px 10px', borderRadius: 8, background: C.bg, fontSize: 12 }}>
+                                    <span style={{ color: C.ink3, flexShrink: 0 }}>{fmtDate(a.created_at)}</span>
+                                    <span style={{ color: C.primary, fontWeight: 600, flexShrink: 0 }}>{a.page}</span>
+                                    <span style={{ color: C.ink2 }}>{a.detail || a.action}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  </div>
+                )}
+
+                {/* User Grid */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
                   {users.length === 0 ? (
                     <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: 40, color: C.ink3 }}>ยังไม่มีผู้ใช้งาน</div>
                   ) : users.map((u, i) => (
-                    <div key={i} style={{ background: C.card, borderRadius: 16, padding: '20px', border: `1px solid ${C.line}`, display: 'flex', flexDirection: 'column', gap: 10 }}>
-                      {/* Avatar */}
+                    <div key={i} onClick={() => loadUserActivity(u)} style={{ background: C.card, borderRadius: 16, padding: '20px', border: `1px solid ${C.line}`, display: 'flex', flexDirection: 'column', gap: 10, cursor: 'pointer', transition: 'box-shadow 0.15s', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}
+                      onMouseEnter={e => e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.12)'}
+                      onMouseLeave={e => e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.06)'}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                         <div style={{ width: 44, height: 44, borderRadius: 99, background: C.primarySoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 800, color: C.primary, flexShrink: 0, overflow: 'hidden' }}>
                           {u.picture_url ? <img src={u.picture_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/> : (u.full_name?.[0] || u.email?.[0] || '?').toUpperCase()}
@@ -339,12 +486,12 @@ const DashboardMain = ({ user, onLogout }) => {
                           <div style={{ fontSize: 12, color: C.ink3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{u.email || '-'}</div>
                         </div>
                       </div>
-                      {/* Info */}
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 12, color: C.ink2 }}>
                         {u.phone && <div>📞 {u.phone}</div>}
                         {u.line_user_id && <Badge text="LINE" color="#06C755" bg="#e8fdf0"/>}
                         <div style={{ color: C.ink3 }}>สมัคร {fmtDate(u.created_at)}</div>
                       </div>
+                      <div style={{ fontSize: 11, color: C.primary, fontWeight: 600, marginTop: 2 }}>คลิกเพื่อดูพฤติกรรม →</div>
                     </div>
                   ))}
                 </div>
