@@ -126,7 +126,7 @@ const DashboardLogin = ({ onLogin }) => {
 // ─── Main Dashboard ───────────────────────────────────────
 const DashboardMain = ({ user, onLogout }) => {
   const [tab, setTab] = useState('overview');
-  const [stats, setStats] = useState({ users: 0, admins: 0, notifications: 0, announcements: 0, news: 0, schedules: 0, gallery: 0, promo: 0 });
+  const [stats, setStats] = useState({ users: 0, admins: 0, notifications: 0, announcements: 0, news: 0, schedules: 0, gallery: 0, promo: 0, online: 0 });
   const [users, setUsers] = useState([]);
   const [admins, setAdmins] = useState([]);
   const [notifications, setNotifications] = useState([]);
@@ -135,8 +135,26 @@ const DashboardMain = ({ user, onLogout }) => {
   const [loading, setLoading] = useState(true);
   const [newAdminEmail, setNewAdminEmail] = useState('');
   const [adminMsg, setAdminMsg] = useState('');
+  const [onlineCount, setOnlineCount] = useState(1);
 
-  useEffect(() => { loadAll(); }, []);
+  useEffect(() => {
+    loadAll();
+    // Track online users via Supabase Presence
+    const channel = supabase.channel('online_users', {
+      config: { presence: { key: user.id } }
+    });
+    channel
+      .on('presence', { event: 'sync' }, () => {
+        const state = channel.presenceState();
+        setOnlineCount(Object.keys(state).length);
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await channel.track({ user_id: user.id, email: user.email, online_at: new Date().toISOString() });
+        }
+      });
+    return () => supabase.removeChannel(channel);
+  }, []);
 
   const loadAll = async () => {
     setLoading(true);
@@ -260,6 +278,7 @@ const DashboardMain = ({ user, onLogout }) => {
               <div>
                 <SectionHeader title="ภาพรวมระบบ" sub={`อัปเดตล่าสุด: ${new Date().toLocaleString('th-TH')}`} action={<button onClick={loadAll} style={{ padding: '8px 16px', borderRadius: 10, background: C.primarySoft, border: 0, color: C.primary, fontFamily: font, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>🔄 รีเฟรช</button>}/>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 16, marginBottom: 32 }}>
+                  <StatCard label="ออนไลน์ขณะนี้" value={onlineCount} sub="ผู้ใช้ที่กำลังใช้งาน" color="#22c55e" icon="🟢"/>
                   <StatCard label="ผู้ใช้งานทั้งหมด" value={stats.users} sub="บัญชีที่ลงทะเบียน" color={C.primary} icon="👥"/>
                   <StatCard label="Admin" value={stats.admins} sub="ผู้ดูแลระบบ" color={C.success} icon="🛡️"/>
                   <StatCard label="แจ้งเตือนทั้งหมด" value={stats.notifications} sub="ในระบบ" color={C.warn} icon="🔔"/>
@@ -303,18 +322,31 @@ const DashboardMain = ({ user, onLogout }) => {
             {tab === 'users' && (
               <div>
                 <SectionHeader title="ผู้ใช้งานทั้งหมด" sub={`${users.length} บัญชี`}/>
-                <div style={{ background: C.card, borderRadius: 16, padding: 24, border: `1px solid ${C.line}` }}>
-                  <Table
-                    columns={['ชื่อ', 'อีเมล', 'เบอร์โทร', 'LINE', 'วันที่สมัคร']}
-                    rows={users.map(u => [
-                      u.full_name || `${u.first_name || ''} ${u.last_name || ''}`.trim() || '-',
-                      u.email || '-',
-                      u.phone || '-',
-                      u.line_user_id ? <Badge text="LINE" color="#06C755" bg="#e8fdf0"/> : '-',
-                      fmtDate(u.created_at),
-                    ])}
-                    emptyText="ยังไม่มีผู้ใช้งาน"
-                  />
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
+                  {users.length === 0 ? (
+                    <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: 40, color: C.ink3 }}>ยังไม่มีผู้ใช้งาน</div>
+                  ) : users.map((u, i) => (
+                    <div key={i} style={{ background: C.card, borderRadius: 16, padding: '20px', border: `1px solid ${C.line}`, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                      {/* Avatar */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <div style={{ width: 44, height: 44, borderRadius: 99, background: C.primarySoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 800, color: C.primary, flexShrink: 0, overflow: 'hidden' }}>
+                          {u.picture_url ? <img src={u.picture_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/> : (u.full_name?.[0] || u.email?.[0] || '?').toUpperCase()}
+                        </div>
+                        <div style={{ minWidth: 0 }}>
+                          <div style={{ fontSize: 14, fontWeight: 700, color: C.ink, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {u.full_name || `${u.first_name || ''} ${u.last_name || ''}`.trim() || 'ไม่ระบุชื่อ'}
+                          </div>
+                          <div style={{ fontSize: 12, color: C.ink3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{u.email || '-'}</div>
+                        </div>
+                      </div>
+                      {/* Info */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 12, color: C.ink2 }}>
+                        {u.phone && <div>📞 {u.phone}</div>}
+                        {u.line_user_id && <Badge text="LINE" color="#06C755" bg="#e8fdf0"/>}
+                        <div style={{ color: C.ink3 }}>สมัคร {fmtDate(u.created_at)}</div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
