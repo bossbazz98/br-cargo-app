@@ -172,7 +172,7 @@ const LoginScreen = ({ onLogin }) => {
           return;
         }
         setLoginErr('LINE Login ไม่สำเร็จ: ' + (data?.error || error?.message || 'กรุณาลองใหม่'));
-      } catch (err: any) {
+      } catch (err) {
         setLoginErr('LIFF Error: ' + (err?.message || String(err)));
       }
       setLoading(false);
@@ -286,7 +286,7 @@ const LoginScreen = ({ onLogin }) => {
         });
       }
       onLogin && onLogin(data.user);
-    } catch (err: any) {
+    } catch (err) {
       const msg = err?.message || err?.code || JSON.stringify(err) || 'unknown';
       setLoginErr('LINE LIFF Error: ' + msg);
       setLoading(false);
