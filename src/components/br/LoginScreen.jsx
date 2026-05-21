@@ -1,4 +1,13 @@
 import React, { useState, useEffect } from 'react';
+
+// โหลด font รองรับทุกภาษา (ไทย, อังกฤษ, เกาหลี, จีน, ญี่ปุ่น, อาหรับ ฯลฯ)
+if (typeof document !== 'undefined' && !document.getElementById('noto-sans-font')) {
+  const link = document.createElement('link');
+  link.id = 'noto-sans-font';
+  link.rel = 'stylesheet';
+  link.href = 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700;800&family=Noto+Sans:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap';
+  document.head.appendChild(link);
+}
 import { supabase } from '@/api/supabaseClient';
 
 // LINE OAuth config
@@ -11,7 +20,7 @@ const getLineAuthURL = () => {
   return `https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=${LINE_CHANNEL_ID}&redirect_uri=${encodeURIComponent(LINE_REDIRECT_URI)}&state=${state}&scope=profile%20openid&bot_prompt=normal`;
 };
 
-const thFont = `'IBM Plex Sans Thai', 'Inter', -apple-system, system-ui, sans-serif`;
+const thFont = `'IBM Plex Sans Thai', 'Noto Sans Thai', 'Noto Sans KR', 'Noto Sans SC', 'Noto Sans JP', 'Noto Sans', 'Inter', -apple-system, system-ui, sans-serif`;
 
 const P = {
   blue: 'oklch(0.58 0.18 245)',
