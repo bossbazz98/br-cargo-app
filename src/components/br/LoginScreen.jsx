@@ -138,26 +138,42 @@ const LoginScreen = ({ onLogin }) => {
           });
         }
         await window.liff.init({ liffId: LINE_LIFF_ID });
-        if (window.liff.isLoggedIn()) {
-          const profile = await window.liff.getProfile();
-          const idToken = window.liff.getIDToken();
-          const { data, error } = await supabase.functions.invoke('lineLogin', {
-            body: { id_token: idToken, profile }
-          });
-          if (!error && data?.success) {
-            if (data.session) {
-              await supabase.auth.setSession({
-                access_token: data.session.access_token,
-                refresh_token: data.session.refresh_token,
-              });
-            }
-            onLogin && onLogin(data.user);
-            return;
-          }
-          setLoginErr('LINE Login ไม่สำเร็จ กรุณาลองใหม่');
+
+        if (!window.liff.isLoggedIn()) {
+          // ยังไม่ได้ login — ให้ LIFF login อัตโนมัติ
+          window.liff.login({ redirectUri: window.location.href });
+          return;
         }
+
+        // login แล้ว — ดึง profile และ token
+        const [profile, idToken] = await Promise.all([
+          window.liff.getProfile(),
+          window.liff.getIDToken(),
+        ]);
+
+        if (!idToken) {
+          setLoginErr('ไม่สามารถดึงข้อมูล LINE ได้ กรุณาลองใหม่');
+          setLoading(false);
+          return;
+        }
+
+        const { data, error } = await supabase.functions.invoke('lineLogin', {
+          body: { id_token: idToken, profile }
+        });
+
+        if (!error && data?.success) {
+          if (data.session) {
+            await supabase.auth.setSession({
+              access_token: data.session.access_token,
+              refresh_token: data.session.refresh_token,
+            });
+          }
+          onLogin && onLogin(data.user);
+          return;
+        }
+        setLoginErr('LINE Login ไม่สำเร็จ: ' + (data?.error || error?.message || 'กรุณาลองใหม่'));
       } catch (err: any) {
-        // ยังไม่ได้ login — แสดงหน้า login ปกติ
+        setLoginErr('LIFF Error: ' + (err?.message || String(err)));
       }
       setLoading(false);
     };
