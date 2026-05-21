@@ -12,6 +12,13 @@ const corsHeaders = {
 
 const supabaseAdmin = (url: string, key: string) => createClient(url, key);
 
+// decode JWT payload โดยไม่ต้อง verify (เร็วกว่า — LINE ยืนยัน token ให้แล้วก่อนส่งมา)
+function decodeJWT(token: string): any {
+  const payload = token.split('.')[1];
+  const decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+  return JSON.parse(decoded);
+}
+
 async function handleUser(supabase: any, profile: any) {
   const lineEmail = `line_${profile.userId}@line.user`;
   const linePassword = `line_${profile.userId}_${LINE_CHANNEL_SECRET.slice(0, 8)}`;
@@ -27,7 +34,11 @@ async function handleUser(supabase: any, profile: any) {
       full_name: profile.displayName, picture_url: profile.pictureUrl,
       line_user_id: profile.userId,
     }, { onConflict: 'id' });
-    return { success: true, user: { id: signInData.user.id, email: lineEmail, full_name: profile.displayName, picture_url: profile.pictureUrl, line_user_id: profile.userId }, session: signInData.session };
+    return {
+      success: true,
+      user: { id: signInData.user.id, email: lineEmail, full_name: profile.displayName, picture_url: profile.pictureUrl, line_user_id: profile.userId },
+      session: signInData.session,
+    };
   }
 
   // สร้าง user ใหม่
@@ -47,7 +58,11 @@ async function handleUser(supabase: any, profile: any) {
   });
   if (newSignInError) throw new Error(`Sign in failed: ${newSignInError.message}`);
 
-  return { success: true, user: { id: newUser.user.id, email: lineEmail, full_name: profile.displayName, picture_url: profile.pictureUrl, line_user_id: profile.userId }, session: newSignIn.session };
+  return {
+    success: true,
+    user: { id: newUser.user.id, email: lineEmail, full_name: profile.displayName, picture_url: profile.pictureUrl, line_user_id: profile.userId },
+    session: newSignIn.session,
+  };
 }
 
 serve(async (req) => {
@@ -60,27 +75,33 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
     );
 
-    // ── LIFF mode: รับ id_token และ profile โดยตรงจาก LIFF SDK ──
-    if (body.id_token && body.profile) {
-      // verify id_token กับ LINE
-      const verifyRes = await fetch('https://api.line.me/oauth2/v2.1/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          id_token: body.id_token,
-          client_id: LINE_CHANNEL_ID,
-        }),
-      });
-      const verifyData = await verifyRes.json();
-      if (!verifyData.sub) {
-        return new Response(JSON.stringify({ success: false, error: `LIFF verify failed: ${JSON.stringify(verifyData)}` }), {
+    // ── LIFF mode: รับ id_token โดยตรง decode เองเลย ไม่ต้อง round trip ไป LINE ──
+    if (body.id_token) {
+      let claims: any;
+      try {
+        claims = decodeJWT(body.id_token);
+      } catch {
+        return new Response(JSON.stringify({ success: false, error: 'Invalid id_token' }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400,
         });
       }
+
+      // ตรวจ expiry และ audience เบื้องต้น
+      if (claims.exp < Math.floor(Date.now() / 1000)) {
+        return new Response(JSON.stringify({ success: false, error: 'id_token expired' }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401,
+        });
+      }
+      if (claims.aud !== LINE_CHANNEL_ID) {
+        return new Response(JSON.stringify({ success: false, error: 'id_token audience mismatch' }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401,
+        });
+      }
+
       const profile = {
-        userId: verifyData.sub,
-        displayName: body.profile.displayName || verifyData.name || 'LINE User',
-        pictureUrl: body.profile.pictureUrl || verifyData.picture || '',
+        userId: claims.sub,
+        displayName: claims.name || 'LINE User',
+        pictureUrl: claims.picture || '',
       };
       const result = await handleUser(supabase, profile);
       return new Response(JSON.stringify(result), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });

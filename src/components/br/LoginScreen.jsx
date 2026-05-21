@@ -144,10 +144,8 @@ const LoginScreen = ({ onLogin }) => {
         }
 
         // login แล้ว — ดึง profile และ token
-        const [profile, idToken] = await Promise.all([
-          window.liff.getProfile(),
-          window.liff.getIDToken(),
-        ]);
+        // ตัด getProfile() ออก — decode จาก idToken ใน Edge Function แทน
+        const idToken = window.liff.getIDToken(); // sync, ไม่ต้อง await
 
         if (!idToken) {
           setLoginErr('ไม่สามารถดึงข้อมูล LINE ได้ กรุณาลองใหม่');
@@ -156,7 +154,7 @@ const LoginScreen = ({ onLogin }) => {
         }
 
         const { data, error } = await supabase.functions.invoke('lineLogin', {
-          body: { id_token: idToken, profile }
+          body: { id_token: idToken }
         });
 
         if (!error && data?.success) {
