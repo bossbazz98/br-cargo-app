@@ -3,20 +3,93 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const LINE_CHANNEL_ID = '2009934655';
 const LINE_CHANNEL_SECRET = '406c063bceeae1c3e4f1ee5b3e774ac1';
-const LINE_REDIRECT_URI = 'https://br-cargo-app.vercel.app/';
+const LINE_REDIRECT_URI = 'https://br-cargo.com/';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const supabaseAdmin = (url: string, key: string) => createClient(url, key);
+
+async function handleUser(supabase: any, profile: any) {
+  const lineEmail = `line_${profile.userId}@line.user`;
+  const linePassword = `line_${profile.userId}_${LINE_CHANNEL_SECRET.slice(0, 8)}`;
+
+  // ลอง sign in ก่อน
+  const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+    email: lineEmail, password: linePassword,
+  });
+
+  if (!signInError && signInData.user) {
+    await supabase.from('users').upsert({
+      id: signInData.user.id, email: lineEmail,
+      full_name: profile.displayName, picture_url: profile.pictureUrl,
+      line_user_id: profile.userId,
+    }, { onConflict: 'id' });
+    return { success: true, user: { id: signInData.user.id, email: lineEmail, full_name: profile.displayName, picture_url: profile.pictureUrl, line_user_id: profile.userId }, session: signInData.session };
+  }
+
+  // สร้าง user ใหม่
+  const { data: newUser, error: createError } = await supabase.auth.admin.createUser({
+    email: lineEmail, password: linePassword, email_confirm: true,
+  });
+  if (createError) throw new Error(`Create user failed: ${createError.message}`);
+
+  await supabase.from('users').upsert({
+    id: newUser.user.id, email: lineEmail,
+    full_name: profile.displayName, picture_url: profile.pictureUrl,
+    line_user_id: profile.userId,
+  }, { onConflict: 'id' });
+
+  const { data: newSignIn, error: newSignInError } = await supabase.auth.signInWithPassword({
+    email: lineEmail, password: linePassword,
+  });
+  if (newSignInError) throw new Error(`Sign in failed: ${newSignInError.message}`);
+
+  return { success: true, user: { id: newUser.user.id, email: lineEmail, full_name: profile.displayName, picture_url: profile.pictureUrl, line_user_id: profile.userId }, session: newSignIn.session };
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
   try {
-    const { code } = await req.json();
+    const body = await req.json();
+    const supabase = supabaseAdmin(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+    );
 
-    // 1. แลก code เอา access_token จาก LINE
+    // ── LIFF mode: รับ id_token และ profile โดยตรงจาก LIFF SDK ──
+    if (body.id_token && body.profile) {
+      // verify id_token กับ LINE
+      const verifyRes = await fetch('https://api.line.me/oauth2/v2.1/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          id_token: body.id_token,
+          client_id: LINE_CHANNEL_ID,
+        }),
+      });
+      const verifyData = await verifyRes.json();
+      if (!verifyData.sub) {
+        return new Response(JSON.stringify({ success: false, error: `LIFF verify failed: ${JSON.stringify(verifyData)}` }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400,
+        });
+      }
+      const profile = {
+        userId: verifyData.sub,
+        displayName: body.profile.displayName || verifyData.name || 'LINE User',
+        pictureUrl: body.profile.pictureUrl || verifyData.picture || '',
+      };
+      const result = await handleUser(supabase, profile);
+      return new Response(JSON.stringify(result), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ── OAuth mode: รับ code แล้วแลก token ──
+    const { code } = body;
+    if (!code) throw new Error('Missing code or id_token');
+
     const tokenRes = await fetch('https://api.line.me/oauth2/v2.1/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -30,108 +103,21 @@ serve(async (req) => {
     });
     const tokenData = await tokenRes.json();
     if (!tokenData.access_token) {
-      return new Response(JSON.stringify({ 
-        success: false, 
-        error: `LINE token error: ${JSON.stringify(tokenData)}` 
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }, 
-        status: 400,
+      return new Response(JSON.stringify({ success: false, error: `LINE token error: ${JSON.stringify(tokenData)}` }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400,
       });
     }
 
-    // 2. ดึง profile จาก LINE
     const profileRes = await fetch('https://api.line.me/v2/profile', {
       headers: { Authorization: `Bearer ${tokenData.access_token}` },
     });
     const profile = await profileRes.json();
-
-    const lineEmail = `line_${profile.userId}@line.user`;
-    const linePassword = `line_${profile.userId}_${LINE_CHANNEL_SECRET.slice(0, 8)}`;
-
-    // 3. Supabase admin client
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
-    );
-
-    // 4. ลอง sign in ก่อน ถ้าไม่ได้ค่อย create user
-    let userId: string;
-    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-      email: lineEmail,
-      password: linePassword,
-    });
-
-    if (!signInError && signInData.user) {
-      // user มีอยู่แล้ว
-      userId = signInData.user.id;
-
-      // อัปเดต profile
-      await supabase.from('users').upsert({
-        id: userId,
-        email: lineEmail,
-        full_name: profile.displayName,
-        picture_url: profile.pictureUrl,
-        line_user_id: profile.userId,
-      });
-
-      return new Response(JSON.stringify({
-        success: true,
-        user: {
-          id: userId,
-          email: lineEmail,
-          full_name: profile.displayName,
-          picture_url: profile.pictureUrl,
-          line_user_id: profile.userId,
-        },
-        session: signInData.session,
-      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
-    }
-
-    // 5. user ยังไม่มี — สร้างใหม่
-    const { data: newUser, error: createError } = await supabase.auth.admin.createUser({
-      email: lineEmail,
-      password: linePassword,
-      email_confirm: true,
-    });
-
-    if (createError) throw new Error(`Create user failed: ${createError.message}`);
-    userId = newUser.user.id;
-
-    // 6. บันทึก profile
-    await supabase.from('users').upsert({
-      id: userId,
-      email: lineEmail,
-      full_name: profile.displayName,
-      picture_url: profile.pictureUrl,
-      line_user_id: profile.userId,
-    });
-
-    // 7. Sign in หลัง create
-    const { data: newSignIn, error: newSignInError } = await supabase.auth.signInWithPassword({
-      email: lineEmail,
-      password: linePassword,
-    });
-    if (newSignInError) throw new Error(`Sign in after create failed: ${newSignInError.message}`);
-
-    return new Response(JSON.stringify({
-      success: true,
-      user: {
-        id: userId,
-        email: lineEmail,
-        full_name: profile.displayName,
-        picture_url: profile.pictureUrl,
-        line_user_id: profile.userId,
-      },
-      session: newSignIn.session,
-    }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    const result = await handleUser(supabase, profile);
+    return new Response(JSON.stringify(result), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
   } catch (err) {
-    return new Response(JSON.stringify({ 
-      success: false, 
-      error: String(err) 
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }, 
-      status: 500,
+    return new Response(JSON.stringify({ success: false, error: String(err) }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500,
     });
   }
 });
