@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -84,7 +86,7 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'IBM Plex Sans Thai', 'Inter', -apple-system, system-ui, sans-serif;
+    font-family: 'Sarabun', 'Noto Sans Thai', 'Noto Sans KR', 'Noto Sans SC', 'Noto Sans JP', 'Noto Sans', 'Inter', -apple-system, system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     overscroll-behavior: none;
   }

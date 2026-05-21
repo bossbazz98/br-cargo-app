@@ -19,7 +19,8 @@ export const C = {
   dangerSoft: 'oklch(0.96 0.03 25)',
 };
 
-export const thaiFont = `'IBM Plex Sans Thai', 'Inter', -apple-system, system-ui, sans-serif`;
+export const thaiFont = `'Sarabun', 'Noto Sans Thai', 'Noto Sans KR', 'Noto Sans SC', 'Noto Sans JP', 'Noto Sans', 'Inter', -apple-system, system-ui, sans-serif`;
+export const thaiFontHeading = `'Noto Sans Thai', 'Noto Sans KR', 'Noto Sans SC', 'Noto Sans JP', 'Noto Sans', 'Inter', -apple-system, system-ui, sans-serif`;
 export const monoFont = `'JetBrains Mono', ui-monospace, monospace`;
 
 export const STATUS_TONE = {
