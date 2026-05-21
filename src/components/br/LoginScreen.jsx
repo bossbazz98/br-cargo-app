@@ -20,7 +20,8 @@ const getLineAuthURL = () => {
   return `https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=${LINE_CHANNEL_ID}&redirect_uri=${encodeURIComponent(LINE_REDIRECT_URI)}&state=${state}&scope=profile%20openid&bot_prompt=normal`;
 };
 
-const thFont = `'IBM Plex Sans Thai', 'Noto Sans Thai', 'Noto Sans KR', 'Noto Sans SC', 'Noto Sans JP', 'Noto Sans', 'Inter', -apple-system, system-ui, sans-serif`;
+const thFont = `'Noto Sans Thai', 'Noto Sans KR', 'Noto Sans SC', 'Noto Sans JP', 'Noto Sans', 'Inter', -apple-system, system-ui, sans-serif`;
+const thFontHeading = `'IBM Plex Sans Thai', 'Noto Sans KR', 'Noto Sans SC', 'Noto Sans JP', 'Noto Sans', 'Inter', -apple-system, system-ui, sans-serif`;
 
 const P = {
   blue: 'oklch(0.58 0.18 245)',
@@ -433,7 +434,7 @@ const LoginScreen = ({ onLogin }) => {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, marginBottom: 4 }}>
           <Logo/>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 24, fontWeight: 800, color: P.ink, letterSpacing: -0.5 }}>ยินดีต้อนรับกลับมา</div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: P.ink, letterSpacing: -0.5, fontFamily: thFontHeading }}>ยินดีต้อนรับกลับมา</div>
             <div style={{ fontSize: 13.5, color: P.ink3, marginTop: 5 }}>กรุณากรอกข้อมูลเพื่อเข้าสู่ระบบ</div>
           </div>
         </div>
@@ -490,7 +491,7 @@ const LoginScreen = ({ onLogin }) => {
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={P.blue} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 20, fontWeight: 800, color: P.ink }}>ลืมรหัสผ่าน?</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: P.ink, fontFamily: thFontHeading }}>ลืมรหัสผ่าน?</div>
             <div style={{ fontSize: 13, color: P.ink3, marginTop: 4, lineHeight: 1.5 }}>กรอกอีเมลที่ลงทะเบียนไว้<br/>เราจะส่งรหัส OTP ให้คุณ</div>
           </div>
         </div>
@@ -507,7 +508,7 @@ const LoginScreen = ({ onLogin }) => {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <BackBtn onClick={() => { setOtpInput(''); setOtpErr(''); setStep('forgot'); }}/>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginBottom: 4 }}>
-          <div style={{ fontSize: 20, fontWeight: 800, color: P.ink }}>กรอกรหัส OTP</div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: P.ink, fontFamily: thFontHeading }}>กรอกรหัส OTP</div>
           <div style={{ fontSize: 13, color: P.ink3, lineHeight: 1.5, textAlign: 'center' }}>ส่งรหัสไปที่<br/><span style={{ fontWeight: 700, color: P.ink2 }}>{forgotEmail}</span></div>
         </div>
         <ErrBox msg={otpErr}/>
@@ -529,7 +530,7 @@ const LoginScreen = ({ onLogin }) => {
     body = (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 20, fontWeight: 800, color: P.ink }}>ตั้งรหัสผ่านใหม่</div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: P.ink, fontFamily: thFontHeading }}>ตั้งรหัสผ่านใหม่</div>
           <div style={{ fontSize: 13, color: P.ink3, marginTop: 4 }}>กรอกรหัสผ่านใหม่ของคุณ</div>
         </div>
         <ErrBox msg={resetErr}/>
@@ -546,7 +547,7 @@ const LoginScreen = ({ onLogin }) => {
           <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m4 12 5 5L20 6"/></svg>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 20, fontWeight: 800, color: P.ink }}>เปลี่ยนรหัสผ่านสำเร็จ!</div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: P.ink, fontFamily: thFontHeading }}>เปลี่ยนรหัสผ่านสำเร็จ!</div>
           <div style={{ fontSize: 13.5, color: P.ink3, marginTop: 6, lineHeight: 1.5 }}>คุณสามารถเข้าสู่ระบบด้วยรหัสผ่านใหม่ได้เลย</div>
         </div>
         <PrimaryBtn onClick={() => { setStep('login'); setNewPw(''); setNewPwConfirm(''); setOtpInput(''); }}>กลับไปเข้าสู่ระบบ</PrimaryBtn>
@@ -559,7 +560,7 @@ const LoginScreen = ({ onLogin }) => {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         <div style={{ textAlign: 'center', marginBottom: 4 }}>
           <Logo/>
-          <div style={{ fontSize: 22, fontWeight: 800, color: P.ink, letterSpacing: -0.5, marginTop: 12 }}>สมัครสมาชิก</div>
+          <div style={{ fontSize: 22, fontWeight: 800, color: P.ink, letterSpacing: -0.5, marginTop: 12, fontFamily: thFontHeading }}>สมัครสมาชิก</div>
           <div style={{ fontSize: 13, color: P.ink3, marginTop: 4 }}>เริ่มต้นจัดการพัสดุกับ BR CARGO</div>
         </div>
         <ErrBox msg={regErr}/>
@@ -584,7 +585,7 @@ const LoginScreen = ({ onLogin }) => {
           <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m4 12 5 5L20 6"/></svg>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 20, fontWeight: 800, color: P.ink }}>สมัครสำเร็จ!</div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: P.ink, fontFamily: thFontHeading }}>สมัครสำเร็จ!</div>
           <div style={{ fontSize: 13.5, color: P.ink3, marginTop: 6, lineHeight: 1.5 }}>เข้าสู่ระบบเพื่อเริ่มใช้งาน</div>
         </div>
         <PrimaryBtn onClick={() => { setEmail(reg.email); setPw(''); setStep('login'); }}>ไปยังหน้าเข้าสู่ระบบ</PrimaryBtn>
