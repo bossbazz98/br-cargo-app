@@ -4,9 +4,7 @@ import { supabase } from '@/api/supabaseClient';
 // LINE OAuth config
 const LINE_CHANNEL_ID = '2009934655';
 const LINE_LIFF_ID = '2009934655-WCKu9TyU';
-const LINE_REDIRECT_URI = window.location.hostname === 'localhost'
-  ? 'http://localhost:5173/'
-  : 'https://br-cargo.com/';
+const LINE_REDIRECT_URI = window.location.origin + '/';
 const getLineAuthURL = () => {
   const state = 'br_cargo_line_' + Math.random().toString(36).slice(2, 8);
   try { sessionStorage.setItem('line_state', state); } catch {}

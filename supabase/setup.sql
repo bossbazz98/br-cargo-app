@@ -158,42 +158,95 @@ alter table address_blocks enable row level security;
 alter table nocode_pages enable row level security;
 alter table nocode_blocks enable row level security;
 
+-- =============================================
+-- ลบ Policy เก่าก่อนทั้งหมด (ป้องกัน error)
+-- =============================================
+
 -- Policy: ทุกคนอ่านได้ (public read)
-create policy "Public read" on announcements for select using (true);
-create policy "Public read" on shipping_schedules for select using (true);
-create policy "Public read" on promo_images for select using (true);
-create policy "Public read" on gallery_images for select using (true);
-create policy "Public read" on news_articles for select using (true);
-create policy "Public read" on br_pay_configs for select using (true);
-create policy "Public read" on detail_contents for select using (true);
-create policy "Public read" on address_blocks for select using (true);
-create policy "Public read" on nocode_pages for select using (true);
-create policy "Public read" on nocode_blocks for select using (true);
-create policy "Public read" on admin_emails for select using (true);
+DROP POLICY IF EXISTS "Public read" ON announcements;
+DROP POLICY IF EXISTS "Public read" ON shipping_schedules;
+DROP POLICY IF EXISTS "Public read" ON promo_images;
+DROP POLICY IF EXISTS "Public read" ON gallery_images;
+DROP POLICY IF EXISTS "Public read" ON news_articles;
+DROP POLICY IF EXISTS "Public read" ON br_pay_configs;
+DROP POLICY IF EXISTS "Public read" ON detail_contents;
+DROP POLICY IF EXISTS "Public read" ON address_blocks;
+DROP POLICY IF EXISTS "Public read" ON nocode_pages;
+DROP POLICY IF EXISTS "Public read" ON nocode_blocks;
+DROP POLICY IF EXISTS "Public read" ON admin_emails;
 
--- Policy: เฉพาะ user ที่ login แล้วอ่าน-เขียน notifications ของตัวเอง
-create policy "Auth read notifications" on notifications for select using (auth.role() = 'authenticated');
-create policy "Auth write notifications" on notifications for all using (auth.role() = 'authenticated');
+-- Policy: Notifications
+DROP POLICY IF EXISTS "Auth read notifications" ON notifications;
+DROP POLICY IF EXISTS "Auth write notifications" ON notifications;
 
--- Policy: เฉพาะ user ที่ login แล้วอ่าน-แก้ไขข้อมูลตัวเอง
-create policy "User own profile" on users for all using (auth.uid() = id);
+-- Policy: User Profile
+DROP POLICY IF EXISTS "User own profile" ON users;
 
--- Policy: authenticated users write ทุก table (admin จะกรอง logic ใน app)
-create policy "Auth insert announcements" on announcements for insert with check (auth.role() = 'authenticated');
-create policy "Auth update announcements" on announcements for update using (auth.role() = 'authenticated');
-create policy "Auth delete announcements" on announcements for delete using (auth.role() = 'authenticated');
+-- Policy: Admin / Authenticated write
+DROP POLICY IF EXISTS "Auth insert announcements" ON announcements;
+DROP POLICY IF EXISTS "Auth update announcements" ON announcements;
+DROP POLICY IF EXISTS "Auth delete announcements" ON announcements;
 
-create policy "Auth write shipping" on shipping_schedules for all using (auth.role() = 'authenticated');
-create policy "Auth write promo" on promo_images for all using (auth.role() = 'authenticated');
-create policy "Auth write gallery" on gallery_images for all using (auth.role() = 'authenticated');
-create policy "Auth write news" on news_articles for all using (auth.role() = 'authenticated');
-create policy "Auth write brpay" on br_pay_configs for all using (auth.role() = 'authenticated');
-create policy "Auth write detail" on detail_contents for all using (auth.role() = 'authenticated');
-create policy "Auth write address" on address_blocks for all using (auth.role() = 'authenticated');
-create policy "Auth write nocode_pages" on nocode_pages for all using (auth.role() = 'authenticated');
-create policy "Auth write nocode_blocks" on nocode_blocks for all using (auth.role() = 'authenticated');
-create policy "Auth write admin_emails" on admin_emails for all using (auth.role() = 'authenticated');
+DROP POLICY IF EXISTS "Auth write shipping" ON shipping_schedules;
+DROP POLICY IF EXISTS "Auth write promo" ON promo_images;
+DROP POLICY IF EXISTS "Auth write gallery" ON gallery_images;
+DROP POLICY IF EXISTS "Auth write news" ON news_articles;
+DROP POLICY IF EXISTS "Auth write brpay" ON br_pay_configs;
+DROP POLICY IF EXISTS "Auth write detail" ON detail_contents;
+DROP POLICY IF EXISTS "Auth write address" ON address_blocks;
+DROP POLICY IF EXISTS "Auth write nocode_pages" ON nocode_pages;
+DROP POLICY IF EXISTS "Auth write nocode_blocks" ON nocode_blocks;
+DROP POLICY IF EXISTS "Auth write admin_emails" ON admin_emails;
 
+-- =============================================
+-- สร้าง Policy ใหม่
+-- =============================================
+
+-- ทุกคนอ่านได้ (Public)
+CREATE POLICY "Public read" ON announcements FOR SELECT USING (true);
+CREATE POLICY "Public read" ON shipping_schedules FOR SELECT USING (true);
+CREATE POLICY "Public read" ON promo_images FOR SELECT USING (true);
+CREATE POLICY "Public read" ON gallery_images FOR SELECT USING (true);
+CREATE POLICY "Public read" ON news_articles FOR SELECT USING (true);
+CREATE POLICY "Public read" ON br_pay_configs FOR SELECT USING (true);
+CREATE POLICY "Public read" ON detail_contents FOR SELECT USING (true);
+CREATE POLICY "Public read" ON address_blocks FOR SELECT USING (true);
+CREATE POLICY "Public read" ON nocode_pages FOR SELECT USING (true);
+CREATE POLICY "Public read" ON nocode_blocks FOR SELECT USING (true);
+CREATE POLICY "Public read" ON admin_emails FOR SELECT USING (true);
+
+-- Notifications (เฉพาะผู้ใช้ที่ล็อกอิน)
+CREATE POLICY "Auth read notifications" ON notifications 
+FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Auth write notifications" ON notifications 
+FOR ALL USING (auth.uid() = user_id);
+
+-- User Profile (แก้ไขข้อมูลตัวเองได้)
+CREATE POLICY "User own profile" ON users 
+FOR ALL USING (auth.uid() = id);
+
+-- Authenticated users can write (Admin)
+CREATE POLICY "Auth insert announcements" ON announcements 
+FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+
+CREATE POLICY "Auth update announcements" ON announcements 
+FOR UPDATE USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Auth delete announcements" ON announcements 
+FOR DELETE USING (auth.role() = 'authenticated');
+
+-- Write policies สำหรับตารางอื่น ๆ
+CREATE POLICY "Auth write shipping" ON shipping_schedules FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Auth write promo" ON promo_images FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Auth write gallery" ON gallery_images FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Auth write news" ON news_articles FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Auth write brpay" ON br_pay_configs FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Auth write detail" ON detail_contents FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Auth write address" ON address_blocks FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Auth write nocode_pages" ON nocode_pages FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Auth write nocode_blocks" ON nocode_blocks FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Auth write admin_emails" ON admin_emails FOR ALL USING (auth.role() = 'authenticated');
 -- ======================================================
 -- Enable Realtime สำหรับ Announcements และ BrPayConfig
 -- ======================================================
