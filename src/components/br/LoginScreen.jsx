@@ -122,6 +122,48 @@ const LoginScreen = ({ onLogin }) => {
     } catch {}
   }, []);
 
+  // Handle LIFF — รันทันทีเมื่อเปิดใน LINE WebView
+  useEffect(() => {
+    if (!isLineWebView) return;
+    setLoading(true);
+    const initLiff = async () => {
+      try {
+        if (!window.liff) {
+          await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://static.line-scdn.net/liff/edge/2/sdk.js';
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+          });
+        }
+        await window.liff.init({ liffId: LINE_LIFF_ID });
+        if (window.liff.isLoggedIn()) {
+          const profile = await window.liff.getProfile();
+          const idToken = window.liff.getIDToken();
+          const { data, error } = await supabase.functions.invoke('lineLogin', {
+            body: { id_token: idToken, profile }
+          });
+          if (!error && data?.success) {
+            if (data.session) {
+              await supabase.auth.setSession({
+                access_token: data.session.access_token,
+                refresh_token: data.session.refresh_token,
+              });
+            }
+            onLogin && onLogin(data.user);
+            return;
+          }
+          setLoginErr('LINE Login ไม่สำเร็จ กรุณาลองใหม่');
+        }
+      } catch (err: any) {
+        // ยังไม่ได้ login — แสดงหน้า login ปกติ
+      }
+      setLoading(false);
+    };
+    initLiff();
+  }, []);
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
@@ -398,7 +440,8 @@ const LoginScreen = ({ onLogin }) => {
           </button>
           <button onClick={() => {
             if (isLineWebView) {
-              handleLiffLogin();
+              // อยู่ใน LINE WebView — เปิด LIFF URL โดยตรง
+              window.location.href = `https://liff.line.me/${LINE_LIFF_ID}`;
               return;
             }
             window.location.href = getLineAuthURL();
