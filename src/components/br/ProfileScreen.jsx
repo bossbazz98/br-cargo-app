@@ -304,8 +304,8 @@ const EditableRow = ({ icon, label, value, onSave, editingKey, activeEdit, setAc
 };
 
 // ─── Password Row (with current-password validation) ─────
-const PasswordRow = ({ onSave }) => {
-  const [editing, setEditing] = useState(false);
+const PasswordRow = ({ onSave, activeEdit, setActiveEdit }) => {
+  const editing = activeEdit === 'password';
   const [currentPw, setCurrentPw] = useState('');
   const [newPw, setNewPw] = useState('');
   const [showCurrent, setShowCurrent] = useState(false);
@@ -323,7 +323,7 @@ const PasswordRow = ({ onSave }) => {
       await base44.auth.login({ email: user?.email, password: currentPw });
       await onSave(newPw);
       setSaving(false);
-      setEditing(false);
+      setActiveEdit(null);
       setCurrentPw(''); setNewPw('');
     } catch {
       setSaving(false);
@@ -350,7 +350,7 @@ const PasswordRow = ({ onSave }) => {
           {!editing && <div style={{ fontSize: 14, color: C.ink, fontWeight: 600 }}>••••••••</div>}
         </div>
         {!editing && (
-          <button onClick={() => setEditing(true)} style={{ flexShrink: 0, width: 32, height: 32, borderRadius: 9, background: C.primarySoft, border: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <button onClick={() => { setActiveEdit('password'); }} style={{ flexShrink: 0, width: 32, height: 32, borderRadius: 9, background: C.primarySoft, border: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <BRIcon name="edit" size={14} color={C.primary} stroke={2}/>
           </button>
         )}
@@ -379,7 +379,7 @@ const PasswordRow = ({ onSave }) => {
           )}
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={handleSave} disabled={saving} style={{ flex: 1, padding: '10px', borderRadius: 10, background: `linear-gradient(180deg, ${C.primary}, ${C.primaryDark})`, border: 0, cursor: saving ? 'not-allowed' : 'pointer', color: '#fff', fontFamily: thaiFont, fontSize: 13, fontWeight: 700 }}>{saving ? 'กำลังตรวจสอบ...' : 'บันทึกรหัสผ่าน'}</button>
-            <button onClick={() => { setEditing(false); setCurrentPw(''); setNewPw(''); setError(''); }} style={{ padding: '10px 14px', borderRadius: 10, background: C.card, border: `1px solid ${C.line}`, cursor: 'pointer', color: C.ink2, fontFamily: thaiFont, fontSize: 13, fontWeight: 600 }}>ยกเลิก</button>
+            <button onClick={() => { setActiveEdit(null); setCurrentPw(''); setNewPw(''); setError(''); }} style={{ padding: '10px 14px', borderRadius: 10, background: C.card, border: `1px solid ${C.line}`, cursor: 'pointer', color: C.ink2, fontFamily: thaiFont, fontSize: 13, fontWeight: 600 }}>ยกเลิก</button>
           </div>
         </div>
       )}
@@ -460,7 +460,7 @@ const ProfileScreen = ({ user, onBack, onLogout }) => {
       </div>
 
       {/* Fields — ข้อ 2: paddingBottom พอดีกับ tab bar */}
-      <div style={{ padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}>
+      <div style={{ padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 'calc(16px + env(safe-area-inset-bottom, 0px))' }}>
         <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 16, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 14 }}>
           <div style={{ width: 40, height: 40, borderRadius: 12, flexShrink: 0, background: C.primarySoft, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <BRIcon name="mail" size={18} color={C.primary} stroke={2}/>
@@ -474,7 +474,7 @@ const ProfileScreen = ({ user, onBack, onLogout }) => {
         {/* ข้อ 3: ส่ง activeEdit/setActiveEdit เพื่อให้เปิดแค่อันเดียว */}
         <EditableRow icon="phone" label="เบอร์โทร" value={profile.phone} onSave={v => saveField('phone', v)} editingKey="phone" activeEdit={activeEdit} setActiveEdit={setActiveEdit}/>
         <EditableRow icon="sparkle" label="Code Name" value={profile.code_name} onSave={v => saveField('code_name', v)} editingKey="code_name" activeEdit={activeEdit} setActiveEdit={setActiveEdit}/>
-        <PasswordRow onSave={async (newPw) => {
+        <PasswordRow activeEdit={activeEdit} setActiveEdit={setActiveEdit} onSave={async (newPw) => {
           const { error } = await supabase.auth.updateUser({ password: newPw });
           if (error) throw error;
         }}/>
