@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
-import { C, thaiFont, STATUS_TONE } from '../../lib/brColors';
+import { C, thaiFont, thaiFontHeading, STATUS_TONE } from '../../lib/brColors';
 import BRIcon from './BRIcon';
 import BRAppHeader from './BRAppHeader';
 import { Pill, fmtDayMonth } from './BRShared';
@@ -222,7 +222,7 @@ const ScheduleScreen = ({ onNavigate }) => {
                 <BRIcon name={t.icon} size={22} color={active ? '#fff' : t.accent} stroke={2.2} />
               </div>
               <div>
-                <div style={{ fontSize: 16, fontWeight: 800, color: active ? '#fff' : C.ink }}>{t.label}</div>
+                <div style={{ fontSize: 16, fontWeight: 800, fontFamily: thaiFontHeading, color: active ? '#fff' : C.ink }}>{t.label}</div>
                 <div style={{ fontFamily: `'Inter', sans-serif`, fontSize: 10.5, fontWeight: 700, letterSpacing: 1, color: active ? 'rgba(255,255,255,0.85)' : C.ink3, marginTop: 2 }}>{t.sub} FREIGHT</div>
               </div>
             </button>);
@@ -244,7 +244,7 @@ const ScheduleScreen = ({ onNavigate }) => {
           </div>
           <div style={{ padding: '8px 20px 6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ fontSize: 20, fontWeight: 800, color: C.ink }}>{current?.month_label}</div>
+              <div style={{ fontSize: 20, fontWeight: 800, fontFamily: thaiFontHeading, color: C.ink }}>{current?.month_label}</div>
               <span style={{ padding: '3px 9px', borderRadius: 99, background: mode === 'air' ? C.primarySoft : C.successSoft, color: accent, fontSize: 11, fontWeight: 700 }}>{lots.length} ล็อต</span>
             </div>
             {current?.[updatedKey] && <div style={{ fontSize: 11, color: C.ink3 }}>อัปเดต {current[updatedKey]}</div>}

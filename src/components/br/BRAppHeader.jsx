@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
-import { C, thaiFont } from '../../lib/brColors';
+import { C, thaiFont, thaiFontHeading } from '../../lib/brColors';
 import BRIcon from './BRIcon';
 import { BrandLogo, iconBtnStyle } from './BRShared';
 import { loadAvatarConfig, AvatarDisplay } from './ProfileScreen';
@@ -72,7 +72,7 @@ const BRAppHeader = ({ title, subtitle, back, onBack, right, variant = 'default'
         </button>
       )}
       <div style={{ flex: 1 }}>
-        <div style={{ fontFamily: thaiFont, fontSize: 19, fontWeight: 700, color: C.ink, letterSpacing: -0.2 }}>{title}</div>
+        <div style={{ fontFamily: thaiFont, fontSize: 19, fontWeight: 700, color: C.ink, letterSpacing: -0.2, fontFamily: thaiFontHeading }}>{title}</div>
         {subtitle && <div style={{ fontFamily: thaiFont, fontSize: 12, color: C.ink3, marginTop: 2 }}>{subtitle}</div>}
       </div>
       {right}

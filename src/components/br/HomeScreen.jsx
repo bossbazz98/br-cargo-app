@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
-import { C, thaiFont } from '../../lib/brColors';
+import { C, thaiFont, thaiFontHeading } from '../../lib/brColors';
 import BRIcon from './BRIcon';
 import BRAppHeader from './BRAppHeader';
 import { fmtDayMonth } from './BRShared';
@@ -356,7 +356,7 @@ const ScheduleCarousel = ({ onNavigate }) => {
   if (items.length === 0) return (
     <div style={{ padding: '14px 20px 0' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-        <div style={{ fontFamily: `'Inter', sans-serif`, fontSize: 18, fontWeight: 800, color: C.ink }}>รอบส่ง</div>
+        <div style={{ fontSize: 18, fontWeight: 800, fontFamily: thaiFontHeading, color: C.ink }}>รอบส่ง</div>
         <button onClick={() => onNavigate && onNavigate('schedule')} style={{ background: 'none', border: 0, cursor: 'pointer', fontSize: 12, fontWeight: 700, color: C.primary, fontFamily: thaiFont }}>ดูทั้งหมด →</button>
       </div>
       <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 16, padding: '24px 20px', textAlign: 'center' }}>
@@ -371,7 +371,7 @@ const ScheduleCarousel = ({ onNavigate }) => {
       <div style={{ padding: '14px 20px 8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <BRIcon name="calendar" size={18} color={C.primary} stroke={2} />
-          <div style={{ fontSize: 16, fontWeight: 700, color: C.ink }}>อัปเดตตารางรอบส่ง</div>
+          <div style={{ fontSize: 16, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink }}>อัปเดตตารางรอบส่ง</div>
         </div>
         <button onClick={() => onNavigate && onNavigate('schedule')} style={{
           background: 'transparent', border: 0, cursor: 'pointer',
@@ -397,7 +397,7 @@ const ScheduleCarousel = ({ onNavigate }) => {
               </div>
               <span style={{ fontSize: 10, color: C.ink3 }}>{u.updated}</span>
             </div>
-            <div style={{ fontSize: 17, fontWeight: 700, color: C.ink }}>{u.month}</div>
+            <div style={{ fontSize: 17, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink }}>{u.month}</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', fontSize: 10.5, color: C.ink3, fontWeight: 600 }}>
               <div>LOT</div><div>CUT OFF</div><div>ETD</div>
             </div>
@@ -424,7 +424,7 @@ const NewsFeed = ({ onNavigate }) => {
 
   if (news.length === 0) return (
     <div style={{ padding: '14px 20px 0' }}>
-      <div style={{ fontFamily: `'Inter', sans-serif`, fontSize: 18, fontWeight: 800, color: C.ink, marginBottom: 12 }}>ข่าวสาร</div>
+      <div style={{ fontSize: 18, fontWeight: 800, fontFamily: thaiFontHeading, color: C.ink, marginBottom: 12 }}>ข่าวสาร</div>
       <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 16, padding: '24px 20px', textAlign: 'center' }}>
         <BRIcon name="bell" size={32} color={C.ink3} stroke={1.4} />
         <div style={{ fontFamily: thaiFont, fontSize: 13, color: C.ink3, marginTop: 8 }}>ยังไม่มีข่าวสาร</div>
@@ -442,7 +442,7 @@ const NewsFeed = ({ onNavigate }) => {
     <div style={{ padding: '8px 20px 4px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
         <BRIcon name="doc" size={18} color={C.primary} stroke={2} />
-        <div style={{ fontSize: 16, fontWeight: 700, color: C.ink }}>ข่าวขนส่งล่าสุด</div>
+        <div style={{ fontSize: 16, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink }}>ข่าวขนส่งล่าสุด</div>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
         {news.map((a) => {
@@ -480,7 +480,7 @@ const GallerySection = () => {
 
   if (images.length === 0) return (
     <div style={{ padding: '14px 20px 0' }}>
-      <div style={{ fontFamily: `'Inter', sans-serif`, fontSize: 18, fontWeight: 800, color: C.ink, marginBottom: 12 }}>Gallery</div>
+      <div style={{ fontSize: 18, fontWeight: 800, fontFamily: thaiFontHeading, color: C.ink, marginBottom: 12 }}>Gallery</div>
       <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 16, padding: '24px 20px', textAlign: 'center' }}>
         <BRIcon name="image" size={32} color={C.ink3} stroke={1.4} />
         <div style={{ fontFamily: thaiFont, fontSize: 13, color: C.ink3, marginTop: 8 }}>ยังไม่มีรูปภาพ</div>
@@ -491,7 +491,7 @@ const GallerySection = () => {
     <div style={{ padding: '14px 20px 0' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
         <BRIcon name="image" size={20} color={C.primary} stroke={2} />
-        <div style={{ fontFamily: `'Inter', sans-serif`, fontSize: 18, fontWeight: 800, color: C.ink }}>Gallery</div>
+        <div style={{ fontSize: 18, fontWeight: 800, fontFamily: thaiFontHeading, color: C.ink }}>Gallery</div>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
         {images.map((img) =>

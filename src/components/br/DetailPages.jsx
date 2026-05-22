@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { C, thaiFont } from '../../lib/brColors';
+import { C, thaiFont, thaiFontHeading } from '../../lib/brColors';
 import BRIcon from './BRIcon';
 
 const DetailHeader = ({ title, onBack }) => {
@@ -20,7 +20,7 @@ const DetailHeader = ({ title, onBack }) => {
       <button onClick={onBack} style={{ width: 38, height: 38, borderRadius: 12, background: 'transparent', border: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <BRIcon name="chevL" size={22} color={C.ink}/>
       </button>
-      <div style={{ fontFamily: thaiFont, fontSize: 19, fontWeight: 700, color: C.ink, letterSpacing: -0.2, flex: 1 }}>{title}</div>
+      <div style={{ fontFamily: thaiFont, fontSize: 19, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink, letterSpacing: -0.2, flex: 1 }}>{title}</div>
     </div>
   );
 };
@@ -51,7 +51,7 @@ export const DetailsPage = ({ onBack }) => {
             <div key={d.id} style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 18, overflow: 'hidden' }}>
               {d.image_url && <img src={d.image_url} alt="" style={{ width: '100%', height: 'auto', display: 'block' }}/>}
               <div style={{ padding: '18px 18px' }}>
-                {d.title && <div style={{ fontSize: 17, fontWeight: 700, color: C.ink, marginBottom: 6 }}>{d.title}</div>}
+                {d.title && <div style={{ fontSize: 17, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink, marginBottom: 6 }}>{d.title}</div>}
                 {d.excerpt && <div style={{ fontSize: 13, color: C.primary, fontWeight: 600, marginBottom: 10 }}>{d.excerpt}</div>}
                 {d.body && <div style={{ fontSize: 13.5, color: C.ink2, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{d.body}</div>}
               </div>
@@ -119,7 +119,7 @@ export const AddressPage = ({ onBack }) => {
               <div key={b.id} style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 18, overflow: 'hidden' }}>
                 {b.image_url && <img src={b.image_url} alt="" style={{ width: '100%', height: 'auto', display: 'block' }}/>}
                 <div style={{ padding: '18px 18px' }}>
-                  {b.heading && <div style={{ fontSize: 18, fontWeight: 700, color: C.ink, marginBottom: b.subheading ? 4 : 10 }}>{b.heading}</div>}
+                  {b.heading && <div style={{ fontSize: 18, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink, marginBottom: b.subheading ? 4 : 10 }}>{b.heading}</div>}
                   {b.subheading && <div style={{ fontSize: 13, color: C.ink3, marginBottom: 10 }}>{b.subheading}</div>}
                   {b.description && <div style={{ fontSize: 13.5, color: C.ink2, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{b.description}</div>}
                 </div>
@@ -131,7 +131,7 @@ export const AddressPage = ({ onBack }) => {
             <div key={b.id} style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 18, overflow: 'hidden' }}>
               {b.image_url && <img src={b.image_url} alt="" style={{ width: '100%', height: 'auto', display: 'block' }}/>}
               <div style={{ padding: '18px 18px' }}>
-                {b.heading && <div style={{ fontSize: 18, fontWeight: 700, color: C.ink, marginBottom: b.subheading ? 4 : 14 }}>{b.heading}</div>}
+                {b.heading && <div style={{ fontSize: 18, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink, marginBottom: b.subheading ? 4 : 14 }}>{b.heading}</div>}
                 {b.subheading && <div style={{ fontSize: 13, color: C.ink3, marginBottom: 14 }}>{b.subheading}</div>}
                 {b.description && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 0, marginBottom: 14, border: `1px solid ${C.line}`, borderRadius: 12, overflow: 'hidden' }}>
@@ -270,7 +270,7 @@ export const NewsArticlePage = ({ articleId, onBack }) => {
               </span>
               {article.created_at && <span style={{ fontSize: 11.5, color: C.ink3 }}>{fmtDate(article.created_at)}</span>}
             </div>
-            <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: C.ink, letterSpacing: -0.5, lineHeight: 1.25 }}>{article.title}</h1>
+            <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, fontFamily: thaiFontHeading, color: C.ink, letterSpacing: -0.5, lineHeight: 1.25 }}>{article.title}</h1>
             {article.excerpt && (
               <div style={{ fontSize: 15, color: C.ink2, lineHeight: 1.55, padding: '12px 14px', background: C.card, borderRadius: 12, border: `1px solid ${C.line}`, borderLeft: `4px solid ${cat.color}` }}>{article.excerpt}</div>
             )}

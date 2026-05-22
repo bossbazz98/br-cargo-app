@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
-import { C, thaiFont, monoFont } from '../../lib/brColors';
+import { C, thaiFont, thaiFontHeading, monoFont } from '../../lib/brColors';
 import BRIcon from './BRIcon';
 import { iconBtnStyle } from './BRShared';
 
@@ -8,7 +8,7 @@ import { iconBtnStyle } from './BRShared';
 const SectionHead = ({ title, sub, action }) => (
   <div style={{ padding: '18px 20px 4px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
     <div style={{ flex: 1 }}>
-      <div style={{ fontSize: 18, fontWeight: 700, color: C.ink }}>{title}</div>
+      <div style={{ fontSize: 18, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink }}>{title}</div>
       {sub && <div style={{ fontSize: 12, color: C.ink3, marginTop: 3, lineHeight: 1.4 }}>{sub}</div>}
     </div>
     {action}
@@ -110,7 +110,7 @@ const Modal = ({ open, onClose, title, children }) => {
       }}>
         {/* Header */}
         <div style={{ padding: '16px 18px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: `1px solid ${C.line}`, flexShrink: 0, background: C.card }}>
-          <div style={{ fontSize: 16, fontWeight: 700, color: C.ink }}>{title}</div>
+          <div style={{ fontSize: 16, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink }}>{title}</div>
           <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: 99, background: 'transparent', border: 0, cursor: 'pointer', fontSize: 16, color: C.ink3 }}>✕</button>
         </div>
         {/* Scrollable content */}
@@ -130,7 +130,7 @@ const DeleteModal = ({ open, message, onConfirm, onCancel }) => {
         <div style={{ width: 56, height: 56, borderRadius: 18, background: C.dangerSoft, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <BRIcon name="trash" size={26} color={C.danger} stroke={2}/>
         </div>
-        <div style={{ fontFamily: `'Inter', sans-serif`, fontSize: 22, fontWeight: 900, color: C.ink, letterSpacing: 2 }}>DELETE</div>
+        <div style={{ fontSize: 22, fontWeight: 900, fontFamily: thaiFontHeading, color: C.ink, letterSpacing: 2 }}>DELETE</div>
         <div style={{ fontSize: 13.5, color: C.ink2, textAlign: 'center', lineHeight: 1.55 }}>{message || 'ต้องการลบรายการนี้?'}</div>
         <div style={{ display: 'flex', gap: 10, width: '100%' }}>
           <button onClick={onCancel} style={{ flex: 1, padding: 13, borderRadius: 13, background: C.card, border: `1.5px solid ${C.line2}`, fontFamily: thaiFont, fontSize: 15, fontWeight: 800, color: C.ink2, cursor: 'pointer' }}>NO</button>
@@ -377,7 +377,7 @@ const LotsEditor = ({ label, iconName, color, lots, saving, onSave }) => {
                   <span style={{ padding: '2px 7px', borderRadius: 99, background: accentBg, color, fontSize: 9, fontWeight: 800, letterSpacing: 0.5 }}>LOT</span>
                   <BRIcon name="edit" size={11} color={C.ink3} stroke={2}/>
                 </div>
-                <div style={{ fontFamily: `'Inter', sans-serif`, fontSize: 18, fontWeight: 900, color: C.ink, letterSpacing: -0.5 }}>{row.lot || '—'}</div>
+                <div style={{ fontSize: 18, fontWeight: 900, fontFamily: thaiFontHeading, color: C.ink, letterSpacing: -0.5 }}>{row.lot || '—'}</div>
                 {row.status && (
                   <span style={{ fontSize: 9.5, fontWeight: 700, color: sc || C.ink3, background: sc ? sc + '18' : C.bg, padding: '2px 7px', borderRadius: 99, border: `1px solid ${sc ? sc + '44' : C.line}`, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
                     {row.status}
@@ -486,7 +486,7 @@ const ScheduleManager = () => {
         ) : schedules.map(s => (
           <div key={s.id} style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 16, padding: 14 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-              <h4 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: C.ink }}>{s.month_label}</h4>
+              <h4 style={{ margin: 0, fontSize: 16, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink }}>{s.month_label}</h4>
               <IconBtnSq icon="trash" tone="danger" onClick={() => setDeleteTarget(s.id)}/>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
@@ -1334,7 +1334,7 @@ const AdminScreen = ({ onNavigate, isAdmin }) => {
     return (
       <div style={{ fontFamily: thaiFont, background: C.bg, minHeight: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 40, textAlign: 'center', gap: 14 }}>
         <BRIcon name="shield" size={56} color={C.ink3} stroke={1.6}/>
-        <div style={{ fontSize: 19, fontWeight: 700, color: C.ink }}>ไม่มีสิทธิ์เข้าถึง</div>
+        <div style={{ fontSize: 19, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink }}>ไม่มีสิทธิ์เข้าถึง</div>
         <div style={{ fontSize: 13, color: C.ink3 }}>หน้านี้สำหรับแอดมินเท่านั้น</div>
         <button onClick={() => onNavigate && onNavigate('home')} style={{ background: 'transparent', border: 0, color: C.primary, fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>กลับหน้าแรก</button>
       </div>
@@ -1368,7 +1368,7 @@ const AdminScreen = ({ onNavigate, isAdmin }) => {
             <BRIcon name="settings" size={18} color="#fff" stroke={2}/>
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 17, fontWeight: 700, color: C.ink }}>ระบบจัดการแอดมิน</div>
+            <div style={{ fontSize: 17, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink }}>ระบบจัดการแอดมิน</div>
             <div style={{ fontSize: 11, color: C.ink3, marginTop: 1 }}>Admin Dashboard</div>
           </div>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 10px', borderRadius: 99, background: C.successSoft, color: 'oklch(0.4 0.14 155)', fontSize: 11, fontWeight: 700 }}>

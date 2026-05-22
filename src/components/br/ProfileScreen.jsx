@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { supabase } from '@/api/supabaseClient';
-import { C, thaiFont } from '../../lib/brColors';
+import { C, thaiFont, thaiFontHeading } from '../../lib/brColors';
 import BRIcon from './BRIcon';
 
 const inputStyle = {
@@ -120,7 +120,7 @@ const AvatarPicker = ({ current, onSelect, onClose, userInitial }) => {
         <button onClick={onClose} style={{ width: 38, height: 38, borderRadius: 12, background: 'transparent', border: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <BRIcon name="chevL" size={22} color={C.ink}/>
         </button>
-        <div style={{ fontSize: 19, fontWeight: 700, color: C.ink }}>ตกแต่งโปรไฟล์</div>
+        <div style={{ fontSize: 19, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink }}>ตกแต่งโปรไฟล์</div>
       </div>
 
       {/* Scrollable content area */}
@@ -442,7 +442,7 @@ const ProfileScreen = ({ user, onBack, onLogout }) => {
         <button onClick={onBack} style={{ width: 38, height: 38, borderRadius: 12, background: 'transparent', border: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <BRIcon name="chevL" size={22} color={C.ink}/>
         </button>
-        <div style={{ fontSize: 19, fontWeight: 700, color: C.ink, letterSpacing: -0.2 }}>โปรไฟล์</div>
+        <div style={{ fontSize: 19, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink, letterSpacing: -0.2 }}>โปรไฟล์</div>
       </div>
 
       {/* Avatar section */}
@@ -454,7 +454,7 @@ const ProfileScreen = ({ user, onBack, onLogout }) => {
           </div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 20, fontWeight: 800, color: C.ink }}>{user?.full_name || 'ผู้ใช้งาน'}</div>
+          <div style={{ fontSize: 20, fontWeight: 800, fontFamily: thaiFontHeading, color: C.ink }}>{user?.full_name || 'ผู้ใช้งาน'}</div>
           {profile.code_name && <div style={{ fontSize: 13, color: C.ink3, marginTop: 3 }}>@{profile.code_name}</div>}
         </div>
       </div>
