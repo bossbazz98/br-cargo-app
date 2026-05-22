@@ -296,7 +296,7 @@ const QuickActions = ({ onNavigate }) => {
               <BRIcon name={a.icon} size={22} color={toneColor[a.tone] || C.primary} stroke={1.8} />
             </div>
             <div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: C.ink }}>{a.labelTh}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: C.ink, fontFamily: thaiFontHeading }}>{a.labelTh}</div>
               <div style={{ fontSize: 10, fontWeight: 600, color: C.ink3, letterSpacing: 1, marginTop: 2 }}>{a.labelEn}</div>
             </div>
           </button>
