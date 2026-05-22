@@ -460,7 +460,7 @@ const ProfileScreen = ({ user, onBack, onLogout }) => {
       </div>
 
       {/* Fields — ข้อ 2: paddingBottom พอดีกับ tab bar */}
-      <div style={{ padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 'calc(16px + env(safe-area-inset-bottom, 0px))' }}>
+      <div style={{ padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: 12, flex: 1, justifyContent: 'space-between', paddingBottom: 'calc(16px + env(safe-area-inset-bottom, 0px))' }}>
         <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 16, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 14 }}>
           <div style={{ width: 40, height: 40, borderRadius: 12, flexShrink: 0, background: C.primarySoft, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <BRIcon name="mail" size={18} color={C.primary} stroke={2}/>
@@ -479,7 +479,7 @@ const ProfileScreen = ({ user, onBack, onLogout }) => {
           if (error) throw error;
         }}/>
 
-        <button onClick={onLogout} style={{ width: '100%', padding: '14px', marginTop: 6, background: C.dangerSoft, border: `1px solid ${C.danger}33`, borderRadius: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: thaiFont, fontSize: 15, fontWeight: 700, color: C.danger }}>
+        <button onClick={onLogout} style={{ width: '100%', padding: '14px', marginTop: 'auto', background: C.dangerSoft, border: `1px solid ${C.danger}33`, borderRadius: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: thaiFont, fontSize: 15, fontWeight: 700, color: C.danger }}>
           <BRIcon name="logout" size={18} color={C.danger} stroke={2}/>
           ออกจากระบบ
         </button>
