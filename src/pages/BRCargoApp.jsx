@@ -109,18 +109,29 @@ const BRCargoApp = () => {
 
   // ── ข้อ 1: ใช้ Supabase session จริง ไม่ logout เมื่อ refresh ──
   useEffect(() => {
-    // ดึง session ปัจจุบันก่อนเลย
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser(session.user);
-        initTracker(session.user);
-        track('app', 'session_start', 'เข้าสู่ระบบ');
-        try { localStorage.setItem('br_session_user', JSON.stringify(session.user)); } catch {}
-      } else {
-        setUser(null);
-      }
-      setLoading(false);
-    });
+    // ถ้า URL hash มี type=recovery ให้รอ onAuthStateChange จัดการแทน ไม่ setUser ก่อน
+    const hashParams = new URLSearchParams(window.location.hash.replace('#', ''));
+    const isRecovery = hashParams.get('type') === 'recovery';
+
+    if (isRecovery) {
+      // ล้าง hash ออกจาก URL แต่รอให้ Supabase SDK อ่านก่อน
+      setTimeout(() => {
+        window.history.replaceState({}, '', window.location.pathname);
+      }, 500);
+      // ไม่ setLoading(false) ที่นี่ — ให้ onAuthStateChange จัดการ
+    } else {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user) {
+          setUser(session.user);
+          initTracker(session.user);
+          track('app', 'session_start', 'เข้าสู่ระบบ');
+          try { localStorage.setItem('br_session_user', JSON.stringify(session.user)); } catch {}
+        } else {
+          setUser(null);
+        }
+        setLoading(false);
+      });
+    }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (_event === 'PASSWORD_RECOVERY') {
