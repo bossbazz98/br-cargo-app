@@ -125,6 +125,7 @@ const BRCargoApp = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (_event === 'PASSWORD_RECOVERY') {
         setResetMode(true);
+        setLoading(false);
         return;
       }
       if (session?.user) {
