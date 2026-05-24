@@ -503,7 +503,7 @@ const LoginScreen = ({ onLogin }) => {
   }
 
   return (
-    <div style={{ fontFamily: thFont, minHeight: '100dvh', position: 'relative', overflow: 'hidden', background: `linear-gradient(180deg, #ddeeff 0%, #c8e0f8 60%, #a8cff0 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ fontFamily: thFont, minHeight: '100dvh', position: 'relative', background: `linear-gradient(180deg, #ddeeff 0%, #c8e0f8 60%, #a8cff0 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <style>{`@keyframes br-spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }`}</style>
       <svg viewBox="0 0 414 120" preserveAspectRatio="none" style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: 120, zIndex: 0 }}>
         <path d="M0 60 Q60 20 120 60 Q180 100 240 60 Q300 20 360 60 Q390 80 414 60 L414 120 L0 120 Z" fill="rgba(255,255,255,0.35)"/>
@@ -513,7 +513,8 @@ const LoginScreen = ({ onLogin }) => {
       <div style={{
         position: 'relative', zIndex: 1,
         width: '100%', maxWidth: 390,
-        maxHeight: 'calc(100dvh - 48px)',
+        height: 'calc(100dvh - 48px)',
+        maxHeight: 680,
         margin: '24px 20px',
         background: '#ffffff', borderRadius: 28,
         boxShadow: `0 20px 60px -15px rgba(30,80,160,0.18), 0 4px 16px -4px rgba(0,0,0,0.08)`,
