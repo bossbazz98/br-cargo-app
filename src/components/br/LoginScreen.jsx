@@ -322,8 +322,14 @@ const LoginScreen = ({ onLogin }) => {
         setLoading(false);
         return;
       }
-      // Supabase บางครั้งไม่ return error แต่ return user ที่มี identities: [] เมื่ออีเมลซ้ำ
-      if (data.user && (!data.user.identities || data.user.identities.length === 0)) {
+      // กรณีอีเมลซ้ำ: Supabase คืน user=null, session=null โดยไม่ return error
+      if (!data.user) {
+        setRegErr('อีเมลนี้ถูกใช้งานแล้ว กรุณาเข้าสู่ระบบหรือใช้อีเมลอื่น');
+        setLoading(false);
+        return;
+      }
+      // กรณี identities เป็น [] (Supabase เวอร์ชันเก่า)
+      if (!data.user.identities || data.user.identities.length === 0) {
         setRegErr('อีเมลนี้ถูกใช้งานแล้ว กรุณาเข้าสู่ระบบหรือใช้อีเมลอื่น');
         setLoading(false);
         return;
