@@ -94,7 +94,7 @@ const BRCargoApp = () => {
       if (u) {
         supabase.from('users').select('*').eq('id', u.id).single()
           .then(({ data: profile }) => {
-            setProfileUser(profile ? { ...u, ...profile } : u);
+            setProfileUser(profile ? { ...u, ...profile, email: u.email || profile.email } : u);
           }).catch(() => setProfileUser(u));
       }
     });
