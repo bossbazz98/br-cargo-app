@@ -91,7 +91,6 @@ const BackBtn = ({ onClick }) => (
   </button>
 );
 
-const genOTP = () => String(Math.floor(100000 + Math.random() * 900000));
 
 const LoginScreen = ({ onLogin }) => {
   const [step, setStep] = useState('login');
@@ -108,17 +107,7 @@ const LoginScreen = ({ onLogin }) => {
 
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotErr, setForgotErr] = useState('');
-  const [forgotOtp, setForgotOtp] = useState('');
-  const [otpInput, setOtpInput] = useState('');
-  const [otpErr, setOtpErr] = useState('');
-  const [newPw, setNewPw] = useState('');
-  const [newPwConfirm, setNewPwConfirm] = useState('');
-  const [showNewPw, setShowNewPw] = useState(false);
-  const [showNewPwConfirm, setShowNewPwConfirm] = useState(false);
-  const [resetErr, setResetErr] = useState('');
-  const [otpExpiry, setOtpExpiry] = useState(null);
-  const [otpTimer, setOtpTimer] = useState(0);
-  const [resetEmail, setResetEmail] = useState('');
+
 
   // ตรวจจับ LINE In-App Browser
   const isLineWebView = /Line\//i.test(navigator.userAgent);
@@ -212,16 +201,6 @@ const LoginScreen = ({ onLogin }) => {
     }
   }, []);
 
-  useEffect(() => {
-    if (!otpExpiry) return;
-    const interval = setInterval(() => {
-      const remaining = Math.max(0, Math.ceil((otpExpiry - Date.now()) / 1000));
-      setOtpTimer(remaining);
-      if (remaining === 0) clearInterval(interval);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [otpExpiry]);
-
   // ── Email Login ────────────────────────────────────────
   const handleEmailLogin = async () => {
     setLoginErr('');
@@ -310,6 +289,8 @@ const LoginScreen = ({ onLogin }) => {
       });
       if (error) throw error;
       // จะ redirect ไป Google แล้วกลับมาที่ br-cargo.com อัตโนมัติ
+      // หาก signInWithOAuth สำเร็จแต่ไม่ redirect ทันที ให้หยุด loading
+      setLoading(false);
     } catch (err) {
       setLoginErr('Google Login ไม่สำเร็จ กรุณาลองใหม่');
       setLoading(false);
@@ -334,10 +315,16 @@ const LoginScreen = ({ onLogin }) => {
       });
       if (error) {
         if (error.message?.includes('already registered') || error.message?.includes('User already registered')) {
-          setRegErr('อีเมลนี้ถูกใช้งานแล้ว โปรดเข้าสู่ระบบ');
+          setRegErr('อีเมลนี้ถูกใช้งานแล้ว กรุณาเข้าสู่ระบบหรือใช้อีเมลอื่น');
         } else {
           setRegErr(error.message || 'สมัครไม่สำเร็จ');
         }
+        setLoading(false);
+        return;
+      }
+      // Supabase บางครั้งไม่ return error แต่ return user ที่มี identities: [] เมื่ออีเมลซ้ำ
+      if (data.user && (!data.user.identities || data.user.identities.length === 0)) {
+        setRegErr('อีเมลนี้ถูกใช้งานแล้ว กรุณาเข้าสู่ระบบหรือใช้อีเมลอื่น');
         setLoading(false);
         return;
       }
@@ -351,14 +338,6 @@ const LoginScreen = ({ onLogin }) => {
           phone: reg.phone,
         }, { onConflict: 'id' });
       }
-      // login ทันทีหลังสมัคร
-      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-        email: e.trim(), password
-      });
-      if (!signInError && signInData.user) {
-        onLogin && onLogin(signInData.user);
-        return;
-      }
       setStep('register-success');
     } catch (err) {
       setRegErr(err?.message || 'สมัครไม่สำเร็จ กรุณาลองใหม่');
@@ -366,58 +345,21 @@ const LoginScreen = ({ onLogin }) => {
     setLoading(false);
   };
 
-  // ── Forgot Password ─────────────────────────────────────
-  const handleSendOTP = async () => {
+  // ── Forgot Password — ส่งลิงก์รีเซ็ตผ่าน Supabase ────────
+  const handleForgotPassword = async () => {
     setForgotErr('');
     const e = forgotEmail.trim();
+    if (!e) return setForgotErr('กรุณากรอกอีเมล');
     if (!/^[\w.+-]+@[\w-]+\.[\w.-]+$/.test(e)) return setForgotErr('รูปแบบอีเมลไม่ถูกต้อง');
     setLoading(true);
     try {
-      const otp = genOTP();
-      const { error } = await supabase.functions.invoke('send-email', {
-        body: {
-          to: e,
-          subject: 'BR CARGO — รหัส OTP สำหรับตั้งรหัสผ่านใหม่',
-          body: `สวัสดีครับ/ค่ะ\n\nรหัส OTP ของคุณคือ: ${otp}\n\nรหัสนี้จะหมดอายุใน 5 นาที กรุณาอย่าเปิดเผยรหัสนี้กับผู้อื่น\n\n— ทีมงาน BR CARGO`,
-        }
+      const { error } = await supabase.auth.resetPasswordForEmail(e, {
+        redirectTo: `${window.location.origin}/`,
       });
       if (error) throw error;
-      setForgotOtp(otp);
-      setResetEmail(e);
-      setOtpExpiry(Date.now() + 5 * 60 * 1000);
-      setOtpTimer(300);
-      setStep('forgot-otp');
+      setStep('forgot-sent');
     } catch {
-      setForgotErr('ส่ง OTP ไม่สำเร็จ กรุณาลองใหม่');
-    }
-    setLoading(false);
-  };
-
-  const handleVerifyOTP = () => {
-    setOtpErr('');
-    if (!otpInput.trim()) return setOtpErr('กรุณากรอกรหัส OTP');
-    if (otpTimer === 0) return setOtpErr('รหัส OTP หมดอายุแล้ว กรุณาขอรหัสใหม่');
-    if (otpInput.trim() !== forgotOtp) return setOtpErr('รหัส OTP ไม่ถูกต้อง');
-    setStep('forgot-reset');
-  };
-
-  // ── Reset Password — ใช้ Supabase Admin เปลี่ยนรหัสได้โดยไม่ต้อง login ก่อน
-  const handleResetPassword = async () => {
-    setResetErr('');
-    if (newPw.length < 6) return setResetErr('รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร');
-    if (newPw !== newPwConfirm) return setResetErr('รหัสผ่านยืนยันไม่ตรงกัน');
-    setLoading(true);
-    try {
-      // Login ด้วย email ก่อน แล้วค่อยเปลี่ยน password
-      // ไม่มี password เดิม ดังนั้นใช้ Supabase resetPasswordForEmail flow แทน
-      const { error } = await supabase.functions.invoke('reset-password', {
-        body: { email: resetEmail, new_password: newPw }
-      });
-      if (error) throw error;
-      setStep('forgot-success');
-    } catch {
-      // fallback: ถ้า function ยังไม่ได้ deploy ให้แจ้ง user ว่าสำเร็จแล้ว login ใหม่
-      setStep('forgot-success');
+      setForgotErr('ส่งลิงก์ไม่สำเร็จ กรุณาลองใหม่');
     }
     setLoading(false);
   };
@@ -492,65 +434,26 @@ const LoginScreen = ({ onLogin }) => {
           </div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 20, fontWeight: 800, color: P.ink, fontFamily: thFontHeading }}>ลืมรหัสผ่าน?</div>
-            <div style={{ fontSize: 13, color: P.ink3, marginTop: 4, lineHeight: 1.5 }}>กรอกอีเมลที่ลงทะเบียนไว้<br/>เราจะส่งรหัส OTP ให้คุณ</div>
+            <div style={{ fontSize: 13, color: P.ink3, marginTop: 4, lineHeight: 1.5 }}>กรอกอีเมลที่ลงทะเบียนไว้<br/>เราจะส่งลิงก์รีเซ็ตรหัสผ่านให้คุณ</div>
           </div>
         </div>
         <ErrBox msg={forgotErr}/>
-        <InputField label="อีเมล" type="email" value={forgotEmail} onChange={setForgotEmail} placeholder="example@email.com" icon={emailIcon} onKeyDown={e => e.key === 'Enter' && handleSendOTP()}/>
-        <PrimaryBtn onClick={handleSendOTP} loading={loading} disabled={!forgotEmail.trim()}>ส่งรหัส OTP</PrimaryBtn>
+        <InputField label="อีเมล" type="email" value={forgotEmail} onChange={setForgotEmail} placeholder="example@email.com" icon={emailIcon} onKeyDown={e => e.key === 'Enter' && handleForgotPassword()}/>
+        <PrimaryBtn onClick={handleForgotPassword} loading={loading} disabled={!forgotEmail.trim()}>ส่งลิงก์รีเซ็ตรหัสผ่าน</PrimaryBtn>
       </div>
     );
 
-  } else if (step === 'forgot-otp') {
-    const mins = String(Math.floor(otpTimer / 60)).padStart(2, '0');
-    const secs = String(otpTimer % 60).padStart(2, '0');
-    body = (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <BackBtn onClick={() => { setOtpInput(''); setOtpErr(''); setStep('forgot'); }}/>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginBottom: 4 }}>
-          <div style={{ fontSize: 20, fontWeight: 800, color: P.ink, fontFamily: thFontHeading }}>กรอกรหัส OTP</div>
-          <div style={{ fontSize: 13, color: P.ink3, lineHeight: 1.5, textAlign: 'center' }}>ส่งรหัสไปที่<br/><span style={{ fontWeight: 700, color: P.ink2 }}>{forgotEmail}</span></div>
-        </div>
-        <ErrBox msg={otpErr}/>
-        <input type="text" inputMode="numeric" value={otpInput} onChange={e => setOtpInput(e.target.value.replace(/\D/g, '').slice(0, 6))} placeholder="000000" maxLength={6} onKeyDown={e => e.key === 'Enter' && handleVerifyOTP()} style={{ width: '100%', textAlign: 'center', letterSpacing: 14, fontSize: 28, fontWeight: 800, fontFamily: `'Inter', sans-serif`, color: P.ink, padding: '14px 0', border: `2px solid ${otpErr ? P.danger : P.line2}`, borderRadius: 16, outline: 'none', background: P.surfaceAlt, boxSizing: 'border-box' }}/>
-        <div style={{ textAlign: 'center', fontSize: 12.5 }}>
-          {otpTimer > 0
-            ? <span style={{ color: P.ink3 }}>หมดอายุใน <span style={{ fontWeight: 700, color: otpTimer < 60 ? P.danger : P.blue }}>{mins}:{secs}</span></span>
-            : <span style={{ color: P.danger, fontWeight: 600 }}>รหัส OTP หมดอายุแล้ว</span>
-          }
-        </div>
-        <PrimaryBtn onClick={handleVerifyOTP} disabled={otpInput.length !== 6 || otpTimer === 0}>ยืนยันรหัส OTP</PrimaryBtn>
-        {otpTimer === 0 && (
-          <button onClick={() => { setOtpInput(''); setOtpErr(''); setStep('forgot'); }} style={{ background: 'transparent', border: 0, cursor: 'pointer', color: P.blue, fontFamily: thFont, fontSize: 13, fontWeight: 700, textAlign: 'center' }}>ขอรหัส OTP ใหม่</button>
-        )}
-      </div>
-    );
-
-  } else if (step === 'forgot-reset') {
-    body = (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 20, fontWeight: 800, color: P.ink, fontFamily: thFontHeading }}>ตั้งรหัสผ่านใหม่</div>
-          <div style={{ fontSize: 13, color: P.ink3, marginTop: 4 }}>กรอกรหัสผ่านใหม่ของคุณ</div>
-        </div>
-        <ErrBox msg={resetErr}/>
-        <InputField label="รหัสผ่านใหม่" type={showNewPw ? 'text' : 'password'} value={newPw} onChange={setNewPw} placeholder="อย่างน้อย 6 ตัวอักษร" icon={lockIcon} rightSlot={<PassEye show={showNewPw} onToggle={() => setShowNewPw(v => !v)}/>}/>
-        <InputField label="ยืนยันรหัสผ่านใหม่" type={showNewPwConfirm ? 'text' : 'password'} value={newPwConfirm} onChange={setNewPwConfirm} placeholder="กรอกรหัสผ่านอีกครั้ง" icon={lockIcon} rightSlot={<PassEye show={showNewPwConfirm} onToggle={() => setShowNewPwConfirm(v => !v)}/>} onKeyDown={e => e.key === 'Enter' && handleResetPassword()}/>
-        <PrimaryBtn onClick={handleResetPassword} loading={loading} disabled={!newPw || !newPwConfirm}>บันทึกรหัสผ่านใหม่</PrimaryBtn>
-      </div>
-    );
-
-  } else if (step === 'forgot-success') {
+  } else if (step === 'forgot-sent') {
     body = (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, padding: '24px 0' }}>
-        <div style={{ width: 84, height: 84, borderRadius: 26, background: `linear-gradient(140deg, ${P.success}, oklch(0.52 0.16 155))`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m4 12 5 5L20 6"/></svg>
+        <div style={{ width: 84, height: 84, borderRadius: 26, background: `linear-gradient(140deg, ${P.blue}, ${P.blueDeep})`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 20, fontWeight: 800, color: P.ink, fontFamily: thFontHeading }}>เปลี่ยนรหัสผ่านสำเร็จ!</div>
-          <div style={{ fontSize: 13.5, color: P.ink3, marginTop: 6, lineHeight: 1.5 }}>คุณสามารถเข้าสู่ระบบด้วยรหัสผ่านใหม่ได้เลย</div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: P.ink, fontFamily: thFontHeading }}>ส่งลิงก์เรียบร้อยแล้ว!</div>
+          <div style={{ fontSize: 13.5, color: P.ink3, marginTop: 6, lineHeight: 1.6 }}>กรุณาตรวจสอบอีเมล<br/><span style={{ fontWeight: 700, color: P.ink2 }}>{forgotEmail}</span><br/>แล้วกดลิงก์เพื่อตั้งรหัสผ่านใหม่</div>
         </div>
-        <PrimaryBtn onClick={() => { setStep('login'); setNewPw(''); setNewPwConfirm(''); setOtpInput(''); }}>กลับไปเข้าสู่ระบบ</PrimaryBtn>
+        <PrimaryBtn onClick={() => { setStep('login'); setForgotEmail(''); setForgotErr(''); }}>กลับไปเข้าสู่ระบบ</PrimaryBtn>
       </div>
     );
 
