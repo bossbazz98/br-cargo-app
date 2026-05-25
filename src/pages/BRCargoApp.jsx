@@ -101,15 +101,21 @@ const ResetPasswordScreen = ({ onDone }) => {
 const BRCargoApp = () => {
   const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const getInitialScreen = () => {
+  const getInitialState = () => {
     const path = window.location.pathname;
-    if (path === '/schedule') return 'schedule';
-    if (path === '/notifications') return 'notifications';
-    if (path === '/admin') return 'admin';
-    return 'home';
+    if (path === '/schedule') return { screen: 'schedule', detail: null };
+    if (path === '/notifications') return { screen: 'notifications', detail: null };
+    if (path === '/admin') return { screen: 'admin', detail: null };
+    if (path === '/profile') return { screen: 'home', detail: 'profile' };
+    if (path === '/details') return { screen: 'home', detail: 'details' };
+    if (path === '/address') return { screen: 'home', detail: 'address' };
+    if (path === '/nocode') return { screen: 'home', detail: 'nocode' };
+    if (path.startsWith('/article/')) return { screen: 'home', detail: `article:${path.slice(9)}` };
+    return { screen: 'home', detail: null };
   };
-  const [active, setActive] = useState(getInitialScreen);
-  const [detail, setDetail] = useState(null);
+  const _init = getInitialState();
+  const [active, setActive] = useState(_init.screen);
+  const [detail, setDetail] = useState(_init.detail);
   const [loading, setLoading] = useState(true);
   const [profileUser, setProfileUser] = useState(null);
   const [resetMode, setResetMode] = useState(false);
@@ -180,11 +186,15 @@ const BRCargoApp = () => {
 
     if (typeof target === 'string' && target.startsWith('article:')) {
       track('ข่าวสาร', 'view', `ดูบทความ ${target.slice(8)}`);
-      setDetail(target); return;
+      setDetail(target);
+      window.history.pushState({}, '', `/article/${target.slice(8)}`);
+      return;
     }
     if (['details', 'address', 'nocode'].includes(target)) {
       track(pageNames[target] || target, 'view');
-      setDetail(target); return;
+      setDetail(target);
+      window.history.pushState({}, '', `/${target}`);
+      return;
     }
     setDetail(null);
     setProfileUser(null);
