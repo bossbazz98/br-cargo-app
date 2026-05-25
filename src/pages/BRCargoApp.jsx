@@ -13,58 +13,6 @@ import BRAppHeader from '../components/br/BRAppHeader';
 import { initTracker, track } from '../lib/tracker';
 
 
-// ── Reset Password Screen ─────────────────────────────────
-  return (
-    <div style={{ fontFamily: thFont, minHeight: '100dvh', background: 'linear-gradient(180deg,#ddeeff,#a8cff0)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ width: '100%', maxWidth: 390, margin: '24px 20px', background: '#fff', borderRadius: 28, boxShadow: '0 20px 60px -15px rgba(30,80,160,0.18)', padding: '32px 24px 28px' }}>
-        {success ? (
-          <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-            <div style={{ width: 72, height: 72, borderRadius: 22, background: `linear-gradient(140deg,${blue},${blueDeep})`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m4 12 5 5L20 6"/></svg>
-            </div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: ink }}>ตั้งรหัสผ่านใหม่สำเร็จ!</div>
-            <div style={{ fontSize: 13.5, color: ink3 }}>กำลังพาไปหน้าล็อกอิน...</div>
-          </div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ width: 60, height: 60, borderRadius: 18, background: 'oklch(0.93 0.04 245)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={blue} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-              </div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: ink }}>ตั้งรหัสผ่านใหม่</div>
-              <div style={{ fontSize: 13, color: ink3, marginTop: 6 }}>กรอกรหัสผ่านใหม่ที่ต้องการ</div>
-            </div>
-            {err && (
-              <div style={{ padding: '10px 13px', borderRadius: 11, background: dangerSoft, color: danger, fontSize: 12.5, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><circle cx="12" cy="12" r="9.5"/><path d="M12 7v6M12 16.5v.1"/></svg>
-                {err}
-              </div>
-            )}
-            <div style={{ position: 'relative', background: 'oklch(0.985 0.005 260)', border: '1.5px solid oklch(0.86 0.012 260)', borderRadius: 16, display: 'flex', alignItems: 'center' }}>
-              <input type={showPw ? 'text' : 'password'} value={pw} onChange={e => setPw(e.target.value)}
-                placeholder="รหัสผ่านใหม่ (อย่างน้อย 6 ตัวอักษร)"
-                style={{ flex: 1, padding: '12px 14px', border: 0, outline: 'none', background: 'transparent', fontSize: 14.5, color: ink, fontFamily: thFont }}/>
-              <button type="button" onClick={() => setShowPw(v => !v)} style={{ background: 'none', border: 0, cursor: 'pointer', padding: '0 13px', color: ink3, display: 'flex' }}>
-                {showPw
-                  ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                  : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M17.94 17.94A10 10 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9 9 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/></svg>}
-              </button>
-            </div>
-            <div style={{ background: 'oklch(0.985 0.005 260)', border: '1.5px solid oklch(0.86 0.012 260)', borderRadius: 16 }}>
-              <input type={showPw ? 'text' : 'password'} value={confirm} onChange={e => setConfirm(e.target.value)}
-                placeholder="ยืนยันรหัสผ่านใหม่"
-                onKeyDown={e => e.key === 'Enter' && handleSave()}
-                style={{ width: '100%', padding: '12px 14px', border: 0, outline: 'none', background: 'transparent', fontSize: 14.5, color: ink, fontFamily: thFont, boxSizing: 'border-box' }}/>
-            </div>
-            <button onClick={handleSave} disabled={saving} style={{ width: '100%', padding: '14px', background: `linear-gradient(180deg,${blue},${blueDeep})`, border: 0, borderRadius: 16, cursor: saving ? 'not-allowed' : 'pointer', color: '#fff', fontFamily: thFont, fontSize: 15, fontWeight: 700 }}>
-              {saving ? 'กำลังบันทึก...' : 'บันทึกรหัสผ่านใหม่'}
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
 
 const BRCargoApp = () => {
   const [user, setUser] = useState(null);
