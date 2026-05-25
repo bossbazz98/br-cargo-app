@@ -40,7 +40,7 @@ const P = {
 
 const Logo = () => (
   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
-    <div style={{ width: 70, height: 70, borderRadius: 22, background: `linear-gradient(140deg, ${P.blue}, ${P.blueDeep})`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 18px 38px -10px ${P.blueDeep}66`, fontFamily: `'Inter', sans-serif`, fontWeight: 900, fontSize: 26, color: '#fff', letterSpacing: -1.2 }}>BR</div>
+    <div style={{ width: 70, height: 70, borderRadius: 22, background: `linear-gradient(140deg, ${P.blue}}, ${P.blueDeep})`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 18px 38px -10px ${P.blueDeep}66`, fontFamily: `'Inter', sans-serif`, fontWeight: 900, fontSize: 26, color: '#fff', letterSpacing: -1.2 }}>BR</div>
     <div style={{ fontFamily: `'Inter', sans-serif`, fontWeight: 900, fontSize: 22, letterSpacing: -0.8, color: P.ink }}>BR CARGO</div>
   </div>
 );
@@ -60,7 +60,7 @@ const InputField = ({ label, type = 'text', value, onChange, placeholder, icon, 
   return (
     <div>
       {label && <div style={{ fontSize: 12, fontWeight: 700, color: P.ink2, marginBottom: 6 }}>{label}</div>}
-      <div style={{ position: 'relative', background: P.surfaceAlt, border: `1.5px solid ${focus ? P.blue : P.line2}`, borderRadius: 16, transition: 'border-color 0.15s', boxShadow: focus ? `0 0 0 4px ${P.blue}12` : 'none', display: 'flex', alignItems: 'center' }}>
+      <div style={{ position: 'relative', background: P.surfaceAlt, border: `1.5px solid ${focus ? P.blue : P.line2}}`, borderRadius: 16, transition: 'border-color 0.15s', boxShadow: focus ? `0 0 0 4px ${P.blue}12` : 'none', display: 'flex', alignItems: 'center' }}>
         {icon && <div style={{ paddingLeft: 13, display: 'flex', color: focus ? P.blue : P.ink3 }}>{icon}</div>}
         <input type={type} value={value} onChange={e => onChange(e.target.value)} onFocus={() => setFocus(true)} onBlur={() => setFocus(false)} onKeyDown={onKeyDown} placeholder={placeholder} autoComplete={autoComplete || 'off'} maxLength={maxLength}
           style={{ flex: 1, minWidth: 0, padding: icon ? '12px 12px 12px 10px' : '12px 14px', border: 0, outline: 'none', background: 'transparent', fontSize: 14.5, color: P.ink, fontFamily: thFont }}/>
@@ -71,14 +71,14 @@ const InputField = ({ label, type = 'text', value, onChange, placeholder, icon, 
 };
 
 const PrimaryBtn = ({ onClick, children, loading, disabled }) => (
-  <button onClick={onClick} disabled={loading || disabled} style={{ width: '100%', padding: '14px 16px', background: `linear-gradient(180deg, ${P.blue}, ${P.blueDeep})`, border: 0, borderRadius: 16, cursor: (loading || disabled) ? 'not-allowed' : 'pointer', color: '#fff', fontFamily: thFont, fontSize: 15, fontWeight: 700, boxShadow: `0 8px 22px -6px ${P.blueDeep}80`, opacity: disabled ? 0.55 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+  <button onClick={onClick} disabled={loading || disabled} style={{ width: '100%', padding: '14px 16px', background: `linear-gradient(180deg, ${P.blue}}, ${P.blueDeep})`, border: 0, borderRadius: 16, cursor: (loading || disabled) ? 'not-allowed' : 'pointer', color: '#fff', fontFamily: thFont, fontSize: 15, fontWeight: 700, boxShadow: `0 8px 22px -6px ${P.blueDeep}80`, opacity: disabled ? 0.55 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
     {loading && <svg width="16" height="16" viewBox="0 0 24 24" style={{ animation: 'br-spin 0.9s linear infinite' }}><circle cx="12" cy="12" r="9" fill="none" stroke="#fff" strokeOpacity="0.25" strokeWidth="2.2"/><path d="M21 12a9 9 0 0 1-9 9" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round"/></svg>}
     {children}
   </button>
 );
 
 const ErrBox = ({ msg }) => msg ? (
-  <div style={{ padding: '10px 13px', borderRadius: 11, background: P.dangerSoft, border: `1px solid ${P.danger}30`, color: P.danger, fontSize: 12.5, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}>
+  <div style={{ padding: '10px 13px', borderRadius: 11, background: P.dangerSoft, border: `1px solid ${P.danger}}30`, color: P.danger, fontSize: 12.5, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 }}>
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><circle cx="12" cy="12" r="9.5"/><path d="M12 7v6M12 16.5v.1"/></svg>
     {msg}
   </div>
@@ -405,7 +405,7 @@ const LoginScreen = ({ onLogin }) => {
     setForgotErr('');
     const e = forgotEmail.trim();
     const otp = forgotOtp.trim();
-    if (otp.length !== 6) return setForgotErr('กรุณากรอก OTP 6 หลัก');
+    if (otp.length !== 8) return setForgotErr('กรุณากรอก OTP 8 หลักให้ครบถ้วน');
     if (forgotNewPw.length < 6) return setForgotErr('รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร');
     setLoading(true);
     try {
@@ -464,7 +464,7 @@ const LoginScreen = ({ onLogin }) => {
           <InputField type={showPw ? 'text' : 'password'} value={pw} onChange={setPw} placeholder="Password" autoComplete="current-password" icon={lockIcon} rightSlot={<PassEye show={showPw} onToggle={() => setShowPw(v => !v)}/>} onKeyDown={e => e.key === 'Enter' && handleEmailLogin()}/>
         </div>
         <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', userSelect: 'none' }}>
-          <div onClick={() => setRememberMe(v => !v)} style={{ width: 18, height: 18, borderRadius: 5, flexShrink: 0, border: `2px solid ${rememberMe ? P.blue : P.line2}`, background: rememberMe ? P.blue : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }}>
+          <div onClick={() => setRememberMe(v => !v)} style={{ width: 18, height: 18, borderRadius: 5, flexShrink: 0, border: `2px solid ${rememberMe ? P.blue : P.line2}}`, background: rememberMe ? P.blue : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }}>
             {rememberMe && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="m4 12 5 5L20 6"/></svg>}
           </div>
           <span onClick={() => setRememberMe(v => !v)} style={{ fontSize: 13, color: P.ink2, fontWeight: 500 }}>จดจำฉัน</span>
@@ -476,7 +476,7 @@ const LoginScreen = ({ onLogin }) => {
           <div style={{ flex: 1, height: 1, background: P.line2 }}/>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
-          <button onClick={handleGoogleLogin} disabled={loading} style={{ flex: 1, padding: '11px 14px', background: P.surface, border: `1.5px solid ${P.line2}`, borderRadius: 14, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: thFont, fontSize: 13.5, fontWeight: 700, color: P.ink, boxShadow: '0 1px 4px rgba(0,0,0,0.07)' }}>
+          <button onClick={handleGoogleLogin} disabled={loading} style={{ flex: 1, padding: '11px 14px', background: P.surface, border: `1.5px solid ${P.line2}}`, borderRadius: 14, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: thFont, fontSize: 13.5, fontWeight: 700, color: P.ink, boxShadow: '0 1px 4px rgba(0,0,0,0.07)' }}>
             <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
             Google
           </button>
@@ -512,7 +512,7 @@ const LoginScreen = ({ onLogin }) => {
           </div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 20, fontWeight: 800, color: P.ink, fontFamily: thFontHeading }}>รีเซ็ตรหัสผ่าน</div>
-            <div style={{ fontSize: 13, color: P.ink3, marginTop: 4, lineHeight: 1.5 }}>กรอกอีเมลที่ลงทะเบียนไว้<br/>เราจะส่งรหัส OTP 6 หลักให้คุณ</div>
+            <div style={{ fontSize: 13, color: P.ink3, marginTop: 4, lineHeight: 1.5 }}>กรอกอีเมลที่ลงทะเบียนไว้<br/>เราจะส่งรหัส OTP 8 หลักให้คุณ</div>
           </div>
         </div>
         <ErrBox msg={forgotErr}/>
@@ -532,7 +532,7 @@ const LoginScreen = ({ onLogin }) => {
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 20, fontWeight: 800, color: P.ink, fontFamily: thFontHeading }}>ยืนยัน OTP</div>
             <div style={{ fontSize: 13, color: P.ink3, marginTop: 4, lineHeight: 1.6 }}>
-              กรอกรหัส OTP 6 หลักที่ส่งไปยัง<br/>
+              กรอกรหัส OTP ที่ส่งไปยัง<br/>
               <span style={{ fontWeight: 700, color: P.ink2 }}>{forgotEmail}</span>
             </div>
           </div>
@@ -541,14 +541,14 @@ const LoginScreen = ({ onLogin }) => {
         {/* OTP Input */}
         <div>
           <div style={{ fontSize: 12, fontWeight: 700, color: P.ink2, marginBottom: 6 }}>รหัส OTP</div>
-          <div style={{ position: 'relative', background: P.surfaceAlt, border: `1.5px solid ${P.line2}`, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ position: 'relative', background: P.surfaceAlt, border: `1.5px solid ${P.line2}}`, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <input
-              type="text" inputMode="numeric" maxLength={6}
+              type="text" inputMode="numeric" maxLength={8}
               value={forgotOtp}
               onChange={e => { setForgotOtp(e.target.value.replace(/\D/g, '')); setForgotErr(''); }}
-              placeholder="000000"
+              placeholder="00000000"
               autoFocus
-              style={{ width: '100%', padding: '14px', border: 0, outline: 'none', background: 'transparent', fontSize: 28, fontWeight: 800, color: P.ink, fontFamily: `'Inter', monospace`, textAlign: 'center', letterSpacing: 12 }}
+              style={{ width: '100%', padding: '14px', border: 0, outline: 'none', background: 'transparent', fontSize: 26, fontWeight: 800, color: P.ink, fontFamily: `'Inter', monospace`, textAlign: 'center', letterSpacing: 8 }}
             />
           </div>
         </div>
@@ -563,7 +563,7 @@ const LoginScreen = ({ onLogin }) => {
           rightSlot={<PassEye show={forgotShowPw} onToggle={() => setForgotShowPw(v => !v)}/>}
           onKeyDown={e => e.key === 'Enter' && handleVerifyOtp()}
         />
-        <PrimaryBtn onClick={handleVerifyOtp} loading={loading} disabled={forgotOtp.length !== 6 || forgotNewPw.length < 6}>
+        <PrimaryBtn onClick={handleVerifyOtp} loading={loading} disabled={forgotOtp.length !== 8 || forgotNewPw.length < 6}>
           ยืนยันและตั้งรหัสผ่านใหม่
         </PrimaryBtn>
         <button onClick={handleSendOtp} disabled={loading} style={{ background: 'transparent', border: 0, cursor: 'pointer', fontSize: 13, color: P.blue, fontFamily: thFont, fontWeight: 600, textAlign: 'center' }}>
@@ -575,7 +575,7 @@ const LoginScreen = ({ onLogin }) => {
   } else if (step === 'forgot-done') {
     body = (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, padding: '24px 0' }}>
-        <div style={{ width: 84, height: 84, borderRadius: 26, background: `linear-gradient(140deg, ${P.blue}, ${P.blueDeep})`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: 84, height: 84, borderRadius: 26, background: `linear-gradient(140deg, ${P.blue}}, ${P.blueDeep})`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m4 12 5 5L20 6"/></svg>
         </div>
         <div style={{ textAlign: 'center' }}>
@@ -615,7 +615,7 @@ const LoginScreen = ({ onLogin }) => {
   } else if (step === 'register-success') {
     body = (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, padding: '24px 0' }}>
-        <div style={{ width: 84, height: 84, borderRadius: 26, background: `linear-gradient(140deg, ${P.success}, oklch(0.52 0.16 155))`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: 84, height: 84, borderRadius: 26, background: `linear-gradient(140deg, ${P.success}}, oklch(0.52 0.16 155))`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m4 12 5 5L20 6"/></svg>
         </div>
         <div style={{ textAlign: 'center' }}>
