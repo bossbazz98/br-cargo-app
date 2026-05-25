@@ -286,7 +286,20 @@ const BRCargoApp = () => {
   if (!user) {
     return (
       <div style={{ minHeight: '100vh', overflowY: 'auto', background: C.bg, fontFamily: thaiFont }}>
-        <LoginScreen onLogin={(u) => { setUser(u); const init = getInitialState(); setActive(init.screen); if (init.detail) setDetail(init.detail); else window.history.replaceState({}, '', '/'); }}/>
+        <LoginScreen onLogin={(u) => {
+          if (!u) return;
+          setUser(u);
+          // sync session ลง localStorage ทันที
+          try { localStorage.setItem('br_session_user', JSON.stringify(u)); } catch {}
+          // restore หน้าที่ตั้งใจจะดูก่อน login
+          const init = getInitialState();
+          setActive(init.screen);
+          if (init.detail) {
+            setDetail(init.detail);
+          } else {
+            window.history.replaceState({}, '', init.screen === 'home' ? '/' : `/${init.screen}`);
+          }
+        }}/>
       </div>
     );
   }

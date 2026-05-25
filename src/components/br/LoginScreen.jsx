@@ -206,25 +206,39 @@ const LoginScreen = ({ onLogin }) => {
     setLoginErr('');
     const e = email.trim();
     if (!e) return setLoginErr('กรุณากรอกอีเมล');
+    if (!/^[\w.+-]+@[\w-]+\.[\w.-]+$/.test(e)) return setLoginErr('รูปแบบอีเมลไม่ถูกต้อง');
     if (!pw) return setLoginErr('กรุณากรอกรหัสผ่าน');
     setLoading(true);
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email: e, password: pw });
-      if (error) throw error;
-      if (rememberMe) {
-        try { localStorage.setItem('br_remember_email', e); } catch {}
-      } else {
-        try { localStorage.removeItem('br_remember_email'); } catch {}
+      if (error) {
+        if (error.message?.includes('Invalid login') || error.message?.includes('invalid_credentials')) {
+          setLoginErr('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+        } else if (error.message?.includes('Email not confirmed')) {
+          setLoginErr('กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ');
+        } else if (error.message?.includes('Too many requests')) {
+          setLoginErr('ลองเข้าสู่ระบบบ่อยเกินไป กรุณารอสักครู่');
+        } else {
+          setLoginErr('เกิดข้อผิดพลาด กรุณาลองใหม่');
+        }
+        setLoading(false);
+        return;
       }
+      if (!data.user || !data.session) {
+        setLoginErr('เข้าสู่ระบบไม่สำเร็จ กรุณาลองใหม่');
+        setLoading(false);
+        return;
+      }
+      try {
+        if (rememberMe) {
+          localStorage.setItem('br_remember_email', e);
+        } else {
+          localStorage.removeItem('br_remember_email');
+        }
+      } catch {}
       onLogin && onLogin(data.user);
-    } catch (err) {
-      if (err?.message?.includes('Invalid login')) {
-        setLoginErr('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
-      } else if (err?.message?.includes('Email not confirmed')) {
-        setLoginErr('กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ');
-      } else {
-        setLoginErr('เกิดข้อผิดพลาด กรุณาลองใหม่');
-      }
+    } catch {
+      setLoginErr('เกิดข้อผิดพลาด กรุณาตรวจสอบการเชื่อมต่อแล้วลองใหม่');
     }
     setLoading(false);
   };
@@ -362,10 +376,19 @@ const LoginScreen = ({ onLogin }) => {
       const { error } = await supabase.auth.resetPasswordForEmail(e, {
         redirectTo: `${window.location.origin}/`,
       });
-      if (error) throw error;
+      // Supabase คืน success เสมอแม้ email ไม่มีในระบบ (เพื่อความปลอดภัย)
+      if (error) {
+        if (error.message?.includes('Too many requests')) {
+          setForgotErr('ส่งคำขอบ่อยเกินไป กรุณารอสักครู่แล้วลองใหม่');
+        } else {
+          setForgotErr('ส่งลิงก์ไม่สำเร็จ กรุณาลองใหม่');
+        }
+        setLoading(false);
+        return;
+      }
       setStep('forgot-sent');
     } catch {
-      setForgotErr('ส่งลิงก์ไม่สำเร็จ กรุณาลองใหม่');
+      setForgotErr('เกิดข้อผิดพลาด กรุณาตรวจสอบการเชื่อมต่อแล้วลองใหม่');
     }
     setLoading(false);
   };

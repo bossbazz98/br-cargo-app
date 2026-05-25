@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
 import { supabase } from '@/api/supabaseClient';
 import { C, thaiFont, thaiFontHeading } from '../../lib/brColors';
 import BRIcon from './BRIcon';
@@ -304,7 +303,7 @@ const EditableRow = ({ icon, label, value, onSave, editingKey, activeEdit, setAc
 };
 
 // ─── Password Row (with current-password validation) ─────
-const PasswordRow = ({ onSave, activeEdit, setActiveEdit }) => {
+const PasswordRow = ({ authEmail, activeEdit, setActiveEdit }) => {
   const editing = activeEdit === 'password';
   const [currentPw, setCurrentPw] = useState('');
   const [newPw, setNewPw] = useState('');
@@ -313,21 +312,48 @@ const PasswordRow = ({ onSave, activeEdit, setActiveEdit }) => {
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
 
+  const [success, setSuccess] = useState(false);
+
   const handleSave = async () => {
     setError('');
+    setSuccess(false);
     if (!currentPw) return setError('กรุณากรอกรหัสผ่านปัจจุบัน');
     if (newPw.length < 6) return setError('รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร');
+    if (currentPw === newPw) return setError('รหัสผ่านใหม่ต้องไม่ซ้ำกับรหัสผ่านเดิม');
+    if (!authEmail) return setError('ไม่พบข้อมูลบัญชี กรุณาออกจากระบบแล้วเข้าใหม่');
     setSaving(true);
     try {
-      // Verify current password by attempting login
-      await base44.auth.login({ email: user?.email, password: currentPw });
-      await onSave(newPw);
-      setSaving(false);
-      setActiveEdit(null);
+      // ยืนยันรหัสผ่านปัจจุบันผ่าน Supabase ด้วย authEmail ที่ดึงจาก session
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: authEmail,
+        password: currentPw,
+      });
+      if (signInError) {
+        if (signInError.message?.includes('Invalid login') || signInError.message?.includes('invalid_credentials')) {
+          setError('รหัสผ่านปัจจุบันไม่ถูกต้อง');
+        } else if (signInError.message?.includes('Too many requests')) {
+          setError('ลองบ่อยเกินไป กรุณารอสักครู่');
+        } else {
+          setError('ยืนยันตัวตนไม่สำเร็จ กรุณาลองใหม่');
+        }
+        setSaving(false);
+        return;
+      }
+      // เปลี่ยนรหัสผ่านใหม่
+      const { error: updateError } = await supabase.auth.updateUser({ password: newPw });
+      if (updateError) {
+        setError('บันทึกรหัสผ่านไม่สำเร็จ กรุณาลองใหม่');
+        setSaving(false);
+        return;
+      }
+      // สำเร็จ
+      setSuccess(true);
       setCurrentPw(''); setNewPw('');
+      setTimeout(() => { setActiveEdit(null); setSuccess(false); }, 1500);
     } catch {
+      setError('เกิดข้อผิดพลาด กรุณาตรวจสอบการเชื่อมต่อแล้วลองใหม่');
+    } finally {
       setSaving(false);
-      setError('รหัสผ่านไม่ถูกต้อง');
     }
   };
 
@@ -377,6 +403,13 @@ const PasswordRow = ({ onSave, activeEdit, setActiveEdit }) => {
               {error}
             </div>
           )}
+          {/* Success message in green */}
+          {success && (
+            <div style={{ fontSize: 12.5, color: C.success, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 5 }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.success} strokeWidth="2.5" strokeLinecap="round"><path d="m4 12 5 5L20 6"/></svg>
+              เปลี่ยนรหัสผ่านสำเร็จ!
+            </div>
+          )}
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={handleSave} disabled={saving} style={{ flex: 1, padding: '10px', borderRadius: 10, background: `linear-gradient(180deg, ${C.primary}, ${C.primaryDark})`, border: 0, cursor: saving ? 'not-allowed' : 'pointer', color: '#fff', fontFamily: thaiFont, fontSize: 13, fontWeight: 700 }}>{saving ? 'กำลังตรวจสอบ...' : 'บันทึกรหัสผ่าน'}</button>
             <button onClick={() => { setActiveEdit(null); setCurrentPw(''); setNewPw(''); setError(''); }} style={{ padding: '10px 14px', borderRadius: 10, background: C.card, border: `1px solid ${C.line}`, cursor: 'pointer', color: C.ink2, fontFamily: thaiFont, fontSize: 13, fontWeight: 600 }}>ยกเลิก</button>
@@ -393,15 +426,35 @@ const ProfileScreen = ({ user, onBack, onLogout }) => {
     phone: user?.phone || '',
     code_name: user?.code_name || '',
   });
+  const [authEmail, setAuthEmail] = useState(user?.email || '');
   const [avatarConfig, setAvatarConfig] = useState(loadAvatarConfig);
   const [showPicker, setShowPicker] = useState(false);
   const [activeEdit, setActiveEdit] = useState(null); // ข้อ 3: จัดการ edit เดียวกัน
 
+  // ดึง email จาก Supabase session และ users table (รองรับ LINE user ที่ไม่มี email ใน auth)
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      const uid = data?.user?.id;
+      if (data?.user?.email) {
+        setAuthEmail(data.user.email);
+      } else if (uid) {
+        // LINE user — ดึง email จาก users table แทน
+        supabase.from('users').select('email').eq('id', uid).single()
+          .then(({ data: profile }) => {
+            if (profile?.email) setAuthEmail(profile.email);
+          }).catch(() => {});
+      }
+    }).catch(() => {});
+  }, []);
+
   useEffect(() => {
     if (user?.id) {
-      supabase.from('users').select('phone,code_name').eq('id', user.id).single()
+      supabase.from('users').select('phone,code_name,email').eq('id', user.id).single()
         .then(({ data }) => {
-          if (data) setProfile({ phone: data.phone || '', code_name: data.code_name || '' });
+          if (data) {
+            setProfile({ phone: data.phone || '', code_name: data.code_name || '' });
+            if (data.email && !authEmail) setAuthEmail(data.email);
+          }
         }).catch(() => {});
     }
   }, [user?.id]);
@@ -433,7 +486,7 @@ const ProfileScreen = ({ user, onBack, onLogout }) => {
     }
   };
 
-  const userInitial = user?.full_name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U';
+  const userInitial = user?.full_name?.[0]?.toUpperCase() || authEmail?.[0]?.toUpperCase() || 'U';
 
   return (
     <div style={{ fontFamily: thaiFont, background: C.bg, width: '100%', minHeight: '100dvh', display: 'flex', flexDirection: 'column', position: 'relative' }}>
@@ -467,17 +520,14 @@ const ProfileScreen = ({ user, onBack, onLogout }) => {
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 11, color: C.ink3, fontWeight: 600, marginBottom: 2 }}>อีเมล</div>
-            <div style={{ fontSize: 14, color: C.ink, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.email || '-'}</div>
+            <div style={{ fontSize: 14, color: C.ink, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{authEmail || '-'}</div>
           </div>
         </div>
 
         {/* ข้อ 3: ส่ง activeEdit/setActiveEdit เพื่อให้เปิดแค่อันเดียว */}
         <EditableRow icon="phone" label="เบอร์โทร" value={profile.phone} onSave={v => saveField('phone', v)} editingKey="phone" activeEdit={activeEdit} setActiveEdit={setActiveEdit}/>
         <EditableRow icon="sparkle" label="Code Name" value={profile.code_name} onSave={v => saveField('code_name', v)} editingKey="code_name" activeEdit={activeEdit} setActiveEdit={setActiveEdit}/>
-        <PasswordRow activeEdit={activeEdit} setActiveEdit={setActiveEdit} onSave={async (newPw) => {
-          const { error } = await supabase.auth.updateUser({ password: newPw });
-          if (error) throw error;
-        }}/>
+        <PasswordRow authEmail={authEmail} activeEdit={activeEdit} setActiveEdit={setActiveEdit}/>
 
         <button onClick={onLogout} style={{ width: '100%', padding: '14px', marginTop: 6, background: C.dangerSoft, border: `1px solid ${C.danger}33`, borderRadius: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: thaiFont, fontSize: 15, fontWeight: 700, color: C.danger }}>
           <BRIcon name="logout" size={18} color={C.danger} stroke={2}/>
