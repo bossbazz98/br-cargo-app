@@ -35,7 +35,7 @@ export const StatusBadge = ({ value, customColor }) => {
         display: 'inline-flex', alignItems: 'center',
         padding: '3px 9px', borderRadius: 99, fontSize: 11, fontWeight: 700,
         background: customColor + '22', color: customColor,
-        border: `1px solid ${customColor}44`,
+        border: `1px solid ${customColor}}44`,
       }}>{value}</span>
     );
   }
