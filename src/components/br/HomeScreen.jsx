@@ -48,7 +48,7 @@ const ToastItem = ({ item, onDismiss }) => {
       onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}
       style={{
         background: '#fff',
-        border: `1.5px solid ${tc}}`,
+        border: `1.5px solid ${tc}`,
         borderLeft: `4px solid ${tc}`,
         padding: '12px 14px',
         borderRadius: 14,
@@ -185,7 +185,7 @@ const PromoSlider = () => {
     <div style={{ padding: '14px 20px 6px' }}>
       <div style={{
         borderRadius: 24, aspectRatio: '1/1', overflow: 'hidden',
-        background: `linear-gradient(135deg, ${C.primarySoft}}, oklch(0.93 0.03 230))`,
+        background: `linear-gradient(135deg, ${C.primarySoft}, oklch(0.93 0.03 230))`,
         position: 'relative',
       }}>
         {/* Shimmer animation */}
@@ -214,7 +214,7 @@ const PromoSlider = () => {
         {images.map((img, i) =>
         <div key={img.id} style={{
           flexShrink: 0, width: 'calc(min(100vw, 430px) - 40px)', aspectRatio: '1 / 1',
-          scrollSnapAlign: 'center', background: `linear-gradient(135deg, ${C.primary}}, ${C.primaryDark})`,
+          scrollSnapAlign: 'center', background: `linear-gradient(135deg, ${C.primary}, ${C.primaryDark})`,
           position: 'relative', overflow: 'hidden', borderRadius: 24
         }}>
             {img.image_url && <img src={img.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }}/>}
@@ -284,7 +284,7 @@ const QuickActions = ({ onNavigate }) => {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
         {actions.map((a) =>
         <button key={a.id} onClick={() => onNavigate && onNavigate(navTarget(a.id))} style={{
-          background: C.card, border: `1px solid ${C.line}}`, borderRadius: 18,
+          background: C.card, border: `1px solid ${C.line}`, borderRadius: 18,
           padding: '16px 14px 14px', textAlign: 'left', cursor: 'pointer',
           display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 14,
           fontFamily: thaiFont
@@ -315,7 +315,7 @@ const QuickActions = ({ onNavigate }) => {
         return (
           <button onClick={() => brpay.link_url && window.open(brpay.link_url, '_blank')} style={{
             marginTop: 12, width: '100%',
-            background: `linear-gradient(135deg, ${payBgFrom}}, ${payBgTo})`,
+            background: `linear-gradient(135deg, ${payBgFrom}, ${payBgTo})`,
             border: borderW > 0 ? `${borderW}px solid ${borderC}` : 'none',
             borderRadius: 18, cursor: brpay.link_url ? 'pointer' : 'default',
             padding: `${payPadV}px ${payPadH}px`,
@@ -359,7 +359,7 @@ const ScheduleCarousel = ({ onNavigate }) => {
         <div style={{ fontSize: 18, fontWeight: 800, fontFamily: thaiFontHeading, color: C.ink }}>รอบส่ง</div>
         <button onClick={() => onNavigate && onNavigate('schedule')} style={{ background: 'none', border: 0, cursor: 'pointer', fontSize: 12, fontWeight: 700, color: C.primary, fontFamily: thaiFontSubheading }}>ดูทั้งหมด →</button>
       </div>
-      <div style={{ background: C.card, border: `1px solid ${C.line}}`, borderRadius: 16, padding: '24px 20px', textAlign: 'center' }}>
+      <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 16, padding: '24px 20px', textAlign: 'center' }}>
         <BRIcon name="calendar" size={32} color={C.ink3} stroke={1.4} />
         <div style={{ fontFamily: thaiFont, fontSize: 13, color: C.ink3, marginTop: 8 }}>ยังไม่มีข้อมูลรอบส่ง</div>
       </div>
@@ -385,7 +385,7 @@ const ScheduleCarousel = ({ onNavigate }) => {
         {items.map((u) =>
         <div key={u.id} onClick={() => onNavigate && onNavigate('schedule')} style={{
           minWidth: 240, background: C.card, borderRadius: 18,
-          border: `1px solid ${C.line}}`, padding: '14px 16px', cursor: 'pointer',
+          border: `1px solid ${C.line}`, padding: '14px 16px', cursor: 'pointer',
           display: 'flex', flexDirection: 'column', gap: 12
         }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -402,7 +402,7 @@ const ScheduleCarousel = ({ onNavigate }) => {
               <div>LOT</div><div>CUT OFF</div><div>ETD</div>
             </div>
             {u.lots.slice(0, 4).map((lot, i) =>
-          <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', padding: '4px 0', borderTop: `1px solid ${C.line}}`, fontSize: 12.5 }}>
+          <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', padding: '4px 0', borderTop: `1px solid ${C.line}`, fontSize: 12.5 }}>
                 <div style={{ fontFamily: `'Inter', sans-serif`, fontWeight: 700, color: C.ink }}>{lot.lot || `L${i + 1}`}</div>
                 <div style={{ color: C.ink2 }}>{fmtDayMonth(lot.cut_off)}</div>
                 <div style={{ color: C.ink2 }}>{fmtDayMonth(lot.etd)}</div>
@@ -425,7 +425,7 @@ const NewsFeed = ({ onNavigate }) => {
   if (news.length === 0) return (
     <div style={{ padding: '14px 20px 0' }}>
       <div style={{ fontSize: 18, fontWeight: 800, fontFamily: thaiFontHeading, color: C.ink, marginBottom: 12 }}>ข่าวสาร</div>
-      <div style={{ background: C.card, border: `1px solid ${C.line}}`, borderRadius: 16, padding: '24px 20px', textAlign: 'center' }}>
+      <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 16, padding: '24px 20px', textAlign: 'center' }}>
         <BRIcon name="bell" size={32} color={C.ink3} stroke={1.4} />
         <div style={{ fontFamily: thaiFont, fontSize: 13, color: C.ink3, marginTop: 8 }}>ยังไม่มีข่าวสาร</div>
       </div>
@@ -449,10 +449,10 @@ const NewsFeed = ({ onNavigate }) => {
           const cat = categoryMap[a.category] || { label: a.category, color: C.ink3, bg: C.line };
           return (
             <div key={a.id} onClick={() => onNavigate && onNavigate(`article:${a.id}`)} style={{
-              background: C.card, border: `1px solid ${C.line}}`, borderRadius: 16,
+              background: C.card, border: `1px solid ${C.line}`, borderRadius: 16,
               overflow: 'hidden', cursor: 'pointer'
             }}>
-              <div style={{ height: 88, background: `linear-gradient(135deg, ${C.primary}}, ${C.primaryDark})`, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
+              <div style={{ height: 88, background: `linear-gradient(135deg, ${C.primary}, ${C.primaryDark})`, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
                 {a.image_url && <img src={a.image_url} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}/>}
                 {a.is_hot && <div style={{ position: 'absolute', top: 8, left: 8, background: C.danger, color: '#fff', fontSize: 9, fontWeight: 800, padding: '3px 7px', borderRadius: 99, zIndex: 2 }}>HOT</div>}
               </div>
@@ -481,7 +481,7 @@ const GallerySection = () => {
   if (images.length === 0) return (
     <div style={{ padding: '14px 20px 0' }}>
       <div style={{ fontSize: 18, fontWeight: 800, fontFamily: thaiFontHeading, color: C.ink, marginBottom: 12 }}>Gallery</div>
-      <div style={{ background: C.card, border: `1px solid ${C.line}}`, borderRadius: 16, padding: '24px 20px', textAlign: 'center' }}>
+      <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 16, padding: '24px 20px', textAlign: 'center' }}>
         <BRIcon name="image" size={32} color={C.ink3} stroke={1.4} />
         <div style={{ fontFamily: thaiFont, fontSize: 13, color: C.ink3, marginTop: 8 }}>ยังไม่มีรูปภาพ</div>
       </div>
@@ -495,9 +495,9 @@ const GallerySection = () => {
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
         {images.map((img) =>
-        <div key={img.id} style={{ aspectRatio: '1 / 1', borderRadius: 14, overflow: 'hidden', border: `1px solid ${C.line}}` }}>
+        <div key={img.id} style={{ aspectRatio: '1 / 1', borderRadius: 14, overflow: 'hidden', border: `1px solid ${C.line}` }}>
             {img.image_url ?
-          <img src={img.image_url} alt={img.caption || ''} style={{ width: '100%', height: '100%', objectFit: 'cover' }}/> :
+          <img src={img.image_url} alt={img.caption || ""} style={{ width: "100%", height: "100%", objectFit: "cover" }}/> :
           <div style={{ width: '100%', height: '100%', background: C.primarySoft }} />}
           </div>
         )}

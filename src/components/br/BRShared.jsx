@@ -81,3 +81,54 @@ export const timeAgo = (iso) => {
   if (days < 7) return `${days} วันที่แล้ว`;
   return `${Math.round(days / 7)} สัปดาห์ที่แล้ว`;
 };
+// ── BRImg — รูปภาพที่แสดง skeleton สีฟ้าตอนโหลด ──────────
+export const BRImg = ({ src, alt = '', style = {}, className }) => {
+  const [loaded, setLoaded] = React.useState(false);
+  const [error, setError] = React.useState(false);
+
+  return (
+    <div style={{ position: 'relative', overflow: 'hidden', ...style }}>
+      {/* Skeleton สีฟ้า + shimmer ขณะโหลด */}
+      {!loaded && !error && (
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: `linear-gradient(135deg, ${C.primarySoft}, oklch(0.93 0.03 230))`,
+        }}>
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%)',
+            backgroundSize: '200% 100%',
+            animation: 'brImgShimmer 1.5s infinite',
+          }}/>
+        </div>
+      )}
+      {/* Error state */}
+      {error && (
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: C.primarySoft,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={C.primary} strokeWidth="1.5" strokeLinecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="m3 16 5-5 4 4 3-3 6 6"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>
+        </div>
+      )}
+      <style>{`@keyframes brImgShimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }`}</style>
+      {src && (
+        <img
+          src={src}
+          alt={alt}
+          className={className}
+          onLoad={() => setLoaded(true)}
+          onError={() => { setError(true); setLoaded(true); }}
+          style={{
+            width: '100%', height: '100%',
+            objectFit: 'cover',
+            display: 'block',
+            opacity: loaded ? 1 : 0,
+            transition: 'opacity 0.3s ease',
+          }}
+        />
+      )}
+    </div>
+  );
+};

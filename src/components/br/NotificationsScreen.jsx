@@ -35,7 +35,7 @@ const NotificationItem = ({ n, onUpdate, onDelete }) => {
       {!n.is_read && <div style={{ position: 'absolute', top: 14, right: 14, width: 8, height: 8, borderRadius: 99, background: C.primary }}/>}
       <div style={{
         width: 40, height: 40, borderRadius: 12, flexShrink: 0,
-        background: n.tone ? ({ primary: C.primarySoft, success: C.successSoft, warn: C.warnSoft, danger: C.dangerSoft }[n.tone] || toneBg) : toneBg,
+        background: n.tone ? ({ primary: C.primarySoft, success: C.successSoft, warn: C.warnSoft, danger: C.dangerSoft }}[n.tone] || toneBg) : toneBg,
         display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20,
       }}>
         {n.icon_kind === 'emoji' && n.emoji
