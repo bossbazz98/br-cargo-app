@@ -14,38 +14,6 @@ import { initTracker, track } from '../lib/tracker';
 
 
 // ── Reset Password Screen ─────────────────────────────────
-const ResetPasswordScreen = ({ onDone }) => {
-  const [pw, setPw] = useState('');
-  const [confirm, setConfirm] = useState('');
-  const [showPw, setShowPw] = useState(false);
-  const [err, setErr] = useState('');
-  const [saving, setSaving] = useState(false);
-  const [success, setSuccess] = useState(false);
-
-  const thFont = `'Sarabun', 'Noto Sans Thai', sans-serif`;
-  const blue = 'oklch(0.58 0.18 245)';
-  const blueDeep = 'oklch(0.46 0.20 250)';
-  const ink = 'oklch(0.22 0.015 260)';
-  const ink3 = 'oklch(0.62 0.01 260)';
-  const danger = 'oklch(0.62 0.19 25)';
-  const dangerSoft = 'oklch(0.96 0.03 25)';
-
-  const handleSave = async () => {
-    setErr('');
-    if (pw.length < 6) return setErr('รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร');
-    if (pw !== confirm) return setErr('รหัสผ่านยืนยันไม่ตรงกัน');
-    setSaving(true);
-    try {
-      const { error } = await supabase.auth.updateUser({ password: pw });
-      if (error) throw error;
-      setSuccess(true);
-      setTimeout(() => onDone(), 2000);
-    } catch (e) {
-      setErr(e?.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่');
-    }
-    setSaving(false);
-  };
-
   return (
     <div style={{ fontFamily: thFont, minHeight: '100dvh', background: 'linear-gradient(180deg,#ddeeff,#a8cff0)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ width: '100%', maxWidth: 390, margin: '24px 20px', background: '#fff', borderRadius: 28, boxShadow: '0 20px 60px -15px rgba(30,80,160,0.18)', padding: '32px 24px 28px' }}>
@@ -118,7 +86,6 @@ const BRCargoApp = () => {
   const [detail, setDetail] = useState(_init.detail);
   const [loading, setLoading] = useState(true);
   const [profileUser, setProfileUser] = useState(null);
-  const [resetMode, setResetMode] = useState(false);
 
   // ── ข้อ 1: ใช้ Supabase session จริง ไม่ logout เมื่อ refresh ──
   useEffect(() => {
@@ -147,11 +114,6 @@ const BRCargoApp = () => {
     }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (_event === 'PASSWORD_RECOVERY') {
-        setResetMode(true);
-        setLoading(false);
-        return;
-      }
       if (session?.user) {
         setUser(session.user);
         initTracker(session.user);
@@ -277,11 +239,6 @@ const BRCargoApp = () => {
     };
     return screens[active] || <HomeScreen onNavigate={navigate} onProfile={handleProfileOpen}/>;
   };
-
-  // ── หน้าตั้งรหัสผ่านใหม่ (จากลิงก์อีเมล) ──────────────────
-  if (resetMode) {
-    return <ResetPasswordScreen onDone={() => { setResetMode(false); setUser(null); }} />;
-  }
 
   if (!user) {
     return (

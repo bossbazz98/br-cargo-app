@@ -107,6 +107,9 @@ const LoginScreen = ({ onLogin }) => {
 
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotErr, setForgotErr] = useState('');
+  const [forgotOtp, setForgotOtp] = useState('');
+  const [forgotNewPw, setForgotNewPw] = useState('');
+  const [forgotShowPw, setForgotShowPw] = useState(false);
 
 
   // ตรวจจับ LINE In-App Browser
@@ -366,29 +369,76 @@ const LoginScreen = ({ onLogin }) => {
   };
 
   // ── Forgot Password — ส่งลิงก์รีเซ็ตผ่าน Supabase ────────
-  const handleForgotPassword = async () => {
+  // ── ส่ง OTP ไปอีเมล ────────────────────────────────────
+  const handleSendOtp = async () => {
     setForgotErr('');
     const e = forgotEmail.trim();
     if (!e) return setForgotErr('กรุณากรอกอีเมล');
     if (!/^[\w.+-]+@[\w-]+\.[\w.-]+$/.test(e)) return setForgotErr('รูปแบบอีเมลไม่ถูกต้อง');
     setLoading(true);
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(e, {
-        redirectTo: `${window.location.origin}/`,
+      const { error } = await supabase.auth.signInWithOtp({
+        email: e,
+        options: { shouldCreateUser: false },
       });
-      // Supabase คืน success เสมอแม้ email ไม่มีในระบบ (เพื่อความปลอดภัย)
       if (error) {
-        if (error.message?.includes('Too many requests')) {
-          setForgotErr('ส่งคำขอบ่อยเกินไป กรุณารอสักครู่แล้วลองใหม่');
+        if (error.message?.includes('Too many requests') || error.message?.includes('rate limit')) {
+          setForgotErr('ส่ง OTP บ่อยเกินไป กรุณารอสักครู่แล้วลองใหม่');
+        } else if (error.message?.includes('not found') || error.message?.includes('User not found')) {
+          setForgotErr('ไม่พบอีเมลนี้ในระบบ');
         } else {
-          setForgotErr('ส่งลิงก์ไม่สำเร็จ กรุณาลองใหม่');
+          setForgotErr('ส่ง OTP ไม่สำเร็จ กรุณาลองใหม่');
         }
         setLoading(false);
         return;
       }
-      setStep('forgot-sent');
+      setForgotOtp('');
+      setForgotNewPw('');
+      setStep('forgot-otp');
     } catch {
       setForgotErr('เกิดข้อผิดพลาด กรุณาตรวจสอบการเชื่อมต่อแล้วลองใหม่');
+    }
+    setLoading(false);
+  };
+
+  // ── verify OTP + ตั้งรหัสผ่านใหม่ ───────────────────────
+  const handleVerifyOtp = async () => {
+    setForgotErr('');
+    const e = forgotEmail.trim();
+    const otp = forgotOtp.trim();
+    if (otp.length !== 6) return setForgotErr('กรุณากรอก OTP 6 หลัก');
+    if (forgotNewPw.length < 6) return setForgotErr('รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร');
+    setLoading(true);
+    try {
+      // verify OTP
+      const { error: verifyError } = await supabase.auth.verifyOtp({
+        email: e,
+        token: otp,
+        type: 'email',
+      });
+      if (verifyError) {
+        if (verifyError.message?.includes('expired') || verifyError.message?.includes('Token has expired')) {
+          setForgotErr('OTP หมดอายุแล้ว กรุณาขอใหม่');
+        } else if (verifyError.message?.includes('invalid') || verifyError.message?.includes('Invalid')) {
+          setForgotErr('OTP ไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง');
+        } else {
+          setForgotErr('ยืนยัน OTP ไม่สำเร็จ กรุณาลองใหม่');
+        }
+        setLoading(false);
+        return;
+      }
+      // OTP ถูกต้อง — ตั้งรหัสผ่านใหม่ทันที
+      const { error: updateError } = await supabase.auth.updateUser({ password: forgotNewPw });
+      if (updateError) {
+        setForgotErr('บันทึกรหัสผ่านไม่สำเร็จ กรุณาลองใหม่');
+        setLoading(false);
+        return;
+      }
+      // logout เพื่อให้ login ใหม่ด้วยรหัสที่ตั้ง
+      await supabase.auth.signOut();
+      setStep('forgot-done');
+    } catch {
+      setForgotErr('เกิดข้อผิดพลาด กรุณาลองใหม่');
     }
     setLoading(false);
   };
@@ -459,30 +509,83 @@ const LoginScreen = ({ onLogin }) => {
         <BackBtn onClick={() => setStep('login')}/>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginBottom: 4 }}>
           <div style={{ width: 60, height: 60, borderRadius: 18, background: 'oklch(0.93 0.04 245)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={P.blue} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={P.blue} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 20, fontWeight: 800, color: P.ink, fontFamily: thFontHeading }}>ลืมรหัสผ่าน?</div>
-            <div style={{ fontSize: 13, color: P.ink3, marginTop: 4, lineHeight: 1.5 }}>กรอกอีเมลที่ลงทะเบียนไว้<br/>เราจะส่งลิงก์รีเซ็ตรหัสผ่านให้คุณ</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: P.ink, fontFamily: thFontHeading }}>รีเซ็ตรหัสผ่าน</div>
+            <div style={{ fontSize: 13, color: P.ink3, marginTop: 4, lineHeight: 1.5 }}>กรอกอีเมลที่ลงทะเบียนไว้<br/>เราจะส่งรหัส OTP 6 หลักให้คุณ</div>
           </div>
         </div>
         <ErrBox msg={forgotErr}/>
-        <InputField label="อีเมล" type="email" value={forgotEmail} onChange={setForgotEmail} placeholder="example@email.com" icon={emailIcon} onKeyDown={e => e.key === 'Enter' && handleForgotPassword()}/>
-        <PrimaryBtn onClick={handleForgotPassword} loading={loading} disabled={!forgotEmail.trim()}>ส่งลิงก์รีเซ็ตรหัสผ่าน</PrimaryBtn>
+        <InputField label="อีเมล" type="email" value={forgotEmail} onChange={v => { setForgotEmail(v); setForgotErr(''); }} placeholder="example@email.com" icon={emailIcon} onKeyDown={e => e.key === 'Enter' && handleSendOtp()}/>
+        <PrimaryBtn onClick={handleSendOtp} loading={loading} disabled={!forgotEmail.trim()}>ส่ง OTP ไปยังอีเมล</PrimaryBtn>
       </div>
     );
 
-  } else if (step === 'forgot-sent') {
+  } else if (step === 'forgot-otp') {
+    body = (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <BackBtn onClick={() => { setStep('forgot'); setForgotErr(''); setForgotOtp(''); }}/>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginBottom: 4 }}>
+          <div style={{ width: 60, height: 60, borderRadius: 18, background: 'oklch(0.93 0.04 245)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={P.blue} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 20, fontWeight: 800, color: P.ink, fontFamily: thFontHeading }}>ยืนยัน OTP</div>
+            <div style={{ fontSize: 13, color: P.ink3, marginTop: 4, lineHeight: 1.6 }}>
+              กรอกรหัส OTP 6 หลักที่ส่งไปยัง<br/>
+              <span style={{ fontWeight: 700, color: P.ink2 }}>{forgotEmail}</span>
+            </div>
+          </div>
+        </div>
+        <ErrBox msg={forgotErr}/>
+        {/* OTP Input */}
+        <div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: P.ink2, marginBottom: 6 }}>รหัส OTP</div>
+          <div style={{ position: 'relative', background: P.surfaceAlt, border: `1.5px solid ${P.line2}`, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <input
+              type="text" inputMode="numeric" maxLength={6}
+              value={forgotOtp}
+              onChange={e => { setForgotOtp(e.target.value.replace(/\D/g, '')); setForgotErr(''); }}
+              placeholder="000000"
+              autoFocus
+              style={{ width: '100%', padding: '14px', border: 0, outline: 'none', background: 'transparent', fontSize: 28, fontWeight: 800, color: P.ink, fontFamily: `'Inter', monospace`, textAlign: 'center', letterSpacing: 12 }}
+            />
+          </div>
+        </div>
+        {/* New Password */}
+        <InputField
+          label="รหัสผ่านใหม่"
+          type={forgotShowPw ? 'text' : 'password'}
+          value={forgotNewPw}
+          onChange={v => { setForgotNewPw(v); setForgotErr(''); }}
+          placeholder="อย่างน้อย 6 ตัวอักษร"
+          icon={lockIcon}
+          rightSlot={<PassEye show={forgotShowPw} onToggle={() => setForgotShowPw(v => !v)}/>}
+          onKeyDown={e => e.key === 'Enter' && handleVerifyOtp()}
+        />
+        <PrimaryBtn onClick={handleVerifyOtp} loading={loading} disabled={forgotOtp.length !== 6 || forgotNewPw.length < 6}>
+          ยืนยันและตั้งรหัสผ่านใหม่
+        </PrimaryBtn>
+        <button onClick={handleSendOtp} disabled={loading} style={{ background: 'transparent', border: 0, cursor: 'pointer', fontSize: 13, color: P.blue, fontFamily: thFont, fontWeight: 600, textAlign: 'center' }}>
+          ไม่ได้รับ OTP? ส่งใหม่อีกครั้ง
+        </button>
+      </div>
+    );
+
+  } else if (step === 'forgot-done') {
     body = (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, padding: '24px 0' }}>
         <div style={{ width: 84, height: 84, borderRadius: 26, background: `linear-gradient(140deg, ${P.blue}, ${P.blueDeep})`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m4 12 5 5L20 6"/></svg>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 20, fontWeight: 800, color: P.ink, fontFamily: thFontHeading }}>ส่งลิงก์เรียบร้อยแล้ว!</div>
-          <div style={{ fontSize: 13.5, color: P.ink3, marginTop: 6, lineHeight: 1.6 }}>กรุณาตรวจสอบอีเมล<br/><span style={{ fontWeight: 700, color: P.ink2 }}>{forgotEmail}</span><br/>แล้วกดลิงก์เพื่อตั้งรหัสผ่านใหม่</div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: P.ink, fontFamily: thFontHeading }}>ตั้งรหัสผ่านใหม่สำเร็จ!</div>
+          <div style={{ fontSize: 13.5, color: P.ink3, marginTop: 6, lineHeight: 1.6 }}>กรุณาเข้าสู่ระบบด้วยรหัสผ่านใหม่</div>
         </div>
-        <PrimaryBtn onClick={() => { setStep('login'); setForgotEmail(''); setForgotErr(''); }}>กลับไปเข้าสู่ระบบ</PrimaryBtn>
+        <PrimaryBtn onClick={() => { setStep('login'); setEmail(forgotEmail); setPw(''); setForgotEmail(''); setForgotOtp(''); setForgotNewPw(''); setForgotErr(''); }}>
+          ไปยังหน้าเข้าสู่ระบบ
+        </PrimaryBtn>
       </div>
     );
 
