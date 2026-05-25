@@ -101,7 +101,14 @@ const ResetPasswordScreen = ({ onDone }) => {
 const BRCargoApp = () => {
   const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [active, setActive] = useState('home');
+  const getInitialScreen = () => {
+    const path = window.location.pathname;
+    if (path === '/schedule') return 'schedule';
+    if (path === '/notifications') return 'notifications';
+    if (path === '/admin') return 'admin';
+    return 'home';
+  };
+  const [active, setActive] = useState(getInitialScreen);
   const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(true);
   const [profileUser, setProfileUser] = useState(null);
@@ -184,15 +191,21 @@ const BRCargoApp = () => {
     track(pageNames[target] || target, 'navigate');
     setActive(target);
     restoreScrollPos(target);
+    // sync URL
+    const urlMap = { home: '/', schedule: '/schedule', notifications: '/notifications', admin: '/admin' };
+    window.history.pushState({}, '', urlMap[target] || '/');
   };
 
   const back = () => {
     setDetail(null);
+    const urlMap = { home: '/', schedule: '/schedule', notifications: '/notifications', admin: '/admin' };
+    window.history.pushState({}, '', urlMap[active] || '/');
     setProfileUser(null);
   };
 
   // ── ข้อ 2: handleProfileOpen ส่ง user จริงไป ProfileScreen ──
   const handleProfileOpen = () => {
+    window.history.pushState({}, '', '/profile');
     supabase.auth.getUser().then(({ data: { user: u } }) => {
       if (u) {
         supabase.from('users').select('*').eq('id', u.id).single()
@@ -224,6 +237,7 @@ const BRCargoApp = () => {
   };
 
   const handleLogout = async () => {
+    window.history.replaceState({}, '', '/');
     setProfileUser(null);
     try { localStorage.removeItem('br_session_user'); } catch {}
     await supabase.auth.signOut();
@@ -262,7 +276,7 @@ const BRCargoApp = () => {
   if (!user) {
     return (
       <div style={{ minHeight: '100vh', overflowY: 'auto', background: C.bg, fontFamily: thaiFont }}>
-        <LoginScreen onLogin={(u) => { setUser(u); setActive('home'); }}/>
+        <LoginScreen onLogin={(u) => { setUser(u); setActive('home'); window.history.replaceState({}, '', '/'); }}/>
       </div>
     );
   }
