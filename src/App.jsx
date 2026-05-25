@@ -36,6 +36,14 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       <Route path="/" element={<BRCargoApp />} />
+      <Route path="/schedule" element={<BRCargoApp />} />
+      <Route path="/notifications" element={<BRCargoApp />} />
+      <Route path="/admin" element={<BRCargoApp />} />
+      <Route path="/profile" element={<BRCargoApp />} />
+      <Route path="/details" element={<BRCargoApp />} />
+      <Route path="/address" element={<BRCargoApp />} />
+      <Route path="/nocode" element={<BRCargoApp />} />
+      <Route path="/article/:id" element={<BRCargoApp />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/dashboard/*" element={<Dashboard />} />
       {/* Add your page Route elements here */}
