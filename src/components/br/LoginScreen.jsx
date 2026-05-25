@@ -377,15 +377,11 @@ const LoginScreen = ({ onLogin }) => {
     if (!/^[\w.+-]+@[\w-]+\.[\w.-]+$/.test(e)) return setForgotErr('รูปแบบอีเมลไม่ถูกต้อง');
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOtp({
-        email: e,
-        options: { shouldCreateUser: false },
-      });
+      // ใช้ resetPasswordForEmail เพื่อส่ง OTP (recovery code) ไปอีเมล
+      const { error } = await supabase.auth.resetPasswordForEmail(e);
       if (error) {
         if (error.message?.includes('Too many requests') || error.message?.includes('rate limit')) {
           setForgotErr('ส่ง OTP บ่อยเกินไป กรุณารอสักครู่แล้วลองใหม่');
-        } else if (error.message?.includes('not found') || error.message?.includes('User not found')) {
-          setForgotErr('ไม่พบอีเมลนี้ในระบบ');
         } else {
           setForgotErr('ส่ง OTP ไม่สำเร็จ กรุณาลองใหม่');
         }
@@ -401,7 +397,7 @@ const LoginScreen = ({ onLogin }) => {
     setLoading(false);
   };
 
-  // ── verify OTP + ตั้งรหัสผ่านใหม่ ───────────────────────
+  // ── verify OTP recovery + ตั้งรหัสผ่านใหม่ ──────────────
   const handleVerifyOtp = async () => {
     setForgotErr('');
     const e = forgotEmail.trim();
@@ -410,11 +406,11 @@ const LoginScreen = ({ onLogin }) => {
     if (forgotNewPw.length < 6) return setForgotErr('รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร');
     setLoading(true);
     try {
-      // verify OTP
+      // verify OTP ด้วย type 'recovery' เพื่อให้ได้ session แล้วเปลี่ยนรหัสผ่านได้
       const { error: verifyError } = await supabase.auth.verifyOtp({
         email: e,
         token: otp,
-        type: 'email',
+        type: 'recovery',
       });
       if (verifyError) {
         if (verifyError.message?.includes('expired') || verifyError.message?.includes('Token has expired')) {
