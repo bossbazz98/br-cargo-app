@@ -4,7 +4,7 @@ import { C, thaiFont, thaiFontHeading, STATUS_TONE } from '../../lib/brColors'
 import { thaiFontSubheading } from '../../lib/brColors';
 import BRIcon from './BRIcon';
 import BRAppHeader from './BRAppHeader';
-import { Pill, fmtDayMonth, BRImg} from './BRShared';
+import { Pill, fmtDayMonth } from './BRShared';
 
 const StatusBadge = ({ value, customColor }) => {
   if (!value) return <span style={{ color: C.ink3 }}>-</span>;
@@ -12,7 +12,7 @@ const StatusBadge = ({ value, customColor }) => {
     return (
       <span style={{
         display: 'inline-flex', padding: '3px 9px', borderRadius: 99, fontSize: 11, fontWeight: 700,
-        background: customColor + '22', color: customColor, border: `1px solid ${customColor}44`
+        background: customColor + '22', color: customColor, border: `1px solid ${customColor}}44`
       }}>{value}</span>);
 
   }
@@ -39,7 +39,7 @@ const MonthPicker = ({ months, activeIdx, onPick, accent }) => {
             flexShrink: 0, padding: '9px 16px', borderRadius: 99,
             background: active ? accent : C.card,
             color: active ? '#fff' : C.ink2,
-            border: `1px solid ${active ? accent : C.line}`,
+            border: `1px solid ${active ? accent : C.line}}`,
             fontFamily: thaiFont, fontSize: 13.5, fontWeight: active ? 800 : 600,
             cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.18s',
             boxShadow: active ? `0 4px 14px -4px ${accent}88` : 'none'
@@ -84,7 +84,7 @@ const StatusStepper = ({ status, mode }) => {
               <div style={{
                 width: 28, height: 28, borderRadius: 99,
                 background: circleColor,
-                border: `1.5px solid ${borderColor}`,
+                border: `1.5px solid ${borderColor}}`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 transition: 'all 0.2s', flexShrink: 0
               }}>
@@ -95,7 +95,7 @@ const StatusStepper = ({ status, mode }) => {
             {i < steps.length - 1 &&
             <div style={{
               width: 10, marginTop: 13, flexShrink: 0,
-              borderTop: `1.5px dashed ${done ? accent + '55' : 'oklch(0.84 0.006 260)'}`
+              borderTop: `1.5px dashed ${done ? accent + '55' : 'oklch(0.84 0.006 260)'}}`
             }} />
             }
           </div>);
@@ -117,7 +117,7 @@ const LotCard = ({ lot, index, mode, isOpen, onToggle }) => {
 
   return (
     <div style={{
-      background: C.card, border: `1px solid ${isOpen ? accent : C.line}`,
+      background: C.card, border: `1px solid ${isOpen ? accent : C.line}}`,
       borderRadius: 16, overflow: 'hidden', transition: 'border-color 0.18s',
       boxShadow: isOpen ? `0 6px 24px -10px ${accent}66` : 'none'
     }}>
@@ -143,7 +143,7 @@ const LotCard = ({ lot, index, mode, isOpen, onToggle }) => {
         </div>
       </button>
       {isOpen &&
-      <div style={{ background: C.primarySofter, borderTop: `1px solid ${C.line}` }}>
+      <div style={{ background: C.primarySofter, borderTop: `1px solid ${C.line}}` }}>
           <div style={{ padding: '12px 14px 14px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 14px' }}>
           {[
           { k: 'lot', label: 'LOT', sub: 'ล็อต' },
@@ -215,7 +215,7 @@ const ScheduleScreen = ({ onNavigate }) => {
           return (
             <button key={t.id} onClick={() => setMode(t.id)} style={{
               flex: 1, padding: '14px 14px', borderRadius: 16,
-              background: active ? t.accent : C.card, border: `1.5px solid ${active ? t.accent : C.line}`,
+              background: active ? t.accent : C.card, border: `1.5px solid ${active ? t.accent : C.line}}`,
               cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12, fontFamily: thaiFont,
               boxShadow: active ? `0 8px 22px -10px ${t.accent}88` : 'none', transition: 'all 0.2s'
             }}>
@@ -233,7 +233,7 @@ const ScheduleScreen = ({ onNavigate }) => {
 
       {loading ?
       <div style={{ padding: '60px 0', display: 'flex', justifyContent: 'center' }}>
-          <div style={{ width: 28, height: 28, border: `3px solid ${C.line}`, borderTopColor: accent, borderRadius: '50%', animation: 'brSpin 0.8s linear infinite' }} />
+          <div style={{ width: 28, height: 28, border: `3px solid ${C.line}}`, borderTopColor: accent, borderRadius: '50%', animation: 'brSpin 0.8s linear infinite' }} />
           <style>{`@keyframes brSpin{to{transform:rotate(360deg)}}`}</style>
         </div> :
       monthsForMode.length === 0 ?
