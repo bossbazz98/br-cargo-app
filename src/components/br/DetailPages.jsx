@@ -1,3 +1,5 @@
+import { BRImg } from './BRShared';
+import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { C, thaiFont, thaiFontHeading, thaiFontSubheading } from '../../lib/brColors';
 import BRIcon from './BRIcon';
@@ -42,13 +44,13 @@ export const DetailsPage = ({ onBack }) => {
           if (d.kind === 'image' || (!d.title && !d.body && !d.excerpt && d.image_url)) {
             return (
               <div key={d.id} style={{ borderRadius: 18, overflow: 'hidden', border: `1px solid ${C.line}}` }}>
-                <img src={d.image_url} alt="" style={{ width: "100%", height: "auto", display: "block" }}/>
+                <BRImg src={d.image_url} alt="" style={{ height: 'auto' }}/>
               </div>
             );
           }
           return (
             <div key={d.id} style={{ background: C.card, border: `1px solid ${C.line}}`, borderRadius: 18, overflow: 'hidden' }}>
-              {d.image_url && <img src={d.image_url} alt="" style={{ width: "100%", height: "auto", display: "block" }}/>}
+              {d.image_url && <BRImg src={d.image_url} alt="" style={{ height: 'auto' }}/>}
               <div style={{ padding: '18px 18px' }}>
                 {d.title && <div style={{ fontSize: 17, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink, marginBottom: 6 }}>{d.title}</div>}
                 {d.excerpt && <div style={{ fontSize: 13, color: C.primary, fontWeight: 600, marginBottom: 10 }}>{d.excerpt}</div>}
@@ -108,7 +110,7 @@ export const AddressPage = ({ onBack }) => {
           if (b.kind === 'image' || (b.image_url && !b.heading && !b.description)) {
             return (
               <div key={b.id} style={{ borderRadius: 18, overflow: 'hidden', border: `1px solid ${C.line}}` }}>
-                <img src={b.image_url} alt="" style={{ width: "100%", height: "auto", display: "block" }}/>
+                <BRImg src={b.image_url} alt="" style={{ height: 'auto' }}/>
               </div>
             );
           }
@@ -116,7 +118,7 @@ export const AddressPage = ({ onBack }) => {
           if (b.kind === 'text') {
             return (
               <div key={b.id} style={{ background: C.card, border: `1px solid ${C.line}}`, borderRadius: 18, overflow: 'hidden' }}>
-                {b.image_url && <img src={b.image_url} alt="" style={{ width: "100%", height: "auto", display: "block" }}/>}
+                {b.image_url && <BRImg src={b.image_url} alt="" style={{ height: 'auto' }}/>}
                 <div style={{ padding: '18px 18px' }}>
                   {b.heading && <div style={{ fontSize: 18, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink, marginBottom: b.subheading ? 4 : 10 }}>{b.heading}</div>}
                   {b.subheading && <div style={{ fontSize: 13, color: C.ink3, marginBottom: 10 }}>{b.subheading}</div>}
@@ -128,7 +130,7 @@ export const AddressPage = ({ onBack }) => {
           // address block (default for legacy) — with copy buttons
           return (
             <div key={b.id} style={{ background: C.card, border: `1px solid ${C.line}}`, borderRadius: 18, overflow: 'hidden' }}>
-              {b.image_url && <img src={b.image_url} alt="" style={{ width: "100%", height: "auto", display: "block" }}/>}
+              {b.image_url && <BRImg src={b.image_url} alt="" style={{ height: 'auto' }}/>}
               <div style={{ padding: '18px 18px' }}>
                 {b.heading && <div style={{ fontSize: 18, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink, marginBottom: b.subheading ? 4 : 14 }}>{b.heading}</div>}
                 {b.subheading && <div style={{ fontSize: 13, color: C.ink3, marginBottom: 14 }}>{b.subheading}</div>}
@@ -205,7 +207,7 @@ export const NoCodePage = ({ onBack }) => {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                 {[b.image1_url, b.image2_url].map((img, j) => (
                   <div key={j} style={{ borderRadius: 10, overflow: 'hidden', aspectRatio: '1/1' }}>
-                    {img ? <img src={img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }}/> : <div style={{ width: '100%', height: '100%', background: C.primarySoft }}/>}
+                    {img ? <BRImg src={img} alt=""/> : <div style={{ width: '100%', height: '100%', background: C.primarySoft }}/>}
                   </div>
                 ))}
               </div>
@@ -255,7 +257,7 @@ export const NewsArticlePage = ({ articleId, onBack }) => {
         <div>
           <div style={{ height: 200, background: `linear-gradient(135deg, ${C.primary}}, ${C.primaryDark})`, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
             {article.image_url
-              ? <img src={article.image_url} alt={article.title} style={{ width: "100%", height: "100%", objectFit: "cover" }}/>
+              ? <BRImg src={article.image_url} alt={article.title}/>
               : <BRIcon name={cat.icon} size={64} color="rgba(255,255,255,0.85)" stroke={1.8}/>}
             {article.is_hot && (
               <div style={{ position: 'absolute', top: 14, left: 14, background: C.danger, color: '#fff', fontSize: 10, fontWeight: 800, padding: '4px 10px', borderRadius: 99 }}>🔥 HOT</div>
