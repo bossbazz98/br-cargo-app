@@ -377,8 +377,11 @@ const LoginScreen = ({ onLogin }) => {
     if (!/^[\w.+-]+@[\w-]+\.[\w.-]+$/.test(e)) return setForgotErr('รูปแบบอีเมลไม่ถูกต้อง');
     setLoading(true);
     try {
-      // ใช้ resetPasswordForEmail เพื่อส่ง OTP (recovery code) ไปอีเมล
-      const { error } = await supabase.auth.resetPasswordForEmail(e);
+      // signInWithOtp โดยไม่ใส่ emailRedirectTo เพื่อให้ส่ง OTP 6 หลักแทน Magic Link
+      const { error } = await supabase.auth.signInWithOtp({
+        email: e,
+        options: { shouldCreateUser: false },
+      });
       if (error) {
         if (error.message?.includes('Too many requests') || error.message?.includes('rate limit')) {
           setForgotErr('ส่ง OTP บ่อยเกินไป กรุณารอสักครู่แล้วลองใหม่');
@@ -410,7 +413,7 @@ const LoginScreen = ({ onLogin }) => {
       const { error: verifyError } = await supabase.auth.verifyOtp({
         email: e,
         token: otp,
-        type: 'recovery',
+        type: 'email',
       });
       if (verifyError) {
         if (verifyError.message?.includes('expired') || verifyError.message?.includes('Token has expired')) {
