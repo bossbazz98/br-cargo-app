@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { C, thaiFont, thaiFontHeading, monoFont } from '../../lib/brColors';
 import BRIcon from './BRIcon';
-import { iconBtnStyle } from './BRShared';
+import { iconBtnStyle, BRImg} from './BRShared';
 
 // ─── Admin Atoms ───────────────────────────────────────────
 const SectionHead = ({ title, sub, action }) => (
@@ -169,7 +169,7 @@ const UploadBox = ({ label, value, onChange, height = 130 }) => {
           </>
         ) : value ? (
           <>
-            <img src={value} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/>
+            <BRImg src={value} alt="" style={{ }/>
             <button onClick={(e) => { e.stopPropagation(); onChange(''); }} style={{ position: 'absolute', top: 8, right: 8, width: 26, height: 26, borderRadius: 99, background: 'rgba(255,255,255,0.95)', border: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <BRIcon name="trash" size={12} color={C.danger}/>
             </button>
@@ -697,7 +697,7 @@ const GalleryTab = () => {
             {images.map((img, i) => (
               <div key={img.id} style={{ position: 'relative', width: '100%', paddingBottom: '100%' }}>
                 <div style={{ position: 'absolute', inset: 0, borderRadius: 12, overflow: 'hidden' }}>
-                  {img.image_url ? <img src={img.image_url} alt={img.caption} style={{ width: '100%', height: '100%', objectFit: 'cover' }}/> : <div style={{ width: '100%', height: '100%', background: C.primarySoft }}/>}
+                  {img.image_url ? <BRImg src={img.image_url} alt={img.caption} style={{ }/> : <div style={{ width: '100%', height: '100%', background: C.primarySoft }}/>}
                 </div>
                 <button onClick={() => setDeleteTarget(img.id)} style={{ position: 'absolute', top: 6, right: 6, width: 28, height: 28, borderRadius: 99, background: 'rgba(255,255,255,0.95)', border: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1 }}>
                   <BRIcon name="trash" size={13} color={C.danger} stroke={2}/>
@@ -767,7 +767,7 @@ const NoCodeAdminTab = () => {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8 }}>
               {[b.image1_url, b.image2_url].map((img, j) => (
                 <div key={j} style={{ aspectRatio: '1/1', borderRadius: 10, overflow: 'hidden', background: C.primarySoft }}>
-                  {img && <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/>}
+                  {img && <BRImg src={img} alt="" style={{ }/>}
                 </div>
               ))}
             </div>
@@ -849,7 +849,7 @@ const DetailsAdminTab = () => {
         {items.length === 0 && <div style={{ textAlign: 'center', padding: '36px 20px', background: C.card, border: `1px dashed ${C.line2}`, borderRadius: 14, color: C.ink3 }}>ยังไม่มีข้อมูล</div>}
         <ReorderableList items={items} onReorder={handleReorder} renderItem={(d) => (
           <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, overflow: 'hidden' }}>
-            {d.image_url && <img src={d.image_url} alt="" style={{ width: '100%', height: 100, objectFit: 'cover', display: 'block' }}/>}
+            {d.image_url && <BRImg src={d.image_url} alt="" style={{ height: 100 }/>}
             <div style={{ padding: '10px 12px' }}>
               {d.title && <div style={{ fontSize: 14, fontWeight: 700, color: C.ink, marginBottom: 2 }}>{d.title}</div>}
               {d.body && <div style={{ fontSize: 12, color: C.ink3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{d.body}</div>}
@@ -923,7 +923,7 @@ const AddressAdminTab = () => {
         {items.length === 0 && <div style={{ textAlign: 'center', padding: '36px 20px', background: C.card, border: `1px dashed ${C.line2}`, borderRadius: 14, color: C.ink3 }}>ยังไม่มีข้อมูล</div>}
         <ReorderableList items={items} onReorder={handleReorder} renderItem={(d) => (
           <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, overflow: 'hidden' }}>
-            {d.image_url && <img src={d.image_url} alt="" style={{ width: '100%', height: 80, objectFit: 'cover', display: 'block' }}/>}
+            {d.image_url && <BRImg src={d.image_url} alt="" style={{ height: 80 }/>}
             <div style={{ padding: '10px 12px' }}>
               {d.heading && <div style={{ fontSize: 14, fontWeight: 700, color: C.ink }}>{d.heading}</div>}
               {d.description && <div style={{ fontSize: 12, color: C.ink3, marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{d.description}</div>}
@@ -1058,7 +1058,7 @@ const BannerTab = () => {
             {images.map(img => (
               <div key={img.id} style={{ position: 'relative', width: '100%', paddingBottom: '100%' }}>
                 <div style={{ position: 'absolute', inset: 0, borderRadius: 14, overflow: 'hidden', border: `1px solid ${C.line}` }}>
-                  {img.image_url ? <img src={img.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/> : <div style={{ width: '100%', height: '100%', background: C.primarySoft }}/>}
+                  {img.image_url ? <BRImg src={img.image_url} alt="" style={{ }/> : <div style={{ width: '100%', height: '100%', background: C.primarySoft }}/>}
                 </div>
                 <button onClick={() => setDeleteTarget(img.id)} style={{ position: 'absolute', top: 6, right: 6, zIndex: 1, width: 28, height: 28, borderRadius: 99, background: 'rgba(255,255,255,0.95)', border: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <BRIcon name="trash" size={13} color={C.danger} stroke={2}/>
@@ -1126,7 +1126,7 @@ const BrPayTab = () => {
           }}>
             <div style={{ width: 48, height: 48, borderRadius: 16, flexShrink: 0, background: 'rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid rgba(255,255,255,0.2)' }}>
               {cfg.image_url
-                ? <img src={cfg.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 14 }}/>
+                ? <BRImg src={cfg.image_url} alt="" style={{ borderRadius: 14 }/>
                 : <span style={{ fontSize: 24 }}>{cfg.emoji || '💳'}</span>}
             </div>
             <div style={{ flex: 1 }}>
@@ -1151,7 +1151,7 @@ const BrPayTab = () => {
           <div style={{ fontSize: 12.5, fontWeight: 700, color: C.ink, marginBottom: 8 }}>โลโก้ / ไอคอน</div>
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
             <div style={{ width: 60, height: 60, borderRadius: 14, border: `1.5px solid ${C.line}`, background: C.primarySofter, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
-              {cfg.image_url ? <img src={cfg.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/> : <span style={{ fontSize: 28 }}>{cfg.emoji||'💳'}</span>}
+              {cfg.image_url ? <BRImg src={cfg.image_url} alt="" style={{ }/> : <span style={{ fontSize: 28 }}>{cfg.emoji||'💳'}</span>}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <input ref={logoRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => uploadLogo(e.target.files?.[0])}/>
@@ -1271,7 +1271,7 @@ const NewsAdminTab = () => {
         {items.length === 0 && <div style={{ textAlign: 'center', padding: '36px 20px', background: C.card, border: `1px dashed ${C.line2}`, borderRadius: 14, color: C.ink3 }}>ยังไม่มีข่าว</div>}
         {items.map(d => (
           <div key={d.id} style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, overflow: 'hidden', display: 'flex', gap: 10, padding: 10, alignItems: 'center' }}>
-            {d.image_url && <img src={d.image_url} alt="" style={{ width: 64, height: 64, objectFit: 'cover', borderRadius: 10, flexShrink: 0 }}/>}
+            {d.image_url && <BRImg src={d.image_url} alt="" style={{ width: 64, height: 64, borderRadius: 10, flexShrink: 0 }/>}
             <div style={{ flex: 1, minWidth: 0 }}>
               {d.is_hot && <span style={{ fontSize: 9, fontWeight: 800, color: C.danger, background: C.dangerSoft, padding: '1px 6px', borderRadius: 99, marginBottom: 4, display: 'inline-block' }}>HOT</span>}
               <div style={{ fontSize: 13.5, fontWeight: 700, color: C.ink, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{d.title}</div>

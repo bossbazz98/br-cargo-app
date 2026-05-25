@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { C, thaiFont, thaiFontHeading, STATUS_TONE } from '../../lib/brColors';
 import BRIcon from './BRIcon';
 import BRAppHeader from './BRAppHeader';
-import { Pill, fmtDayMonth } from './BRShared';
+import { Pill, fmtDayMonth, BRImg} from './BRShared';
 
 const StatusBadge = ({ value, customColor }) => {
   if (!value) return <span style={{ color: C.ink3 }}>-</span>;
