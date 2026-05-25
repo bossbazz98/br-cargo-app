@@ -21,7 +21,6 @@ export const C = {
 
 export const thaiFont = `'Sarabun', 'Noto Sans Thai', 'Noto Sans KR', 'Noto Sans SC', 'Noto Sans JP', 'Noto Sans', 'Inter', -apple-system, system-ui, sans-serif`;
 export const thaiFontHeading = `'Noto Sans Thai', 'Noto Sans KR', 'Noto Sans SC', 'Noto Sans JP', 'Noto Sans', 'Inter', -apple-system, system-ui, sans-serif`;
-export const thaiFontSubheading = `'Noto Sans Thai', 'Noto Sans KR', 'Noto Sans SC', 'Noto Sans JP', 'Noto Sans', 'Inter', -apple-system, system-ui, sans-serif`;
 export const monoFont = `'JetBrains Mono', ui-monospace, monospace`;
 
 export const STATUS_TONE = {
