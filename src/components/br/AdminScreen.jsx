@@ -25,7 +25,7 @@ const PrimaryBtn = ({ icon, children, onClick, size = 'md', disabled, full, tone
       border: 0, borderRadius: size === 'sm' ? 10 : 12, cursor: disabled ? 'not-allowed' : 'pointer', color: '#fff',
       display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6,
       fontFamily: thaiFont, fontSize: size === 'sm' ? 12 : 13, fontWeight: 700,
-      boxShadow: disabled ? 'none' : `0 6px 14px -4px ${tone === 'danger' ? C.danger : C.primary}70`,
+      boxShadow: disabled ? 'none' : `0 6px 14px -4px ${tone === 'danger' ? C.danger : C.primary}}70`,
       flexShrink: 0, whiteSpace: 'nowrap', width: full ? '100%' : 'auto',
     }}>
       {showIcon && <BRIcon name={icon} size={size === 'sm' ? 13 : 15} color="#fff" stroke={2.3}/>}
@@ -37,7 +37,7 @@ const PrimaryBtn = ({ icon, children, onClick, size = 'md', disabled, full, tone
 const GhostBtn = ({ icon, children, onClick, size = 'md' }) => (
   <button onClick={onClick} style={{
     padding: size === 'sm' ? '7px 12px' : '10px 14px',
-    background: C.card, border: `1px solid ${C.line}`, borderRadius: size === 'sm' ? 10 : 12, cursor: 'pointer',
+    background: C.card, border: `1px solid ${C.line}}`, borderRadius: size === 'sm' ? 10 : 12, cursor: 'pointer',
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6,
     fontFamily: thaiFont, fontSize: size === 'sm' ? 12 : 13, fontWeight: 600, color: C.ink2,
   }}>
@@ -102,14 +102,14 @@ const Modal = ({ open, onClose, title, children }) => {
       <div onClick={e => e.stopPropagation()} style={{
         background: C.card, borderRadius: 18,
         width: 'calc(min(100vw, 430px) - 32px)',
-        maxHeight: `calc(100dvh - ${TAB_BAR_H + 32}px - env(safe-area-inset-bottom, 0px))`,
+        maxHeight: `calc(100dvh - ${TAB_BAR_H + 32}}px - env(safe-area-inset-bottom, 0px))`,
         display: 'flex', flexDirection: 'column',
         boxShadow: '0 20px 60px -10px rgba(0,0,0,0.35)',
         overflow: 'hidden',
         marginBottom: `calc(${TAB_BAR_H}px + env(safe-area-inset-bottom, 0px))`,
       }}>
         {/* Header */}
-        <div style={{ padding: '16px 18px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: `1px solid ${C.line}`, flexShrink: 0, background: C.card }}>
+        <div style={{ padding: '16px 18px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: `1px solid ${C.line}}`, flexShrink: 0, background: C.card }}>
           <div style={{ fontSize: 16, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink }}>{title}</div>
           <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: 99, background: 'transparent', border: 0, cursor: 'pointer', fontSize: 16, color: C.ink3 }}>✕</button>
         </div>
@@ -133,8 +133,8 @@ const DeleteModal = ({ open, message, onConfirm, onCancel }) => {
         <div style={{ fontSize: 22, fontWeight: 900, fontFamily: thaiFontHeading, color: C.ink, letterSpacing: 2 }}>DELETE</div>
         <div style={{ fontSize: 13.5, color: C.ink2, textAlign: 'center', lineHeight: 1.55 }}>{message || 'ต้องการลบรายการนี้?'}</div>
         <div style={{ display: 'flex', gap: 10, width: '100%' }}>
-          <button onClick={onCancel} style={{ flex: 1, padding: 13, borderRadius: 13, background: C.card, border: `1.5px solid ${C.line2}`, fontFamily: thaiFont, fontSize: 15, fontWeight: 800, color: C.ink2, cursor: 'pointer' }}>NO</button>
-          <button onClick={onConfirm} style={{ flex: 1, padding: 13, borderRadius: 13, background: `linear-gradient(180deg, ${C.danger}, oklch(0.5 0.19 25))`, border: 0, fontFamily: thaiFont, fontSize: 15, fontWeight: 800, color: '#fff', cursor: 'pointer', boxShadow: `0 6px 14px -4px ${C.danger}70` }}>YES</button>
+          <button onClick={onCancel} style={{ flex: 1, padding: 13, borderRadius: 13, background: C.card, border: `1.5px solid ${C.line2}}`, fontFamily: thaiFont, fontSize: 15, fontWeight: 800, color: C.ink2, cursor: 'pointer' }}>NO</button>
+          <button onClick={onConfirm} style={{ flex: 1, padding: 13, borderRadius: 13, background: `linear-gradient(180deg, ${C.danger}}, oklch(0.5 0.19 25))`, border: 0, fontFamily: thaiFont, fontSize: 15, fontWeight: 800, color: '#fff', cursor: 'pointer', boxShadow: `0 6px 14px -4px ${C.danger}70` }}>YES</button>
         </div>
       </div>
     </div>
@@ -161,15 +161,15 @@ const UploadBox = ({ label, value, onChange, height = 130 }) => {
   return (
     <div>
       {label && <div style={{ fontSize: 12.5, fontWeight: 700, color: C.ink, marginBottom: 6 }}>{label}</div>}
-      <div onClick={() => !uploading && fileRef.current?.click()} style={{ height, borderRadius: 12, cursor: uploading ? 'default' : 'pointer', border: `2px dashed ${error ? C.danger : C.line2}`, background: C.primarySofter, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, color: C.ink3, fontSize: 12, position: 'relative', overflow: 'hidden' }}>
+      <div onClick={() => !uploading && fileRef.current?.click()} style={{ height, borderRadius: 12, cursor: uploading ? 'default' : 'pointer', border: `2px dashed ${error ? C.danger : C.line2}}`, background: C.primarySofter, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, color: C.ink3, fontSize: 12, position: 'relative', overflow: 'hidden' }}>
         {uploading ? (
           <>
-            <div style={{ width: 24, height: 24, border: `3px solid ${C.line}`, borderTopColor: C.primary, borderRadius: '50%', animation: 'brSpin 0.8s linear infinite' }}/>
+            <div style={{ width: 24, height: 24, border: `3px solid ${C.line}}`, borderTopColor: C.primary, borderRadius: '50%', animation: 'brSpin 0.8s linear infinite' }}/>
             <span>กำลังอัปโหลด...</span>
           </>
         ) : value ? (
           <>
-            <img src={value} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/>
+            <img src={value} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }}/>
             <button onClick={(e) => { e.stopPropagation(); onChange(''); }} style={{ position: 'absolute', top: 8, right: 8, width: 26, height: 26, borderRadius: 99, background: 'rgba(255,255,255,0.95)', border: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <BRIcon name="trash" size={12} color={C.danger}/>
             </button>
@@ -229,7 +229,7 @@ const StatusPicker = ({ value, statusColor, customOptions, onChange }) => {
   return (
     <div ref={ref} style={{ position: 'relative', minWidth: 130 }}>
       <button onClick={() => setOpen(o => !o)} style={{
-        width: '100%', padding: '6px 9px', borderRadius: 9, border: `1.5px solid ${selected ? selected.color : C.line}`,
+        width: '100%', padding: '6px 9px', borderRadius: 9, border: `1.5px solid ${selected ? selected.color : C.line}}`,
         background: selected ? selected.color + '18' : C.card, cursor: 'pointer',
         display: 'flex', alignItems: 'center', gap: 6, fontFamily: thaiFont,
       }}>
@@ -242,7 +242,7 @@ const StatusPicker = ({ value, statusColor, customOptions, onChange }) => {
       {open && (
         <div style={{
           position: 'absolute', top: '110%', left: 0, zIndex: 300, minWidth: 210,
-          background: '#fff', border: `1px solid ${C.line}`, borderRadius: 14,
+          background: '#fff', border: `1px solid ${C.line}}`, borderRadius: 14,
           boxShadow: '0 10px 32px -8px rgba(0,0,0,0.20)', padding: 8,
           display: 'flex', flexDirection: 'column', gap: 2,
         }}>
@@ -262,17 +262,17 @@ const StatusPicker = ({ value, statusColor, customOptions, onChange }) => {
             </button>
           ))}
           {/* Add custom status */}
-          <div style={{ marginTop: 4, borderTop: `1px solid ${C.line}`, paddingTop: 6 }}>
+          <div style={{ marginTop: 4, borderTop: `1px solid ${C.line}}`, paddingTop: 6 }}>
             <div style={{ fontSize: 10, color: C.ink3, fontWeight: 600, marginBottom: 4, paddingLeft: 4 }}>เพิ่มสถานะใหม่</div>
             <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
               <input
                 value={customText} onChange={e => setCustomText(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && addCustom()}
                 placeholder="ข้อความสถานะ..."
-                style={{ flex: 1, padding: '6px 8px', fontSize: 11, fontFamily: thaiFont, border: `1.5px solid ${C.line}`, borderRadius: 8, outline: 'none', color: C.ink, background: C.bg }}
+                style={{ flex: 1, padding: '6px 8px', fontSize: 11, fontFamily: thaiFont, border: `1.5px solid ${C.line}}`, borderRadius: 8, outline: 'none', color: C.ink, background: C.bg }}
               />
               <input type="color" value={customColor} onChange={e => setCustomColor(e.target.value)}
-                style={{ width: 28, height: 28, padding: 1, border: `2px solid ${customColor}`, borderRadius: 7, cursor: 'pointer', background: 'transparent', flexShrink: 0 }}/>
+                style={{ width: 28, height: 28, padding: 1, border: `2px solid ${customColor}}`, borderRadius: 7, cursor: 'pointer', background: 'transparent', flexShrink: 0 }}/>
               <button onClick={addCustom} style={{
                 width: 28, height: 28, borderRadius: 8, background: C.primarySoft, border: 0, cursor: 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
@@ -362,14 +362,14 @@ const LotsEditor = ({ label, iconName, color, lots, saving, onSave }) => {
       )}
 
       {rows.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '18px 0', fontSize: 11.5, color: C.ink3, border: `1px dashed ${C.line2}`, borderRadius: 10 }}>ยังไม่มีข้อมูล — กด "เพิ่มรอบ"</div>
+        <div style={{ textAlign: 'center', padding: '18px 0', fontSize: 11.5, color: C.ink3, border: `1px dashed ${C.line2}}`, borderRadius: 10 }}>ยังไม่มีข้อมูล — กด "เพิ่มรอบ"</div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
           {rows.map((row, i) => {
             const sc = row.status_color;
             return (
               <button key={i} onClick={() => setEditIdx(i)} style={{
-                background: C.card, border: `1.5px solid ${C.line}`, borderRadius: 12, padding: '10px 10px 10px',
+                background: C.card, border: `1.5px solid ${C.line}}`, borderRadius: 12, padding: '10px 10px 10px',
                 cursor: 'pointer', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: 6, fontFamily: thaiFont,
                 overflow: 'hidden', minWidth: 0, width: '100%',
               }}>
@@ -379,7 +379,7 @@ const LotsEditor = ({ label, iconName, color, lots, saving, onSave }) => {
                 </div>
                 <div style={{ fontSize: 18, fontWeight: 900, fontFamily: thaiFontHeading, color: C.ink, letterSpacing: -0.5 }}>{row.lot || '—'}</div>
                 {row.status && (
-                  <span style={{ fontSize: 9.5, fontWeight: 700, color: sc || C.ink3, background: sc ? sc + '18' : C.bg, padding: '2px 7px', borderRadius: 99, border: `1px solid ${sc ? sc + '44' : C.line}`, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
+                  <span style={{ fontSize: 9.5, fontWeight: 700, color: sc || C.ink3, background: sc ? sc + '18' : C.bg, padding: '2px 7px', borderRadius: 99, border: `1px solid ${sc ? sc + '44' : C.line}}`, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
                     {row.status}
                   </span>
                 )}
@@ -484,7 +484,7 @@ const ScheduleManager = () => {
         {loading ? (
           <div style={{ padding: 40, textAlign: 'center', color: C.ink3 }}>กำลังโหลด...</div>
         ) : schedules.map(s => (
-          <div key={s.id} style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 16, padding: 14 }}>
+          <div key={s.id} style={{ background: C.card, border: `1px solid ${C.line}}`, borderRadius: 16, padding: 14 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
               <h4 style={{ margin: 0, fontSize: 16, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink }}>{s.month_label}</h4>
               <IconBtnSq icon="trash" tone="danger" onClick={() => setDeleteTarget(s.id)}/>
@@ -510,7 +510,7 @@ const ScheduleManager = () => {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
             {schedules.map(s => (
               <button key={s.id} onClick={() => setSheetTargetId(s.id)} style={{
-                padding: '6px 12px', borderRadius: 9, border: `1.5px solid ${sheetTargetId === s.id ? C.primary : C.line}`,
+                padding: '6px 12px', borderRadius: 9, border: `1.5px solid ${sheetTargetId === s.id ? C.primary : C.line}}`,
                 background: sheetTargetId === s.id ? C.primarySoft : C.card,
                 color: sheetTargetId === s.id ? C.primary : C.ink2,
                 fontFamily: thaiFont, fontSize: 12, fontWeight: 600, cursor: 'pointer',
@@ -524,7 +524,7 @@ const ScheduleManager = () => {
           <div style={{ display: 'flex', gap: 8 }}>
             {[{ id: 'air', label: 'AIR FREIGHT', icon: 'plane', color: C.primary, bg: C.primarySoft }, { id: 'sea', label: 'SEA FREIGHT', icon: 'ship', color: C.success, bg: C.successSoft }].map(t => (
               <button key={t.id} onClick={() => setSheetMode(t.id)} style={{
-                flex: 1, padding: '10px 8px', borderRadius: 10, border: `1.5px solid ${sheetMode === t.id ? t.color : C.line}`,
+                flex: 1, padding: '10px 8px', borderRadius: 10, border: `1.5px solid ${sheetMode === t.id ? t.color : C.line}}`,
                 background: sheetMode === t.id ? t.bg : C.card, cursor: 'pointer',
                 display: 'flex', alignItems: 'center', gap: 6, fontFamily: thaiFont,
               }}>
@@ -538,7 +538,7 @@ const ScheduleManager = () => {
           <div style={{ fontSize: 12.5, fontWeight: 700, color: C.ink, marginBottom: 6 }}>ไฟล์ CSV</div>
           <input ref={sheetFileRef} type="file" accept=".csv,text/csv" style={{ display: 'none' }} onChange={e => setSheetFile(e.target.files?.[0] || null)}/>
           <div onClick={() => sheetFileRef.current?.click()} style={{
-            padding: '14px 16px', borderRadius: 12, border: `2px dashed ${sheetFile ? C.primary : C.line2}`,
+            padding: '14px 16px', borderRadius: 12, border: `2px dashed ${sheetFile ? C.primary : C.line2}}`,
             background: sheetFile ? C.primarySofter : C.card, cursor: 'pointer',
             display: 'flex', alignItems: 'center', gap: 10, color: sheetFile ? C.primary : C.ink3,
           }}>
@@ -598,7 +598,7 @@ const AnnounceTab = () => {
       <SectionHead title="จัดการแจ้งเตือน" sub="เปิด/ปิดแจ้งเตือน" action={<PrimaryBtn icon="plus" onClick={() => setOpen(true)}>เพิ่มแจ้งเตือน</PrimaryBtn>}/>
       <div style={{ padding: '12px 20px 12px', display: 'flex', flexDirection: 'column', gap: 10 }}>
         {items.map(i => (
-          <div key={i.id} style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 16, padding: '14px 14px', display: 'flex', gap: 12, alignItems: 'center', opacity: i.is_active ? 1 : 0.55 }}>
+          <div key={i.id} style={{ background: C.card, border: `1px solid ${C.line}}`, borderRadius: 16, padding: '14px 14px', display: 'flex', gap: 12, alignItems: 'center', opacity: i.is_active ? 1 : 0.55 }}>
             <div style={{ width: 40, height: 40, borderRadius: 12, flexShrink: 0, background: C.primarySoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>
               {i.icon_kind === 'icon' ? <BRIcon name={i.icon_name || 'megaphone'} size={20} color={C.primary} stroke={2}/> : <span>{i.emoji || '📢'}</span>}
             </div>
@@ -625,14 +625,14 @@ const AnnounceTab = () => {
               <button key={ic} onClick={() => setForm(f => ({ ...f, icon_name: ic, icon_kind: 'icon' }))} style={{
                 width: 38, height: 38, borderRadius: 10, cursor: 'pointer',
                 background: form.icon_name===ic ? C.primarySoft : C.card,
-                border: `1.5px solid ${form.icon_name===ic ? C.primary : C.line}`,
+                border: `1.5px solid ${form.icon_name===ic ? C.primary : C.line}}`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
                 <BRIcon name={ic} size={18} color={form.icon_name===ic ? C.primary : C.ink3} stroke={2}/>
               </button>
             ))}
           </div>
-          <div style={{ marginTop: 10, padding: '10px 12px', borderRadius: 10, background: activeTone.bg, border: `1px solid ${activeTone.color}33`, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ marginTop: 10, padding: '10px 12px', borderRadius: 10, background: activeTone.bg, border: `1px solid ${activeTone.color}}33`, display: 'flex', alignItems: 'center', gap: 8 }}>
             <div style={{ width: 32, height: 32, borderRadius: 9, background: C.card, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <BRIcon name={form.icon_name||'megaphone'} size={16} color={activeTone.color} stroke={2}/>
             </div>
@@ -646,7 +646,7 @@ const AnnounceTab = () => {
             {TONES.map(t => {
               const active = form.tone === t.id;
               return (
-                <button key={t.id} onClick={() => setForm(f => ({ ...f, tone: t.id }))} style={{ flex: 1, padding: '10px 8px', borderRadius: 10, background: active ? t.bg : C.card, border: `1.5px solid ${active ? t.color : C.line}`, cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                <button key={t.id} onClick={() => setForm(f => ({ ...f, tone: t.id }))} style={{ flex: 1, padding: '10px 8px', borderRadius: 10, background: active ? t.bg : C.card, border: `1.5px solid ${active ? t.color : C.line}}`, cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
                   <span style={{ width: 16, height: 16, borderRadius: 99, background: t.color }}/>
                   <span style={{ fontSize: 10.5, fontWeight: 700, color: active ? t.color : C.ink3, fontFamily: thaiFont }}>{t.label}</span>
                 </button>
@@ -691,13 +691,13 @@ const GalleryTab = () => {
       <input ref={fileRef} type="file" accept="image/*" multiple style={{ display: 'none' }} onChange={e => handleFiles(e.target.files)}/>
       <div style={{ padding: '12px 20px 12px' }}>
         {images.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '36px 20px', background: C.card, border: `1px dashed ${C.line2}`, borderRadius: 14, color: C.ink3 }}>ยังไม่มีรูปภาพ</div>
+          <div style={{ textAlign: 'center', padding: '36px 20px', background: C.card, border: `1px dashed ${C.line2}}`, borderRadius: 14, color: C.ink3 }}>ยังไม่มีรูปภาพ</div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             {images.map((img, i) => (
               <div key={img.id} style={{ position: 'relative', width: '100%', paddingBottom: '100%' }}>
                 <div style={{ position: 'absolute', inset: 0, borderRadius: 12, overflow: 'hidden' }}>
-                  {img.image_url ? <img src={img.image_url} alt={img.caption} style={{ width: '100%', height: '100%', objectFit: 'cover' }}/> : <div style={{ width: '100%', height: '100%', background: C.primarySoft }}/>}
+                  {img.image_url ? <img src={img.image_url} alt={img.caption} style={{ width: "100%", height: "100%", objectFit: "cover" }}/> : <div style={{ width: '100%', height: '100%', background: C.primarySoft }}/>}
                 </div>
                 <button onClick={() => setDeleteTarget(img.id)} style={{ position: 'absolute', top: 6, right: 6, width: 28, height: 28, borderRadius: 99, background: 'rgba(255,255,255,0.95)', border: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1 }}>
                   <BRIcon name="trash" size={13} color={C.danger} stroke={2}/>
@@ -754,7 +754,7 @@ const NoCodeAdminTab = () => {
       <SectionHead title="จัดการหน้า No Code" sub="ตามหาเจ้าของพัสดุ" action={<PrimaryBtn icon="plus" size="sm" onClick={() => setEditBlock(BLANK_BLOCK)}>เพิ่มบล็อค</PrimaryBtn>}/>
       <div style={{ padding: '10px 20px 12px', display: 'flex', flexDirection: 'column', gap: 16 }}>
         {/* Page settings */}
-        <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ background: C.card, border: `1px solid ${C.line}}`, borderRadius: 14, padding: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: C.ink }}>ตั้งค่าหน้า</div>
           <Input label="หัวข้อหน้า" value={page.heading} onChange={v => setPage(p => ({ ...p, heading: v }))} placeholder="ตามหาเจ้าของ"/>
           <Textarea label="คำอธิบาย" value={page.subheading} onChange={v => setPage(p => ({ ...p, subheading: v }))} placeholder="ข้อความแสดงในหน้า..." rows={3}/>
@@ -763,11 +763,11 @@ const NoCodeAdminTab = () => {
         </div>
         {/* Blocks list */}
         {blocks.map((b, i) => (
-          <div key={b.id} style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: 12 }}>
+          <div key={b.id} style={{ background: C.card, border: `1px solid ${C.line}}`, borderRadius: 14, padding: 12 }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8 }}>
               {[b.image1_url, b.image2_url].map((img, j) => (
                 <div key={j} style={{ aspectRatio: '1/1', borderRadius: 10, overflow: 'hidden', background: C.primarySoft }}>
-                  {img && <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/>}
+                  {img && <img src={img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }}/>}
                 </div>
               ))}
             </div>
@@ -804,10 +804,10 @@ const ReorderableList = ({ items, onReorder, renderItem }) => {
       {items.map((item, i) => (
         <div key={item.id || i} style={{ display: 'flex', gap: 8, alignItems: 'stretch' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4, justifyContent: 'center' }}>
-            <button onClick={() => moveUp(i)} disabled={i === 0} style={{ width: 26, height: 26, borderRadius: 7, border: `1px solid ${C.line}`, background: C.card, cursor: i===0 ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: i===0 ? 0.3 : 1 }}>
+            <button onClick={() => moveUp(i)} disabled={i === 0} style={{ width: 26, height: 26, borderRadius: 7, border: `1px solid ${C.line}}`, background: C.card, cursor: i===0 ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: i===0 ? 0.3 : 1 }}>
               <BRIcon name="chevU" size={13} color={C.ink2} stroke={2}/>
             </button>
-            <button onClick={() => moveDown(i)} disabled={i === items.length-1} style={{ width: 26, height: 26, borderRadius: 7, border: `1px solid ${C.line}`, background: C.card, cursor: i===items.length-1 ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: i===items.length-1 ? 0.3 : 1 }}>
+            <button onClick={() => moveDown(i)} disabled={i === items.length-1} style={{ width: 26, height: 26, borderRadius: 7, border: `1px solid ${C.line}}`, background: C.card, cursor: i===items.length-1 ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: i===items.length-1 ? 0.3 : 1 }}>
               <BRIcon name="chevD" size={13} color={C.ink2} stroke={2}/>
             </button>
           </div>
@@ -846,10 +846,10 @@ const DetailsAdminTab = () => {
       <DeleteModal open={deleteTarget !== null} message="ต้องการลบรายการนี้?" onConfirm={async () => { await base44.entities.DetailContent.delete(deleteTarget); setDeleteTarget(null); load(); }} onCancel={() => setDeleteTarget(null)}/>
       <SectionHead title="จัดการรายละเอียด" sub="ข้อความและรูปภาพ" action={<PrimaryBtn icon="plus" size="sm" onClick={() => setEditItem(BLANK)}>เพิ่มบล็อค</PrimaryBtn>}/>
       <div style={{ padding: '10px 20px 12px' }}>
-        {items.length === 0 && <div style={{ textAlign: 'center', padding: '36px 20px', background: C.card, border: `1px dashed ${C.line2}`, borderRadius: 14, color: C.ink3 }}>ยังไม่มีข้อมูล</div>}
+        {items.length === 0 && <div style={{ textAlign: 'center', padding: '36px 20px', background: C.card, border: `1px dashed ${C.line2}}`, borderRadius: 14, color: C.ink3 }}>ยังไม่มีข้อมูล</div>}
         <ReorderableList items={items} onReorder={handleReorder} renderItem={(d) => (
-          <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, overflow: 'hidden' }}>
-            {d.image_url && <img src={d.image_url} alt="" style={{ width: '100%', height: 100, objectFit: 'cover', display: 'block' }}/>}
+          <div style={{ background: C.card, border: `1px solid ${C.line}}`, borderRadius: 14, overflow: 'hidden' }}>
+            {d.image_url && <img src={d.image_url} alt="" style={{ height: 100 }} style={{ width: "100%", height: "100%", objectFit: "cover" }}/>}
             <div style={{ padding: '10px 12px' }}>
               {d.title && <div style={{ fontSize: 14, fontWeight: 700, color: C.ink, marginBottom: 2 }}>{d.title}</div>}
               {d.body && <div style={{ fontSize: 12, color: C.ink3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{d.body}</div>}
@@ -870,7 +870,7 @@ const DetailsAdminTab = () => {
             <div style={{ fontSize: 12.5, fontWeight: 700, color: C.ink, marginBottom: 6 }}>ประเภทบล็อค</div>
             <div style={{ display: 'flex', gap: 6 }}>
               {[{k:'text',l:'ข้อความ'},{k:'image',l:'รูปภาพ'}].map(t => (
-                <button key={t.k} onClick={() => setEditItem(i => ({ ...i, kind: t.k }))} style={{ flex: 1, padding: '8px', borderRadius: 9, border: `1.5px solid ${editItem.kind===t.k ? C.primary : C.line}`, background: editItem.kind===t.k ? C.primarySoft : C.card, color: editItem.kind===t.k ? C.primary : C.ink2, fontFamily: thaiFont, fontSize: 12.5, fontWeight: 700, cursor: 'pointer' }}>{t.l}</button>
+                <button key={t.k} onClick={() => setEditItem(i => ({ ...i, kind: t.k }))} style={{ flex: 1, padding: '8px', borderRadius: 9, border: `1.5px solid ${editItem.kind===t.k ? C.primary : C.line}}`, background: editItem.kind===t.k ? C.primarySoft : C.card, color: editItem.kind===t.k ? C.primary : C.ink2, fontFamily: thaiFont, fontSize: 12.5, fontWeight: 700, cursor: 'pointer' }}>{t.l}</button>
               ))}
             </div>
           </div>
@@ -920,10 +920,10 @@ const AddressAdminTab = () => {
       <DeleteModal open={deleteTarget !== null} message="ต้องการลบรายการนี้?" onConfirm={async () => { await base44.entities.AddressBlock.delete(deleteTarget); setDeleteTarget(null); load(); }} onCancel={() => setDeleteTarget(null)}/>
       <SectionHead title="จัดการที่อยู่" sub="ข้อความและรูปภาพ" action={<PrimaryBtn icon="plus" size="sm" onClick={() => setEditItem(BLANK)}>เพิ่มบล็อค</PrimaryBtn>}/>
       <div style={{ padding: '10px 20px 12px' }}>
-        {items.length === 0 && <div style={{ textAlign: 'center', padding: '36px 20px', background: C.card, border: `1px dashed ${C.line2}`, borderRadius: 14, color: C.ink3 }}>ยังไม่มีข้อมูล</div>}
+        {items.length === 0 && <div style={{ textAlign: 'center', padding: '36px 20px', background: C.card, border: `1px dashed ${C.line2}}`, borderRadius: 14, color: C.ink3 }}>ยังไม่มีข้อมูล</div>}
         <ReorderableList items={items} onReorder={handleReorder} renderItem={(d) => (
-          <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, overflow: 'hidden' }}>
-            {d.image_url && <img src={d.image_url} alt="" style={{ width: '100%', height: 80, objectFit: 'cover', display: 'block' }}/>}
+          <div style={{ background: C.card, border: `1px solid ${C.line}}`, borderRadius: 14, overflow: 'hidden' }}>
+            {d.image_url && <img src={d.image_url} alt="" style={{ height: 80 }} style={{ width: "100%", height: "100%", objectFit: "cover" }}/>}
             <div style={{ padding: '10px 12px' }}>
               {d.heading && <div style={{ fontSize: 14, fontWeight: 700, color: C.ink }}>{d.heading}</div>}
               {d.description && <div style={{ fontSize: 12, color: C.ink3, marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{d.description}</div>}
@@ -944,7 +944,7 @@ const AddressAdminTab = () => {
             <div style={{ fontSize: 12.5, fontWeight: 700, color: C.ink, marginBottom: 6 }}>ประเภทบล็อค</div>
             <div style={{ display: 'flex', gap: 6 }}>
               {[{k:'text',l:'ข้อความ'},{k:'address',l:'ที่อยู่'},{k:'image',l:'รูปภาพ'}].map(t => (
-                <button key={t.k} onClick={() => setEditItem(i => ({ ...i, kind: t.k }))} style={{ flex: 1, padding: '8px', borderRadius: 9, border: `1.5px solid ${editItem.kind===t.k ? C.primary : C.line}`, background: editItem.kind===t.k ? C.primarySoft : C.card, color: editItem.kind===t.k ? C.primary : C.ink2, fontFamily: thaiFont, fontSize: 12.5, fontWeight: 700, cursor: 'pointer' }}>{t.l}</button>
+                <button key={t.k} onClick={() => setEditItem(i => ({ ...i, kind: t.k }))} style={{ flex: 1, padding: '8px', borderRadius: 9, border: `1.5px solid ${editItem.kind===t.k ? C.primary : C.line}}`, background: editItem.kind===t.k ? C.primarySoft : C.card, color: editItem.kind===t.k ? C.primary : C.ink2, fontFamily: thaiFont, fontSize: 12.5, fontWeight: 700, cursor: 'pointer' }}>{t.l}</button>
               ))}
             </div>
           </div>
@@ -997,7 +997,7 @@ const EmailTab = () => {
       <SectionHead title="อีเมลแอดมิน" sub={`เพิ่มได้สูงสุด ${MAX} อีเมล`}/>
       <div style={{ padding: '12px 20px 12px', display: 'flex', flexDirection: 'column', gap: 10 }}>
         {emails.map(e => (
-          <div key={e.id} style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div key={e.id} style={{ background: C.card, border: `1px solid ${C.line}}`, borderRadius: 14, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 34, height: 34, borderRadius: 10, background: C.primarySoft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <BRIcon name="mail" size={16} color={C.primary} stroke={2}/>
             </div>
@@ -1052,13 +1052,13 @@ const BannerTab = () => {
       <SectionHead title="ข่าวสาร & โปรโมชั่น" sub={`สูงสุด ${MAX} ภาพ · สัดส่วน 1:1`} action={images.length < MAX && <PrimaryBtn icon="plus" size="sm" onClick={() => setAddOpen(true)}>เพิ่มรูป</PrimaryBtn>}/>
       <div style={{ padding: '8px 20px 12px' }}>
         {images.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '36px 20px', background: C.card, border: `1px dashed ${C.line2}`, borderRadius: 14, color: C.ink3 }}>ยังไม่มีรูป</div>
+          <div style={{ textAlign: 'center', padding: '36px 20px', background: C.card, border: `1px dashed ${C.line2}}`, borderRadius: 14, color: C.ink3 }}>ยังไม่มีรูป</div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             {images.map(img => (
               <div key={img.id} style={{ position: 'relative', width: '100%', paddingBottom: '100%' }}>
-                <div style={{ position: 'absolute', inset: 0, borderRadius: 14, overflow: 'hidden', border: `1px solid ${C.line}` }}>
-                  {img.image_url ? <img src={img.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/> : <div style={{ width: '100%', height: '100%', background: C.primarySoft }}/>}
+                <div style={{ position: 'absolute', inset: 0, borderRadius: 14, overflow: 'hidden', border: `1px solid ${C.line}}` }}>
+                  {img.image_url ? <img src={img.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }}/> : <div style={{ width: '100%', height: '100%', background: C.primarySoft }}/>}
                 </div>
                 <button onClick={() => setDeleteTarget(img.id)} style={{ position: 'absolute', top: 6, right: 6, zIndex: 1, width: 28, height: 28, borderRadius: 99, background: 'rgba(255,255,255,0.95)', border: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <BRIcon name="trash" size={13} color={C.danger} stroke={2}/>
@@ -1119,14 +1119,14 @@ const BrPayTab = () => {
         <div>
           <div style={{ fontSize: 12.5, fontWeight: 700, color: C.ink, marginBottom: 8 }}>ตัวอย่าง</div>
           <div style={{
-            background: bg, borderRadius: 18, padding: `${cfg.padding_v||14}px ${cfg.padding_h||20}px`,
+            background: bg, borderRadius: 18, padding: `${cfg.padding_v||14}}px ${cfg.padding_h||20}px`,
             display: 'flex', alignItems: 'center', gap: 16,
             boxShadow: `0 6px 22px -8px rgba(40,60,180,${(cfg.shadow_opacity||55)/100})`,
             border: cfg.border_width > 0 ? `${cfg.border_width}px solid ${cfg.border_color}` : 'none',
           }}>
             <div style={{ width: 48, height: 48, borderRadius: 16, flexShrink: 0, background: 'rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid rgba(255,255,255,0.2)' }}>
               {cfg.image_url
-                ? <img src={cfg.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 14 }}/>
+                ? <img src={cfg.image_url} alt="" style={{ borderRadius: 14 }} style={{ width: "100%", height: "100%", objectFit: "cover" }}/>
                 : <span style={{ fontSize: 24 }}>{cfg.emoji || '💳'}</span>}
             </div>
             <div style={{ flex: 1 }}>
@@ -1150,8 +1150,8 @@ const BrPayTab = () => {
         <div>
           <div style={{ fontSize: 12.5, fontWeight: 700, color: C.ink, marginBottom: 8 }}>โลโก้ / ไอคอน</div>
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-            <div style={{ width: 60, height: 60, borderRadius: 14, border: `1.5px solid ${C.line}`, background: C.primarySofter, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
-              {cfg.image_url ? <img src={cfg.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/> : <span style={{ fontSize: 28 }}>{cfg.emoji||'💳'}</span>}
+            <div style={{ width: 60, height: 60, borderRadius: 14, border: `1.5px solid ${C.line}}`, background: C.primarySofter, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
+              {cfg.image_url ? <img src={cfg.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }}/> : <span style={{ fontSize: 28 }}>{cfg.emoji||'💳'}</span>}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <input ref={logoRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => uploadLogo(e.target.files?.[0])}/>
@@ -1172,14 +1172,14 @@ const BrPayTab = () => {
             <div>
               <div style={{ fontSize: 11, color: C.ink3, marginBottom: 4 }}>สีเริ่มต้น</div>
               <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                <input type="color" value={cfg.bg_from_hex || '#1d4ed8'} onChange={e => { set('bg_from_hex', e.target.value); set('bg_from', e.target.value); }} style={{ width: 36, height: 36, padding: 2, border: `2px solid ${C.line}`, borderRadius: 8, cursor: 'pointer', background: 'transparent' }}/>
+                <input type="color" value={cfg.bg_from_hex || '#1d4ed8'} onChange={e => { set('bg_from_hex', e.target.value); set('bg_from', e.target.value); }} style={{ width: 36, height: 36, padding: 2, border: `2px solid ${C.line}}`, borderRadius: 8, cursor: 'pointer', background: 'transparent' }}/>
                 <input value={cfg.bg_from_hex || ''} onChange={e => { set('bg_from_hex', e.target.value); set('bg_from', e.target.value); }} placeholder="#1d4ed8" style={{ ...inputStyle, flex: 1, fontSize: 12 }}/>
               </div>
             </div>
             <div>
               <div style={{ fontSize: 11, color: C.ink3, marginBottom: 4 }}>สีสุดท้าย</div>
               <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                <input type="color" value={cfg.bg_to_hex || '#1e3a8a'} onChange={e => { set('bg_to_hex', e.target.value); set('bg_to', e.target.value); }} style={{ width: 36, height: 36, padding: 2, border: `2px solid ${C.line}`, borderRadius: 8, cursor: 'pointer', background: 'transparent' }}/>
+                <input type="color" value={cfg.bg_to_hex || '#1e3a8a'} onChange={e => { set('bg_to_hex', e.target.value); set('bg_to', e.target.value); }} style={{ width: 36, height: 36, padding: 2, border: `2px solid ${C.line}}`, borderRadius: 8, cursor: 'pointer', background: 'transparent' }}/>
                 <input value={cfg.bg_to_hex || ''} onChange={e => { set('bg_to_hex', e.target.value); set('bg_to', e.target.value); }} placeholder="#1e3a8a" style={{ ...inputStyle, flex: 1, fontSize: 12 }}/>
               </div>
             </div>
@@ -1190,7 +1190,7 @@ const BrPayTab = () => {
         <div>
           <div style={{ fontSize: 12.5, fontWeight: 700, color: C.ink, marginBottom: 8 }}>สีตัวอักษร</div>
           <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-            <input type="color" value={cfg.text_color || '#ffffff'} onChange={e => set('text_color', e.target.value)} style={{ width: 36, height: 36, padding: 2, border: `2px solid ${C.line}`, borderRadius: 8, cursor: 'pointer', background: 'transparent' }}/>
+            <input type="color" value={cfg.text_color || '#ffffff'} onChange={e => set('text_color', e.target.value)} style={{ width: 36, height: 36, padding: 2, border: `2px solid ${C.line}}`, borderRadius: 8, cursor: 'pointer', background: 'transparent' }}/>
             <input value={cfg.text_color || ''} onChange={e => set('text_color', e.target.value)} placeholder="#ffffff" style={{ ...inputStyle, flex: 1, fontSize: 12 }}/>
           </div>
         </div>
@@ -1226,7 +1226,7 @@ const BrPayTab = () => {
             {(cfg.border_width||0) > 0 && (
               <div>
                 <div style={{ fontSize: 11, color: C.ink3, marginBottom: 4 }}>สีขอบ</div>
-                <input type="color" value={cfg.border_color || '#ffffff'} onChange={e => set('border_color', e.target.value)} style={{ width: 36, height: 36, padding: 2, border: `2px solid ${C.line}`, borderRadius: 8, cursor: 'pointer', background: 'transparent' }}/>
+                <input type="color" value={cfg.border_color || '#ffffff'} onChange={e => set('border_color', e.target.value)} style={{ width: 36, height: 36, padding: 2, border: `2px solid ${C.line}}`, borderRadius: 8, cursor: 'pointer', background: 'transparent' }}/>
               </div>
             )}
           </div>
@@ -1268,10 +1268,10 @@ const NewsAdminTab = () => {
       <DeleteModal open={deleteTarget !== null} message="ต้องการลบข่าวนี้?" onConfirm={async () => { await base44.entities.NewsArticle.delete(deleteTarget); setDeleteTarget(null); load(); }} onCancel={() => setDeleteTarget(null)}/>
       <SectionHead title="จัดการข่าวขนส่ง" sub="ข่าวสารและบทความ" action={<PrimaryBtn icon="plus" size="sm" onClick={() => setEditItem(BLANK)}>เพิ่มข่าว</PrimaryBtn>}/>
       <div style={{ padding: '10px 20px 12px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-        {items.length === 0 && <div style={{ textAlign: 'center', padding: '36px 20px', background: C.card, border: `1px dashed ${C.line2}`, borderRadius: 14, color: C.ink3 }}>ยังไม่มีข่าว</div>}
+        {items.length === 0 && <div style={{ textAlign: 'center', padding: '36px 20px', background: C.card, border: `1px dashed ${C.line2}}`, borderRadius: 14, color: C.ink3 }}>ยังไม่มีข่าว</div>}
         {items.map(d => (
-          <div key={d.id} style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 14, overflow: 'hidden', display: 'flex', gap: 10, padding: 10, alignItems: 'center' }}>
-            {d.image_url && <img src={d.image_url} alt="" style={{ width: 64, height: 64, objectFit: 'cover', borderRadius: 10, flexShrink: 0 }}/>}
+          <div key={d.id} style={{ background: C.card, border: `1px solid ${C.line}}`, borderRadius: 14, overflow: 'hidden', display: 'flex', gap: 10, padding: 10, alignItems: 'center' }}>
+            {d.image_url && <img src={d.image_url} alt="" style={{ width: 64, height: 64, borderRadius: 10, flexShrink: 0 }} style={{ width: "100%", height: "100%", objectFit: "cover" }}/>}
             <div style={{ flex: 1, minWidth: 0 }}>
               {d.is_hot && <span style={{ fontSize: 9, fontWeight: 800, color: C.danger, background: C.dangerSoft, padding: '1px 6px', borderRadius: 99, marginBottom: 4, display: 'inline-block' }}>HOT</span>}
               <div style={{ fontSize: 13.5, fontWeight: 700, color: C.ink, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{d.title}</div>
@@ -1292,7 +1292,7 @@ const NewsAdminTab = () => {
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
               {NEWS_CATS.map(c => (
                 <button key={c.key} onClick={() => setEditItem(i => ({ ...i, category: c.key }))} style={{
-                  padding: '5px 12px', borderRadius: 9, border: `1.5px solid ${editItem.category===c.key ? C.primary : C.line}`,
+                  padding: '5px 12px', borderRadius: 9, border: `1.5px solid ${editItem.category===c.key ? C.primary : C.line}}`,
                   background: editItem.category===c.key ? C.primarySoft : C.card,
                   color: editItem.category===c.key ? C.primary : C.ink2,
                   fontFamily: thaiFont, fontSize: 12, fontWeight: 600, cursor: 'pointer',
@@ -1360,11 +1360,11 @@ const AdminScreen = ({ onNavigate, isAdmin }) => {
   return (
     <div style={{ fontFamily: thaiFont, background: C.bg, minHeight: '100%', position: 'relative' }}>
       <div style={{ position: 'sticky', top: 0, zIndex: 10 }}>
-        <div style={{ padding: '16px 18px 14px', background: C.card, borderBottom: `1px solid ${C.line}`, display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ padding: '16px 18px 14px', background: C.card, borderBottom: `1px solid ${C.line}}`, display: 'flex', alignItems: 'center', gap: 12 }}>
           <button onClick={() => onNavigate && onNavigate('home')} style={{ ...iconBtnStyle, background: 'transparent' }}>
             <BRIcon name="chevL" size={22} color={C.ink}/>
           </button>
-          <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${C.primary}, ${C.primaryDark})`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${C.primary}}, ${C.primaryDark})`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <BRIcon name="settings" size={18} color="#fff" stroke={2}/>
           </div>
           <div style={{ flex: 1 }}>
@@ -1376,7 +1376,7 @@ const AdminScreen = ({ onNavigate, isAdmin }) => {
             แอดมิน
           </div>
         </div>
-        <div style={{ background: C.card, borderBottom: `1px solid ${C.line}` }}>
+        <div style={{ background: C.card, borderBottom: `1px solid ${C.line}}` }}>
           <div style={{ display: 'flex', gap: 8, overflowX: 'auto', padding: '12px 16px', scrollbarWidth: 'none' }}>
             {tabs.map(t => {
               const active = tab === t.key;
@@ -1384,7 +1384,7 @@ const AdminScreen = ({ onNavigate, isAdmin }) => {
                 <button key={t.key} onClick={() => setTab(t.key)} style={{
                   display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0,
                   padding: '8px 14px', borderRadius: 11,
-                  background: active ? C.primary : C.primarySofter, border: `1px solid ${active ? C.primary : C.line}`,
+                  background: active ? C.primary : C.primarySofter, border: `1px solid ${active ? C.primary : C.line}}`,
                   color: active ? '#fff' : C.ink2, fontSize: 12.5, fontWeight: 600, fontFamily: thaiFont, cursor: 'pointer', whiteSpace: 'nowrap',
                 }}>
                   <BRIcon name={t.icon} size={14} color={active ? '#fff' : C.ink3} stroke={2}/>

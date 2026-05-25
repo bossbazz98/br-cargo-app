@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { C, thaiFont, thaiFontHeading, thaiFontSubheading } from '../../lib/brColors';
 import BRIcon from './BRIcon';
 import BRAppHeader from './BRAppHeader';
-import { fmtDayMonth, BRImg} from './BRShared';
+import { fmtDayMonth } from './BRShared';
 
 // ─── Announcement Toast ────────────────────────────────────
 const STORAGE_KEY = 'dismissed_announcements_v2';
@@ -217,7 +217,7 @@ const PromoSlider = () => {
           scrollSnapAlign: 'center', background: `linear-gradient(135deg, ${C.primary}}, ${C.primaryDark})`,
           position: 'relative', overflow: 'hidden', borderRadius: 24
         }}>
-            {img.image_url && <BRImg src={img.image_url} alt=""/>}
+            {img.image_url && <img src={img.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }}/>}
           </div>
         )}
       </div>
@@ -325,7 +325,7 @@ const QuickActions = ({ onNavigate }) => {
           }}>
             <div style={{ width: 48, height: 48, borderRadius: 16, flexShrink: 0, background: 'rgba(255,255,255,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid rgba(255,255,255,0.5)' }}>
               {brpay.image_url ?
-              <BRImg src={brpay.image_url} alt="" style={{ borderRadius: 14 }}/> :
+              <img src={brpay.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 14 }}/> :
               <span style={{ fontSize: 24 }}>{brpay.emoji || BRPAY_DEFAULT.emoji}</span>}
             </div>
             <div style={{ flex: 1, textAlign: 'left' }}>
@@ -453,7 +453,7 @@ const NewsFeed = ({ onNavigate }) => {
               overflow: 'hidden', cursor: 'pointer'
             }}>
               <div style={{ height: 88, background: `linear-gradient(135deg, ${C.primary}}, ${C.primaryDark})`, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
-                {a.image_url && <BRImg src={a.image_url} alt="" style={{ position: 'absolute', inset: 0 }}/>}
+                {a.image_url && <img src={a.image_url} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}/>}
                 {a.is_hot && <div style={{ position: 'absolute', top: 8, left: 8, background: C.danger, color: '#fff', fontSize: 9, fontWeight: 800, padding: '3px 7px', borderRadius: 99, zIndex: 2 }}>HOT</div>}
               </div>
               <div style={{ padding: '10px 12px 12px' }}>
@@ -497,7 +497,7 @@ const GallerySection = () => {
         {images.map((img) =>
         <div key={img.id} style={{ aspectRatio: '1 / 1', borderRadius: 14, overflow: 'hidden', border: `1px solid ${C.line}}` }}>
             {img.image_url ?
-          <BRImg src={img.image_url} alt={img.caption || ''}/> :
+          <img src={img.image_url} alt={img.caption || ""} style={{ width: "100%", height: "100%", objectFit: "cover" }}/> :
           <div style={{ width: '100%', height: '100%', background: C.primarySoft }} />}
           </div>
         )}
