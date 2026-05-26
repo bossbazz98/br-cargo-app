@@ -67,7 +67,7 @@ const BRCargoApp = () => {
         initTracker(session.user);
         // sync email เข้า users table
         if (session.user.email) {
-          supabase.from('users').upsert({ id: session.user.id, email: session.user.email }, { onConflict: 'id' }).catch(() => {});
+          supabase.from('users').upsert({ id: session.user.id, email: session.user.email }, { onConflict: 'id' }).then(() => {}).catch(() => {});
         }
         try { localStorage.setItem('br_session_user', JSON.stringify(session.user)); } catch {}
       } else if (_event === 'SIGNED_OUT') {
@@ -200,7 +200,7 @@ const BRCargoApp = () => {
           setUser(u);
           // sync email เข้า users table (สำหรับ email/password login)
           if (u.email) {
-            supabase.from('users').upsert({ id: u.id, email: u.email }, { onConflict: 'id' }).catch(() => {});
+            supabase.from("users").upsert({ id: u.id, email: u.email }, { onConflict: "id" }).then(() => {}).catch(() => {});
           }
           // sync session ลง localStorage ทันที
           try { localStorage.setItem('br_session_user', JSON.stringify(u)); } catch {}
