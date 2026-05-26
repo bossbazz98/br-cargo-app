@@ -43,13 +43,13 @@ export const DetailsPage = ({ onBack }) => {
           if (d.kind === 'image' || (!d.title && !d.body && !d.excerpt && d.image_url)) {
             return (
               <div key={d.id} style={{ borderRadius: 18, overflow: 'hidden', border: `1px solid ${C.line}` }}>
-                <img src={d.image_url} alt="" style={{ height: 'auto' }} style={{ width: "100%", height: "100%", objectFit: "cover" }}/>
+                <img src={d.image_url} alt="" style={{ width: "100%", height: "auto", objectFit: "cover" }}/>
               </div>
             );
           }
           return (
             <div key={d.id} style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 18, overflow: 'hidden' }}>
-              {d.image_url && <img src={d.image_url} alt="" style={{ height: 'auto' }} style={{ width: "100%", height: "100%", objectFit: "cover" }}/>}
+              {d.image_url && <img src={d.image_url} alt="" style={{ width: "100%", height: "auto", objectFit: "cover" }}/>}
               <div style={{ padding: '18px 18px' }}>
                 {d.title && <div style={{ fontSize: 17, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink, marginBottom: 6 }}>{d.title}</div>}
                 {d.excerpt && <div style={{ fontSize: 13, color: C.primary, fontWeight: 600, marginBottom: 10 }}>{d.excerpt}</div>}
@@ -109,7 +109,7 @@ export const AddressPage = ({ onBack }) => {
           if (b.kind === 'image' || (b.image_url && !b.heading && !b.description)) {
             return (
               <div key={b.id} style={{ borderRadius: 18, overflow: 'hidden', border: `1px solid ${C.line}` }}>
-                <img src={b.image_url} alt="" style={{ height: 'auto' }} style={{ width: "100%", height: "100%", objectFit: "cover" }}/>
+                <img src={b.image_url} alt="" style={{ width: "100%", height: "auto", objectFit: "cover" }}/>
               </div>
             );
           }
@@ -117,7 +117,7 @@ export const AddressPage = ({ onBack }) => {
           if (b.kind === 'text') {
             return (
               <div key={b.id} style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 18, overflow: 'hidden' }}>
-                {b.image_url && <img src={b.image_url} alt="" style={{ height: 'auto' }} style={{ width: "100%", height: "100%", objectFit: "cover" }}/>}
+                {b.image_url && <img src={b.image_url} alt="" style={{ width: "100%", height: "auto", objectFit: "cover" }}/>}
                 <div style={{ padding: '18px 18px' }}>
                   {b.heading && <div style={{ fontSize: 18, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink, marginBottom: b.subheading ? 4 : 10 }}>{b.heading}</div>}
                   {b.subheading && <div style={{ fontSize: 13, color: C.ink3, marginBottom: 10 }}>{b.subheading}</div>}
@@ -129,7 +129,7 @@ export const AddressPage = ({ onBack }) => {
           // address block (default for legacy) — with copy buttons
           return (
             <div key={b.id} style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 18, overflow: 'hidden' }}>
-              {b.image_url && <img src={b.image_url} alt="" style={{ height: 'auto' }} style={{ width: "100%", height: "100%", objectFit: "cover" }}/>}
+              {b.image_url && <img src={b.image_url} alt="" style={{ width: "100%", height: "auto", objectFit: "cover" }}/>}
               <div style={{ padding: '18px 18px' }}>
                 {b.heading && <div style={{ fontSize: 18, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink, marginBottom: b.subheading ? 4 : 14 }}>{b.heading}</div>}
                 {b.subheading && <div style={{ fontSize: 13, color: C.ink3, marginBottom: 14 }}>{b.subheading}</div>}
