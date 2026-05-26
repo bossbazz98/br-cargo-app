@@ -53,7 +53,7 @@ const NotificationItem = ({ n, onUpdate, onDelete }) => {
           <button onClick={del} style={{
             marginLeft: 'auto', background: 'transparent', border: 0, cursor: 'pointer',
             color: C.ink3, fontSize: 11, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4,
-            padding: 0, fontFamily: thaiFont,
+            padding: 0, fontFamily: thaiFontHeading,
           }}>
             <BRIcon name="trash" size={12} color={C.ink3} stroke={1.8}/>
             ลบ
@@ -106,7 +106,7 @@ const NotificationsScreen = ({ onNavigate }) => {
     <div style={{ fontFamily: thaiFont, background: C.bg, minHeight: '100%' }}>
       <BRAppHeader title="การแจ้งเตือน" subtitle={`${unreadCount} รายการใหม่`} back onBack={() => onNavigate && onNavigate('home')}
         right={
-          <button onClick={markAllRead} style={{ background: 'transparent', border: 0, color: C.primary, fontWeight: 700, fontSize: 13, fontFamily: thaiFont, cursor: 'pointer', padding: '6px 10px' }}>
+          <button onClick={markAllRead} style={{ background: 'transparent', border: 0, color: C.primary, fontWeight: 700, fontSize: 13, fontFamily: thaiFontHeading, cursor: 'pointer', padding: '6px 10px' }}>
             อ่านทั้งหมด
           </button>
         }
@@ -120,7 +120,7 @@ const NotificationsScreen = ({ onNavigate }) => {
               <button key={f.key} onClick={() => setFilter(f.key)} style={{
                 padding: '7px 14px', borderRadius: 9,
                 background: active ? C.card : 'transparent', border: 0, cursor: 'pointer',
-                fontSize: 12.5, fontWeight: 700, fontFamily: thaiFont,
+                fontSize: 12.5, fontWeight: 700, fontFamily: thaiFontHeading,
                 color: active ? C.ink : C.ink3,
                 boxShadow: active ? `0 2px 6px -2px rgba(0,0,0,0.08)` : 'none',
                 display: 'flex', alignItems: 'center', gap: 6,
@@ -152,7 +152,7 @@ const NotificationsScreen = ({ onNavigate }) => {
         <div style={{ padding: '10px 0 12px', display: 'flex', justifyContent: 'center' }}>
           <button onClick={clearAll} style={{
             background: 'transparent', border: 0, cursor: 'pointer',
-            fontSize: 12.5, fontWeight: 700, color: C.ink3, fontFamily: thaiFont,
+            fontSize: 12.5, fontWeight: 700, color: C.ink3, fontFamily: thaiFontHeading,
             display: 'flex', alignItems: 'center', gap: 6,
           }}>
             <BRIcon name="trash" size={14} color={C.ink3} stroke={1.8}/>
