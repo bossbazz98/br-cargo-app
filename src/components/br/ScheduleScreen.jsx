@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
-import { C, thaiFont, thaiFontHeading, STATUS_TONE } from '../../lib/brColors';
+import { C, thaiFont, thaiFontHeading, STATUS_TONE } from '../../lib/brColors'
+import { thaiFontSubheading } from '../../lib/brColors';
 import BRIcon from './BRIcon';
 import BRAppHeader from './BRAppHeader';
-import { Pill, fmtDayMonth } from './BRShared';
+import { Pill, fmtDayMonth, BRImg} from './BRShared';
 
 const StatusBadge = ({ value, customColor }) => {
   if (!value) return <span style={{ color: C.ink3 }}>-</span>;
@@ -39,7 +40,7 @@ const MonthPicker = ({ months, activeIdx, onPick, accent }) => {
             background: active ? accent : C.card,
             color: active ? '#fff' : C.ink2,
             border: `1px solid ${active ? accent : C.line}`,
-            fontFamily: thaiFont, fontSize: 13.5, fontWeight: active ? 800 : 600,
+            fontFamily: thaiFontSubheading, fontSize: 13.5, fontWeight: active ? 800 : 600,
             cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.18s',
             boxShadow: active ? `0 4px 14px -4px ${accent}88` : 'none'
           }}>{m.month_label}</button>);

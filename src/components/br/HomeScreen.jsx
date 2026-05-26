@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
-import { C, thaiFont, thaiFontHeading } from '../../lib/brColors';
+import { C, thaiFont, thaiFontHeading, thaiFontSubheading } from '../../lib/brColors';
 import BRIcon from './BRIcon';
 import BRAppHeader from './BRAppHeader';
 import { fmtDayMonth } from './BRShared';
@@ -217,7 +217,7 @@ const PromoSlider = () => {
           scrollSnapAlign: 'center', background: `linear-gradient(135deg, ${C.primary}, ${C.primaryDark})`,
           position: 'relative', overflow: 'hidden', borderRadius: 24
         }}>
-            {img.image_url && <img src={img.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+            {img.image_url && <img src={img.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }}/>}
           </div>
         )}
       </div>
@@ -325,7 +325,7 @@ const QuickActions = ({ onNavigate }) => {
           }}>
             <div style={{ width: 48, height: 48, borderRadius: 16, flexShrink: 0, background: 'rgba(255,255,255,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid rgba(255,255,255,0.5)' }}>
               {brpay.image_url ?
-              <img src={brpay.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 14 }} /> :
+              <img src={brpay.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 14 }}/> :
               <span style={{ fontSize: 24 }}>{brpay.emoji || BRPAY_DEFAULT.emoji}</span>}
             </div>
             <div style={{ flex: 1, textAlign: 'left' }}>
@@ -357,7 +357,7 @@ const ScheduleCarousel = ({ onNavigate }) => {
     <div style={{ padding: '14px 20px 0' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
         <div style={{ fontSize: 18, fontWeight: 800, fontFamily: thaiFontHeading, color: C.ink }}>รอบส่ง</div>
-        <button onClick={() => onNavigate && onNavigate('schedule')} style={{ background: 'none', border: 0, cursor: 'pointer', fontSize: 12, fontWeight: 700, color: C.primary, fontFamily: thaiFont }}>ดูทั้งหมด →</button>
+        <button onClick={() => onNavigate && onNavigate('schedule')} style={{ background: 'none', border: 0, cursor: 'pointer', fontSize: 12, fontWeight: 700, color: C.primary, fontFamily: thaiFontSubheading }}>ดูทั้งหมด →</button>
       </div>
       <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 16, padding: '24px 20px', textAlign: 'center' }}>
         <BRIcon name="calendar" size={32} color={C.ink3} stroke={1.4} />
@@ -375,7 +375,7 @@ const ScheduleCarousel = ({ onNavigate }) => {
         </div>
         <button onClick={() => onNavigate && onNavigate('schedule')} style={{
           background: 'transparent', border: 0, cursor: 'pointer',
-          fontSize: 13, fontWeight: 600, color: C.primary, fontFamily: thaiFont,
+          fontSize: 13, fontWeight: 600, color: C.primary, fontFamily: thaiFontSubheading,
           display: 'flex', alignItems: 'center', gap: 2
         }}>
           ดูทั้งหมด <BRIcon name="chevR" size={14} color={C.primary} />
@@ -453,7 +453,7 @@ const NewsFeed = ({ onNavigate }) => {
               overflow: 'hidden', cursor: 'pointer'
             }}>
               <div style={{ height: 88, background: `linear-gradient(135deg, ${C.primary}, ${C.primaryDark})`, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
-                {a.image_url && <img src={a.image_url} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />}
+                {a.image_url && <img src={a.image_url} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}/>}
                 {a.is_hot && <div style={{ position: 'absolute', top: 8, left: 8, background: C.danger, color: '#fff', fontSize: 9, fontWeight: 800, padding: '3px 7px', borderRadius: 99, zIndex: 2 }}>HOT</div>}
               </div>
               <div style={{ padding: '10px 12px 12px' }}>
@@ -497,7 +497,7 @@ const GallerySection = () => {
         {images.map((img) =>
         <div key={img.id} style={{ aspectRatio: '1 / 1', borderRadius: 14, overflow: 'hidden', border: `1px solid ${C.line}` }}>
             {img.image_url ?
-          <img src={img.image_url} alt={img.caption || ''} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> :
+          <img src={img.image_url} alt={img.caption || ""} style={{ width: "100%", height: "100%", objectFit: "cover" }}/> :
           <div style={{ width: '100%', height: '100%', background: C.primarySoft }} />}
           </div>
         )}

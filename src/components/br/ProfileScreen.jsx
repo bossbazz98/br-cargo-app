@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
-import { C, thaiFont, thaiFontHeading } from '../../lib/brColors';
+import { C, thaiFont, thaiFontHeading, thaiFontSubheading } from '../../lib/brColors';
 import BRIcon from './BRIcon';
 
 const inputStyle = {
@@ -294,7 +294,7 @@ const EditableRow = ({ icon, label, value, onSave, editingKey, activeEdit, setAc
         <div style={{ marginTop: 10, display: 'flex', gap: 8 }}>
           <input type="text" value={draft} onChange={e => setDraft(e.target.value)} placeholder={label}
             style={inputStyle} autoFocus onKeyDown={e => e.key === 'Enter' && handleSave()}/>
-          <button onClick={handleSave} disabled={saving} style={{ flexShrink: 0, padding: '0 14px', borderRadius: 10, background: `linear-gradient(180deg, ${C.primary}, ${C.primaryDark})`, border: 0, cursor: 'pointer', color: '#fff', fontFamily: thaiFont, fontSize: 13, fontWeight: 700 }}>{saving ? '...' : 'บันทึก'}</button>
+          <button onClick={handleSave} disabled={saving} style={{ flexShrink: 0, padding: '0 14px', borderRadius: 10, background: `linear-gradient(180deg, ${C.primary}, ${C.primaryDark})`, border: 0, cursor: 'pointer', color: '#fff', fontFamily: thaiFontSubheading, fontSize: 13, fontWeight: 700 }}>{saving ? '...' : 'บันทึก'}</button>
           <button onClick={() => setActiveEdit(null)} style={{ flexShrink: 0, padding: '0 12px', borderRadius: 10, background: C.card, border: `1px solid ${C.line}`, cursor: 'pointer', color: C.ink2, fontFamily: thaiFont, fontSize: 13, fontWeight: 600 }}>ยกเลิก</button>
         </div>
       )}
@@ -411,7 +411,7 @@ const PasswordRow = ({ authEmail, activeEdit, setActiveEdit }) => {
             </div>
           )}
           <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={handleSave} disabled={saving} style={{ flex: 1, padding: '10px', borderRadius: 10, background: `linear-gradient(180deg, ${C.primary}, ${C.primaryDark})`, border: 0, cursor: saving ? 'not-allowed' : 'pointer', color: '#fff', fontFamily: thaiFont, fontSize: 13, fontWeight: 700 }}>{saving ? 'กำลังตรวจสอบ...' : 'บันทึกรหัสผ่าน'}</button>
+            <button onClick={handleSave} disabled={saving} style={{ flex: 1, padding: '10px', borderRadius: 10, background: `linear-gradient(180deg, ${C.primary}, ${C.primaryDark})`, border: 0, cursor: saving ? 'not-allowed' : 'pointer', color: '#fff', fontFamily: thaiFontSubheading, fontSize: 13, fontWeight: 700 }}>{saving ? 'กำลังตรวจสอบ...' : 'บันทึกรหัสผ่าน'}</button>
             <button onClick={() => { setActiveEdit(null); setCurrentPw(''); setNewPw(''); setError(''); }} style={{ padding: '10px 14px', borderRadius: 10, background: C.card, border: `1px solid ${C.line}`, cursor: 'pointer', color: C.ink2, fontFamily: thaiFont, fontSize: 13, fontWeight: 600 }}>ยกเลิก</button>
           </div>
         </div>
