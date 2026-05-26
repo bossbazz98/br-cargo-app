@@ -230,7 +230,7 @@ const AvatarPicker = ({ current, onSelect, onClose, userInitial }) => {
               flex: 1, padding: '14px', borderRadius: 16,
               background: C.card, border: `1.5px solid ${C.line2}`,
               cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.5 : 1,
-              fontFamily: thaiFontSubheadingSubheading, fontSize: 15, fontWeight: 700, color: C.ink2,
+              fontFamily: thaiFontSubheading, fontSize: 15, fontWeight: 700, color: C.ink2,
               transition: 'opacity 0.2s',
             }}>ยกเลิก</button>
 
@@ -238,7 +238,7 @@ const AvatarPicker = ({ current, onSelect, onClose, userInitial }) => {
               flex: 2, padding: '14px', borderRadius: 16,
               background: saving ? 'oklch(0.72 0.10 245)' : `linear-gradient(180deg, ${C.primary}, ${C.primaryDark})`,
               border: 0, cursor: saving ? 'not-allowed' : 'pointer', color: '#fff',
-              fontFamily: thaiFontSubheadingSubheading, fontSize: 15, fontWeight: 700,
+              fontFamily: thaiFontSubheading, fontSize: 15, fontWeight: 700,
               boxShadow: saving ? 'none' : `0 6px 18px -4px ${C.primary}70`,
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               transition: 'all 0.2s',
