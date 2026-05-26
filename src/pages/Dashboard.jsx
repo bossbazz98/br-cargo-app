@@ -308,9 +308,10 @@ const DashboardMain = ({ user, onLogout }) => {
                 <div style={{ background: C.card, borderRadius: 16, padding: 24, border: `1px solid ${C.line}`, marginBottom: 24 }}>
                   <SectionHeader title="ผู้ใช้งานล่าสุด" sub="5 คนล่าสุดที่ลงทะเบียน"/>
                   <Table
-                    columns={['ชื่อ', 'อีเมล', 'วันที่สมัคร']}
+                    columns={['ชื่อ', 'Code Name', 'อีเมล', 'วันที่สมัคร']}
                     rows={users.slice(0, 5).map(u => [
                       u.full_name || u.first_name || '-',
+                      u.code_name ? <span style={{ color: C.primary, fontWeight: 600 }}>@{u.code_name}</span> : '-',
                       u.email || '-',
                       fmtDate(u.created_at),
                     ])}
@@ -350,6 +351,7 @@ const DashboardMain = ({ user, onLogout }) => {
                           </div>
                           <div>
                             <div style={{ fontSize: 15, fontWeight: 700, color: C.ink }}>{selectedUser.full_name || selectedUser.email}</div>
+                            {selectedUser.code_name && <div style={{ fontSize: 12, color: C.primary, fontWeight: 600 }}>@{selectedUser.code_name}</div>}
                             <div style={{ fontSize: 12, color: C.ink3 }}>{selectedUser.email}</div>
                           </div>
                         </div>
@@ -483,6 +485,7 @@ const DashboardMain = ({ user, onLogout }) => {
                           <div style={{ fontSize: 14, fontWeight: 700, color: C.ink, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {u.full_name || `${u.first_name || ''} ${u.last_name || ''}`.trim() || 'ไม่ระบุชื่อ'}
                           </div>
+                          {u.code_name && <div style={{ fontSize: 12, color: C.primary, fontWeight: 600 }}>@{u.code_name}</div>}
                           <div style={{ fontSize: 12, color: C.ink3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{u.email || '-'}</div>
                         </div>
                       </div>
