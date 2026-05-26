@@ -145,7 +145,7 @@ const AvatarPicker = ({ current, onSelect, onClose, userInitial }) => {
                 border: `1.5px solid ${tab === t.key ? C.primary : C.line}`,
                 background: tab === t.key ? C.primarySoft : C.card,
                 color: tab === t.key ? C.primary : C.ink2,
-                fontFamily: thaiFont, fontSize: 11.5, fontWeight: 700, cursor: 'pointer',
+                fontFamily: thaiFontSubheading, fontSize: 11.5, fontWeight: 700, cursor: 'pointer',
                 transition: 'all 0.15s',
               }}>{t.label}</button>
             ))}
@@ -230,7 +230,7 @@ const AvatarPicker = ({ current, onSelect, onClose, userInitial }) => {
               flex: 1, padding: '14px', borderRadius: 16,
               background: C.card, border: `1.5px solid ${C.line2}`,
               cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.5 : 1,
-              fontFamily: thaiFont, fontSize: 15, fontWeight: 700, color: C.ink2,
+              fontFamily: thaiFontSubheadingSubheading, fontSize: 15, fontWeight: 700, color: C.ink2,
               transition: 'opacity 0.2s',
             }}>ยกเลิก</button>
 
@@ -238,7 +238,7 @@ const AvatarPicker = ({ current, onSelect, onClose, userInitial }) => {
               flex: 2, padding: '14px', borderRadius: 16,
               background: saving ? 'oklch(0.72 0.10 245)' : `linear-gradient(180deg, ${C.primary}, ${C.primaryDark})`,
               border: 0, cursor: saving ? 'not-allowed' : 'pointer', color: '#fff',
-              fontFamily: thaiFont, fontSize: 15, fontWeight: 700,
+              fontFamily: thaiFontSubheadingSubheading, fontSize: 15, fontWeight: 700,
               boxShadow: saving ? 'none' : `0 6px 18px -4px ${C.primary}70`,
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               transition: 'all 0.2s',
@@ -529,7 +529,7 @@ const ProfileScreen = ({ user, onBack, onLogout }) => {
         <EditableRow icon="sparkle" label="Code Name" value={profile.code_name} onSave={v => saveField('code_name', v)} editingKey="code_name" activeEdit={activeEdit} setActiveEdit={setActiveEdit}/>
         <PasswordRow authEmail={authEmail} activeEdit={activeEdit} setActiveEdit={setActiveEdit}/>
 
-        <button onClick={onLogout} style={{ width: '100%', padding: '14px', marginTop: 6, background: C.dangerSoft, border: `1px solid ${C.danger}33`, borderRadius: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: thaiFont, fontSize: 15, fontWeight: 700, color: C.danger }}>
+        <button onClick={onLogout} style={{ width: '100%', padding: '14px', marginTop: 6, background: C.dangerSoft, border: `1px solid ${C.danger}33`, borderRadius: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: thaiFontSubheading, fontSize: 15, fontWeight: 700, color: C.danger }}>
           <BRIcon name="logout" size={18} color={C.danger} stroke={2}/>
           ออกจากระบบ
         </button>
