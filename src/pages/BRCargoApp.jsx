@@ -65,6 +65,10 @@ const BRCargoApp = () => {
       if (session?.user) {
         setUser(session.user);
         initTracker(session.user);
+        // sync email เข้า users table
+        if (session.user.email) {
+          supabase.from('users').upsert({ id: session.user.id, email: session.user.email }, { onConflict: 'id' }).catch(() => {});
+        }
         try { localStorage.setItem('br_session_user', JSON.stringify(session.user)); } catch {}
       } else if (_event === 'SIGNED_OUT') {
         setUser(null);
@@ -194,6 +198,10 @@ const BRCargoApp = () => {
         <LoginScreen onLogin={(u) => {
           if (!u) return;
           setUser(u);
+          // sync email เข้า users table (สำหรับ email/password login)
+          if (u.email) {
+            supabase.from('users').upsert({ id: u.id, email: u.email }, { onConflict: 'id' }).catch(() => {});
+          }
           // sync session ลง localStorage ทันที
           try { localStorage.setItem('br_session_user', JSON.stringify(u)); } catch {}
           // restore หน้าที่ตั้งใจจะดูก่อน login
