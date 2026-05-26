@@ -56,7 +56,7 @@ const BRTabBar = ({ active, onNavigate, isAdmin = false }) => {
       paddingBottom: `calc(10px + env(safe-area-inset-bottom, 0px))`,
       paddingLeft: 10, paddingRight: 10,
       display: 'flex', justifyContent: 'space-around',
-      fontFamily: thaiFont, boxSizing: 'border-box', minHeight: 60,
+      fontFamily: thaiFontHeading, boxSizing: 'border-box', minHeight: 60,
     }}>
       {tabs.map(t => {
         const isActive = active === t.id;
