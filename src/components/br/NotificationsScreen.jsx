@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { C, thaiFont } from '../../lib/brColors';
+import { C, thaiFont, thaiFontHeading } from '../../lib/brColors';
 import BRIcon from './BRIcon';
 import BRAppHeader from './BRAppHeader';
 import { timeAgo } from './BRShared';
