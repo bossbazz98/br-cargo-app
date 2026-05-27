@@ -297,7 +297,7 @@ const QuickActions = ({ onNavigate }) => {
           background: C.card, border: `1px solid ${C.line}`, borderRadius: 18,
           padding: '16px 14px 14px', textAlign: 'left', cursor: 'pointer',
           display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 14,
-          fontFamily: thaiFont
+          fontFamily: thaiFontHeading
         }}>
             <div style={{
             width: 42, height: 42, borderRadius: 12,
@@ -331,7 +331,7 @@ const QuickActions = ({ onNavigate }) => {
             padding: `${payPadV}px ${payPadH}px`,
             display: 'flex', alignItems: 'center', gap: 16,
             boxShadow: `0 6px 22px -8px rgba(40,60,180,${shadowOp})`,
-            fontFamily: thaiFont
+            fontFamily: thaiFontHeading
           }}>
             <div style={{ width: 48, height: 48, borderRadius: 16, flexShrink: 0, background: 'rgba(255,255,255,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid rgba(255,255,255,0.5)' }}>
               {brpay.image_url ?
@@ -371,7 +371,7 @@ const ScheduleCarousel = ({ onNavigate }) => {
       </div>
       <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 16, padding: '24px 20px', textAlign: 'center' }}>
         <BRIcon name="calendar" size={32} color={C.ink3} stroke={1.4} />
-        <div style={{ fontFamily: thaiFont, fontSize: 13, color: C.ink3, marginTop: 8 }}>ยังไม่มีข้อมูลรอบส่ง</div>
+        <div style={{ fontFamily: thaiFontHeading, fontSize: 13, color: C.ink3, marginTop: 8 }}>ยังไม่มีข้อมูลรอบส่ง</div>
       </div>
     </div>
   );
@@ -445,7 +445,7 @@ const NewsFeed = ({ onNavigate }) => {
       <div style={{ fontSize: 18, fontWeight: 800, fontFamily: thaiFontHeading, color: C.ink, marginBottom: 12 }}>ข่าวสาร</div>
       <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 16, padding: '24px 20px', textAlign: 'center' }}>
         <BRIcon name="bell" size={32} color={C.ink3} stroke={1.4} />
-        <div style={{ fontFamily: thaiFont, fontSize: 13, color: C.ink3, marginTop: 8 }}>ยังไม่มีข่าวสาร</div>
+        <div style={{ fontFamily: thaiFontHeading, fontSize: 13, color: C.ink3, marginTop: 8 }}>ยังไม่มีข่าวสาร</div>
       </div>
     </div>
   );
@@ -501,7 +501,7 @@ const GallerySection = () => {
       <div style={{ fontSize: 18, fontWeight: 800, fontFamily: thaiFontHeading, color: C.ink, marginBottom: 12 }}>Gallery</div>
       <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 16, padding: '24px 20px', textAlign: 'center' }}>
         <BRIcon name="image" size={32} color={C.ink3} stroke={1.4} />
-        <div style={{ fontFamily: thaiFont, fontSize: 13, color: C.ink3, marginTop: 8 }}>ยังไม่มีรูปภาพ</div>
+        <div style={{ fontFamily: thaiFontHeading, fontSize: 13, color: C.ink3, marginTop: 8 }}>ยังไม่มีรูปภาพ</div>
       </div>
     </div>
   );
@@ -527,7 +527,7 @@ const GallerySection = () => {
 // ─── Home Screen ───────────────────────────────────────────
 const HomeScreen = ({ onNavigate, onProfile }) => {
   return (
-    <div style={{ fontFamily: thaiFont }}>
+    <div style={{ fontFamily: thaiFontHeading }}>
       <BRAppHeader variant="brand" onProfile={onProfile}/>
       <PromoSlider />
       <QuickActions onNavigate={onNavigate} />
