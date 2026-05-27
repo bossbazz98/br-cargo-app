@@ -203,45 +203,44 @@ const PromoSlider = () => {
   // Empty state — ซ่อนถ้าไม่มีรูป (ไม่แสดงข้อความ)
   if (images.length === 0) return null;
 
+  const handleScroll = (e) => {
+    const w = e.target.clientWidth;
+    setCurrent(Math.round(e.target.scrollLeft / w));
+  };
+
   return (
-    <div style={{ padding: '14px 0 6px' }}>
-      <div ref={scrollRef} style={{
-        display: 'flex', overflowX: 'auto', scrollSnapType: 'x mandatory',
-        scrollbarWidth: 'none', gap: 22,
-        paddingLeft: 'calc(50% - (min(100vw, 430px) / 2 - 20px) / 2)',
-        paddingRight: 'calc(50% - (min(100vw, 430px) / 2 - 20px) / 2)',
-      }}>
-        {images.map((img, i) =>
-        <div key={img.id} style={{
-          flexShrink: 0, width: 'calc(min(100vw, 430px) - 40px)', aspectRatio: '1 / 1',
-          scrollSnapAlign: 'center', background: `linear-gradient(135deg, ${C.primary}, ${C.primaryDark})`,
-          position: 'relative', overflow: 'hidden', borderRadius: 24
+    <div style={{ padding: '14px 20px 6px' }}>
+      <div style={{ position: 'relative', borderRadius: 24, overflow: 'hidden', aspectRatio: '1 / 1', background: `linear-gradient(135deg, ${C.primary}, ${C.primaryDark})` }}>
+        {/* Scroll container แบบ IG */}
+        <div ref={scrollRef} onScroll={handleScroll} style={{
+          display: 'flex', overflowX: 'auto', scrollSnapType: 'x mandatory',
+          scrollbarWidth: 'none', width: '100%', height: '100%',
         }}>
-            {img.image_url && <img src={img.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }}/>}
-            {/* Badge ลำดับภาพ */}
-            {images.length > 1 && (
-              <div style={{
-                position: 'absolute', top: 12, right: 12,
-                background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(6px)',
-                color: '#fff', fontSize: 13, fontWeight: 700,
-                padding: '4px 10px', borderRadius: 99,
-                fontFamily: `'Inter', sans-serif`,
-                letterSpacing: 0.2,
-              }}>{i + 1}/{images.length}</div>
+          {images.map((img, i) =>
+            <div key={img.id} style={{ flexShrink: 0, width: '100%', height: '100%', scrollSnapAlign: 'start' }}>
+              {img.image_url && <img src={img.image_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}/>}
+            </div>
+          )}
+        </div>
+        {/* Badge — อยู่นอก scroll ไม่ติดไปกับรูป */}
+        {images.length > 1 && (
+          <div style={{
+            position: 'absolute', top: 10, right: 10, pointerEvents: 'none',
+            background: 'rgba(0,0,0,0.28)', backdropFilter: 'blur(8px)',
+            color: '#fff', fontSize: 11, fontWeight: 600,
+            padding: '3px 8px', borderRadius: 99,
+            fontFamily: `'Inter', sans-serif`,
+          }}>{current + 1}/{images.length}</div>
+        )}
+        {/* Dot indicators */}
+        {images.length > 1 && (
+          <div style={{ position: 'absolute', bottom: 12, left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: 5, pointerEvents: 'none' }}>
+            {images.map((_, i) =>
+              <div key={i} style={{ width: i === current ? 16 : 6, height: 6, borderRadius: 99, background: i === current ? '#fff' : 'rgba(255,255,255,0.5)', transition: 'all 0.25s' }}/>
             )}
           </div>
         )}
       </div>
-      {images.length > 1 &&
-      <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 10 }}>
-          {images.map((_, i) =>
-        <div key={i} style={{
-          width: i === current ? 18 : 7, height: 7, borderRadius: 99,
-          background: i === current ? C.primary : C.line2, transition: 'all 0.25s'
-        }} />
-        )}
-        </div>
-      }
     </div>
   );
 
