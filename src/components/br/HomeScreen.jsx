@@ -458,7 +458,7 @@ const NewsFeed = ({ onNavigate }) => {
               </div>
               <div style={{ padding: '10px 12px 12px' }}>
                 <span style={{ display: 'inline-flex', padding: '2px 8px', borderRadius: 99, background: cat.bg, color: cat.color, fontSize: 9.5, fontWeight: 700 }}>{cat.label}</span>
-                <div style={{ fontSize: 13, fontWeight: 700, color: C.ink, marginTop: 5, lineHeight: 1.3 }}>{a.title}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: C.ink, marginTop: 5, lineHeight: 1.3, fontFamily: thaiFontHeading }}>{a.title}</div>
                 {a.excerpt && <div style={{ fontSize: 11.5, color: C.ink3, marginTop: 3, lineHeight: 1.4 }}>{a.excerpt}</div>}
               </div>
             </div>);
