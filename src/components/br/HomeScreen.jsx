@@ -218,6 +218,17 @@ const PromoSlider = () => {
           position: 'relative', overflow: 'hidden', borderRadius: 24
         }}>
             {img.image_url && <img src={img.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }}/>}
+            {/* Badge ลำดับภาพ */}
+            {images.length > 1 && (
+              <div style={{
+                position: 'absolute', top: 12, right: 12,
+                background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(6px)',
+                color: '#fff', fontSize: 13, fontWeight: 700,
+                padding: '4px 10px', borderRadius: 99,
+                fontFamily: `'Inter', sans-serif`,
+                letterSpacing: 0.2,
+              }}>{i + 1}/{images.length}</div>
+            )}
           </div>
         )}
       </div>
@@ -243,11 +254,11 @@ const BRPAY_DEFAULT = {
   button_sub: 'กด web & สแกนจ่าย',
   emoji: '🌐',
   image_url: '',
-  bg_from_hex: '#1565C0',
-  bg_to_hex: '#00BCD4',
-  bg_from: '#1565C0',
-  bg_to: '#00BCD4',
-  text_color: '#ffffff',
+  bg_from_hex: '#e8eaf6',
+  bg_to_hex: '#dde3f8',
+  bg_from: '#e8eaf6',
+  bg_to: '#dde3f8',
+  text_color: '#1a237e',
   font_size: 18,
   shadow_opacity: 20,
   border_color: 'transparent',
@@ -330,7 +341,7 @@ const QuickActions = ({ onNavigate }) => {
             </div>
             <div style={{ flex: 1, textAlign: 'left' }}>
               <div style={{ fontFamily: `'Inter', sans-serif`, fontSize: brpay.font_size || 18, fontWeight: 900, color: payFg, letterSpacing: -0.4 }}>{brpay.button_text || 'BR PAY'}</div>
-              <div style={{ fontSize: 11, color: payFg, opacity: 0.75, marginTop: 2, fontFamily: thaiFontHeading }}>{brpay.button_sub || 'กด web & สแกนจ่าย'}</div>
+              <div style={{ fontSize: 11, color: payFg, opacity: 0.75, marginTop: 2 }}>{brpay.button_sub || 'กด web & สแกนจ่าย'}</div>
             </div>
             <BRIcon name="chevR" size={20} color={payFg} stroke={2.5} />
           </button>
@@ -407,8 +418,8 @@ const ScheduleCarousel = ({ onNavigate }) => {
                 {u.lots.slice(0, 15).map((lot, i) =>
                   <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', padding: '8px 0', borderTop: `1px solid ${C.line}`, fontSize: 14 }}>
                     <div style={{ fontFamily: `'Inter', sans-serif`, fontWeight: 700, color: C.ink }}>{lot.lot || `L${i + 1}`}</div>
-                    <div style={{ color: C.ink2, fontFamily: thaiFontHeading }}>{fmtDayMonth(lot.cut_off)}</div>
-                    <div style={{ color: C.ink2, fontFamily: thaiFontHeading }}>{fmtDayMonth(lot.etd)}</div>
+                    <div style={{ color: C.ink2 }}>{fmtDayMonth(lot.cut_off)}</div>
+                    <div style={{ color: C.ink2 }}>{fmtDayMonth(lot.etd)}</div>
                   </div>
                 )}
               </div>
@@ -466,8 +477,8 @@ const NewsFeed = ({ onNavigate }) => {
               </div>
               <div style={{ padding: '10px 12px 12px' }}>
                 <span style={{ display: 'inline-flex', padding: '2px 8px', borderRadius: 99, background: cat.bg, color: cat.color, fontSize: 9.5, fontWeight: 700 }}>{cat.label}</span>
-                <div style={{ fontSize: 13, fontWeight: 700, color: C.ink, marginTop: 5, lineHeight: 1.3, fontFamily: thaiFontHeading }}>{a.title}</div>
-                {a.excerpt && <div style={{ fontSize: 11.5, color: C.ink3, marginTop: 3, lineHeight: 1.4, fontFamily: thaiFontHeading }}>{a.excerpt}</div>}
+                <div style={{ fontSize: 13, fontWeight: 700, color: C.ink, marginTop: 5, lineHeight: 1.3 }}>{a.title}</div>
+                {a.excerpt && <div style={{ fontSize: 11.5, color: C.ink3, marginTop: 3, lineHeight: 1.4 }}>{a.excerpt}</div>}
               </div>
             </div>);
 
