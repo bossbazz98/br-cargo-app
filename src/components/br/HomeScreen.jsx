@@ -407,8 +407,8 @@ const ScheduleCarousel = ({ onNavigate }) => {
                 {u.lots.slice(0, 15).map((lot, i) =>
                   <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', padding: '8px 0', borderTop: `1px solid ${C.line}`, fontSize: 14 }}>
                     <div style={{ fontFamily: `'Inter', sans-serif`, fontWeight: 700, color: C.ink }}>{lot.lot || `L${i + 1}`}</div>
-                    <div style={{ color: C.ink2 }}>{fmtDayMonth(lot.cut_off)}</div>
-                    <div style={{ color: C.ink2 }}>{fmtDayMonth(lot.etd)}</div>
+                    <div style={{ color: C.ink2, fontFamily: thaiFontHeading }}>{fmtDayMonth(lot.cut_off)}</div>
+                    <div style={{ color: C.ink2, fontFamily: thaiFontHeading }}>{fmtDayMonth(lot.etd)}</div>
                   </div>
                 )}
               </div>
@@ -467,7 +467,7 @@ const NewsFeed = ({ onNavigate }) => {
               <div style={{ padding: '10px 12px 12px' }}>
                 <span style={{ display: 'inline-flex', padding: '2px 8px', borderRadius: 99, background: cat.bg, color: cat.color, fontSize: 9.5, fontWeight: 700 }}>{cat.label}</span>
                 <div style={{ fontSize: 13, fontWeight: 700, color: C.ink, marginTop: 5, lineHeight: 1.3, fontFamily: thaiFontHeading }}>{a.title}</div>
-                {a.excerpt && <div style={{ fontSize: 11.5, color: C.ink3, marginTop: 3, lineHeight: 1.4 }}>{a.excerpt}</div>}
+                {a.excerpt && <div style={{ fontSize: 11.5, color: C.ink3, marginTop: 3, lineHeight: 1.4, fontFamily: thaiFontHeading }}>{a.excerpt}</div>}
               </div>
             </div>);
 
