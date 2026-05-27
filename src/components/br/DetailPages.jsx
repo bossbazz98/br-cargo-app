@@ -52,7 +52,7 @@ export const DetailsPage = ({ onBack }) => {
               {d.image_url && <img src={d.image_url} alt="" style={{ width: "100%", height: "auto", objectFit: "cover" }}/>}
               <div style={{ padding: '18px 18px' }}>
                 {d.title && <div style={{ fontSize: 17, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink, marginBottom: 6 }}>{d.title}</div>}
-                {d.excerpt && <div style={{ fontSize: 13, color: C.primary, fontWeight: 600, marginBottom: 10 }}>{d.excerpt}</div>}
+                {d.excerpt && <div style={{ fontSize: 13, color: C.primary, fontWeight: 600, marginBottom: 10, fontFamily: thaiFontHeading }}>{d.excerpt}</div>}
                 {d.body && <div style={{ fontSize: 13.5, color: C.ink2, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{d.body}</div>}
               </div>
             </div>
@@ -272,7 +272,7 @@ export const NewsArticlePage = ({ articleId, onBack }) => {
             </div>
             <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, fontFamily: thaiFontHeading, color: C.ink, letterSpacing: -0.5, lineHeight: 1.25 }}>{article.title}</h1>
             {article.excerpt && (
-              <div style={{ fontSize: 15, color: C.ink2, lineHeight: 1.55, padding: '12px 14px', background: C.card, borderRadius: 12, border: `1px solid ${C.line}`, borderLeft: `4px solid ${cat.color}` }}>{article.excerpt}</div>
+              <div style={{ fontSize: 15, color: C.ink2, lineHeight: 1.55, fontFamily: thaiFontHeading, padding: '12px 14px', background: C.card, borderRadius: 12, border: `1px solid ${C.line}`, borderLeft: `4px solid ${cat.color}` }}>{article.excerpt}</div>
             )}
             {(article.author_name || article.author_dept) && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 0', borderBottom: `1px solid ${C.line}` }}>
