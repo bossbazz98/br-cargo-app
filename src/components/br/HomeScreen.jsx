@@ -401,13 +401,21 @@ const ScheduleCarousel = ({ onNavigate }) => {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', fontSize: 10.5, color: C.ink3, fontWeight: 600 }}>
               <div>LOT</div><div>CUT OFF</div><div>ETD</div>
             </div>
-            {u.lots.slice(0, 4).map((lot, i) =>
-          <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', padding: '4px 0', borderTop: `1px solid ${C.line}`, fontSize: 12.5 }}>
-                <div style={{ fontFamily: `'Inter', sans-serif`, fontWeight: 700, color: C.ink }}>{lot.lot || `L${i + 1}`}</div>
-                <div style={{ color: C.ink2 }}>{fmtDayMonth(lot.cut_off)}</div>
-                <div style={{ color: C.ink2 }}>{fmtDayMonth(lot.etd)}</div>
+            {/* scroll container + fade mask */}
+            <div style={{ position: 'relative' }}>
+              <div style={{ maxHeight: 200, overflowY: 'auto', scrollbarWidth: 'none' }}>
+                {u.lots.slice(0, 15).map((lot, i) =>
+                  <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', padding: '4px 0', borderTop: `1px solid ${C.line}`, fontSize: 12.5 }}>
+                    <div style={{ fontFamily: `'Inter', sans-serif`, fontWeight: 700, color: C.ink }}>{lot.lot || `L${i + 1}`}</div>
+                    <div style={{ color: C.ink2 }}>{fmtDayMonth(lot.cut_off)}</div>
+                    <div style={{ color: C.ink2 }}>{fmtDayMonth(lot.etd)}</div>
+                  </div>
+                )}
               </div>
-          )}
+              {u.lots.length > 4 && (
+                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 32, background: `linear-gradient(to bottom, transparent, ${C.card})`, pointerEvents: 'none' }}/>
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -458,7 +466,7 @@ const NewsFeed = ({ onNavigate }) => {
               </div>
               <div style={{ padding: '10px 12px 12px' }}>
                 <span style={{ display: 'inline-flex', padding: '2px 8px', borderRadius: 99, background: cat.bg, color: cat.color, fontSize: 9.5, fontWeight: 700 }}>{cat.label}</span>
-                <div style={{ fontSize: 13, fontWeight: 700, color: C.ink, marginTop: 5, lineHeight: 1.3, fontFamily: thaiFontHeading }}>{a.title}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: C.ink, marginTop: 5, lineHeight: 1.3 }}>{a.title}</div>
                 {a.excerpt && <div style={{ fontSize: 11.5, color: C.ink3, marginTop: 3, lineHeight: 1.4 }}>{a.excerpt}</div>}
               </div>
             </div>);
