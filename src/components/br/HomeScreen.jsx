@@ -330,7 +330,7 @@ const QuickActions = ({ onNavigate }) => {
             </div>
             <div style={{ flex: 1, textAlign: 'left' }}>
               <div style={{ fontFamily: `'Inter', sans-serif`, fontSize: brpay.font_size || 18, fontWeight: 900, color: payFg, letterSpacing: -0.4 }}>{brpay.button_text || 'BR PAY'}</div>
-              <div style={{ fontSize: 11, color: payFg, opacity: 0.75, marginTop: 2 }}>{brpay.button_sub || 'กด web & สแกนจ่าย'}</div>
+              <div style={{ fontSize: 11, color: payFg, opacity: 0.75, marginTop: 2, fontFamily: thaiFontHeading }}>{brpay.button_sub || 'กด web & สแกนจ่าย'}</div>
             </div>
             <BRIcon name="chevR" size={20} color={payFg} stroke={2.5} />
           </button>
