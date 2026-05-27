@@ -398,14 +398,14 @@ const ScheduleCarousel = ({ onNavigate }) => {
               <span style={{ fontSize: 10, color: C.ink3 }}>{u.updated}</span>
             </div>
             <div style={{ fontSize: 17, fontWeight: 700, fontFamily: thaiFontHeading, color: C.ink }}>{u.month}</div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', fontSize: 10.5, color: C.ink3, fontWeight: 600 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', fontSize: 11.5, color: C.ink3, fontWeight: 600, padding: '4px 0' }}>
               <div>LOT</div><div>CUT OFF</div><div>ETD</div>
             </div>
             {/* scroll container + fade mask */}
             <div style={{ position: 'relative' }}>
               <div style={{ maxHeight: 200, overflowY: 'auto', scrollbarWidth: 'none' }}>
                 {u.lots.slice(0, 15).map((lot, i) =>
-                  <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', padding: '4px 0', borderTop: `1px solid ${C.line}`, fontSize: 12.5 }}>
+                  <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', padding: '8px 0', borderTop: `1px solid ${C.line}`, fontSize: 14 }}>
                     <div style={{ fontFamily: `'Inter', sans-serif`, fontWeight: 700, color: C.ink }}>{lot.lot || `L${i + 1}`}</div>
                     <div style={{ color: C.ink2 }}>{fmtDayMonth(lot.cut_off)}</div>
                     <div style={{ color: C.ink2 }}>{fmtDayMonth(lot.etd)}</div>
