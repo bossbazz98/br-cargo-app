@@ -133,7 +133,7 @@ const LotCard = ({ lot, index, mode, isOpen, onToggle }) => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flexShrink: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               <span style={{ fontSize: 9.5, color: C.ink3, fontWeight: 600, letterSpacing: 0.6 }}>ETD</span>
-              <span style={{ fontSize: 13, color: C.ink, fontWeight: 700 }}>{fmtDayMonth(lot.etd)}</span>
+              <span style={{ fontSize: 13, color: C.ink, fontWeight: 700, fontFamily: thaiFontHeading }}>{fmtDayMonth(lot.etd)}</span>
             </div>
             {lot.status &&
             <span style={{ padding: '2px 7px', borderRadius: 99, background: toneBg, color: toneFg, fontSize: 9, fontWeight: 700, whiteSpace: 'nowrap', display: 'inline-block', maxWidth: 80, overflow: 'hidden', textOverflow: 'ellipsis' }}>{lot.status}</span>
