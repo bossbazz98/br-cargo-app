@@ -64,7 +64,7 @@ const InputField = ({ label, type = 'text', value, onChange, placeholder, icon, 
       <div style={{ position: 'relative', background: P.surfaceAlt, border: `1.5px solid ${focus ? P.blue : P.line2}`, borderRadius: 16, transition: 'border-color 0.15s', boxShadow: focus ? `0 0 0 4px ${P.blue}12` : 'none', display: 'flex', alignItems: 'center' }}>
         {icon && <div style={{ paddingLeft: 13, display: 'flex', color: focus ? P.blue : P.ink3 }}>{icon}</div>}
         <input type={type} value={value} onChange={e => onChange(e.target.value)} onFocus={() => setFocus(true)} onBlur={() => setFocus(false)} onKeyDown={onKeyDown} placeholder={placeholder} autoComplete={autoComplete || 'off'} maxLength={maxLength}
-          style={{ flex: 1, minWidth: 0, padding: icon ? '12px 12px 12px 10px' : '12px 14px', border: 0, outline: 'none', background: 'transparent', fontSize: 14.5, color: P.ink, fontFamily: thFont }}/>
+          style={{ flex: 1, minWidth: 0, padding: icon ? '12px 12px 12px 10px' : '12px 14px', border: 0, outline: 'none', background: 'transparent', fontSize: 14.5, color: P.ink, fontFamily: thFontSubheading }}/>
         {rightSlot}
       </div>
     </div>
@@ -86,7 +86,7 @@ const ErrBox = ({ msg }) => msg ? (
 ) : null;
 
 const BackBtn = ({ onClick }) => (
-  <button onClick={onClick} style={{ background: 'transparent', border: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, color: P.ink2, fontFamily: thFont, fontSize: 13, fontWeight: 600, padding: '4px 0', marginBottom: 14 }}>
+  <button onClick={onClick} style={{ background: 'transparent', border: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, color: P.ink2, fontFamily: thFontSubheading, fontSize: 13, fontWeight: 600, padding: '4px 0', marginBottom: 14 }}>
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 6-6 6 6 6"/></svg>
     กลับ
   </button>
@@ -494,10 +494,10 @@ const LoginScreen = ({ onLogin }) => {
           </button>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 2 }}>
-          <button onClick={() => { setForgotEmail(email); setForgotErr(''); setStep('forgot'); }} style={{ background: 'transparent', border: 0, cursor: 'pointer', fontSize: 13, fontWeight: 600, color: P.blue, fontFamily: thFont, padding: 0 }}>ลืมรหัสผ่าน?</button>
+          <button onClick={() => { setForgotEmail(email); setForgotErr(''); setStep('forgot'); }} style={{ background: 'transparent', border: 0, cursor: 'pointer', fontSize: 13, fontWeight: 600, color: P.blue, fontFamily: thFontSubheading, padding: 0 }}>ลืมรหัสผ่าน?</button>
           <div>
             <span style={{ fontSize: 13, color: P.ink3 }}>ยังไม่มีบัญชี? </span>
-            <button onClick={() => setStep('register')} style={{ background: 'transparent', border: 0, cursor: 'pointer', fontSize: 13, fontWeight: 700, color: P.ink, fontFamily: thFont, padding: 0 }}>สมัครสมาชิก</button>
+            <button onClick={() => setStep('register')} style={{ background: 'transparent', border: 0, cursor: 'pointer', fontSize: 13, fontWeight: 700, color: P.ink, fontFamily: thFontSubheading, padding: 0 }}>สมัครสมาชิก</button>
           </div>
         </div>
       </div>
@@ -567,7 +567,7 @@ const LoginScreen = ({ onLogin }) => {
         <PrimaryBtn onClick={handleVerifyOtp} loading={loading} disabled={forgotOtp.length !== 8 || forgotNewPw.length < 6}>
           ยืนยันและตั้งรหัสผ่านใหม่
         </PrimaryBtn>
-        <button onClick={handleSendOtp} disabled={loading} style={{ background: 'transparent', border: 0, cursor: 'pointer', fontSize: 13, color: P.blue, fontFamily: thFont, fontWeight: 600, textAlign: 'center' }}>
+        <button onClick={handleSendOtp} disabled={loading} style={{ background: 'transparent', border: 0, cursor: 'pointer', fontSize: 13, color: P.blue, fontFamily: thFontSubheading, fontWeight: 600, textAlign: 'center' }}>
           ไม่ได้รับ OTP? ส่งใหม่อีกครั้ง
         </button>
       </div>
@@ -608,7 +608,7 @@ const LoginScreen = ({ onLogin }) => {
         <PrimaryBtn onClick={handleRegister} loading={loading}>สมัครสมาชิก</PrimaryBtn>
         <div style={{ textAlign: 'center' }}>
           <span style={{ fontSize: 13, color: P.ink3 }}>มีบัญชีแล้ว? </span>
-          <button onClick={() => setStep('login')} style={{ background: 'transparent', border: 0, cursor: 'pointer', fontSize: 13, fontWeight: 700, color: P.blue, fontFamily: thFont, padding: 0 }}>เข้าสู่ระบบ</button>
+          <button onClick={() => setStep('login')} style={{ background: 'transparent', border: 0, cursor: 'pointer', fontSize: 13, fontWeight: 700, color: P.blue, fontFamily: thFontSubheading, padding: 0 }}>เข้าสู่ระบบ</button>
         </div>
       </div>
     );
@@ -629,7 +629,7 @@ const LoginScreen = ({ onLogin }) => {
   }
 
   return (
-    <div style={{ fontFamily: thFont, minHeight: '100dvh', position: 'relative', background: `linear-gradient(180deg, #ddeeff 0%, #c8e0f8 60%, #a8cff0 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ fontFamily: thFontSubheading, minHeight: '100dvh', position: 'relative', background: `linear-gradient(180deg, #ddeeff 0%, #c8e0f8 60%, #a8cff0 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <style>{`@keyframes br-spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }`}</style>
       <svg viewBox="0 0 414 120" preserveAspectRatio="none" style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: 120, zIndex: 0 }}>
         <path d="M0 60 Q60 20 120 60 Q180 100 240 60 Q300 20 360 60 Q390 80 414 60 L414 120 L0 120 Z" fill="rgba(255,255,255,0.35)"/>
