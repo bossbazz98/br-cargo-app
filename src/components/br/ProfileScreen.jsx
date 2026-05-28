@@ -5,7 +5,7 @@ import BRIcon from './BRIcon';
 
 const inputStyle = {
   width: '100%', padding: '10px 12px', fontSize: 14, color: C.ink,
-  fontFamily: thaiFont, background: C.bg, border: `1.5px solid ${C.line}`,
+  fontFamily: thaiFontHeading, background: C.bg, border: `1.5px solid ${C.line}`,
   borderRadius: 10, outline: 'none', boxSizing: 'border-box',
 };
 
@@ -109,7 +109,7 @@ const AvatarPicker = ({ current, onSelect, onClose, userInitial }) => {
     <div style={{
       position: 'absolute', inset: 0, zIndex: 300,
       background: C.bg, display: 'flex', flexDirection: 'column',
-      fontFamily: thaiFont,
+      fontFamily: thaiFontHeading,
     }}>
       {/* Header — sticky */}
       <div style={{
@@ -295,7 +295,7 @@ const EditableRow = ({ icon, label, value, onSave, editingKey, activeEdit, setAc
           <input type="text" value={draft} onChange={e => setDraft(e.target.value)} placeholder={label}
             style={inputStyle} autoFocus onKeyDown={e => e.key === 'Enter' && handleSave()}/>
           <button onClick={handleSave} disabled={saving} style={{ flexShrink: 0, padding: '0 14px', borderRadius: 10, background: `linear-gradient(180deg, ${C.primary}, ${C.primaryDark})`, border: 0, cursor: 'pointer', color: '#fff', fontFamily: thaiFontSubheading, fontSize: 13, fontWeight: 700 }}>{saving ? '...' : 'บันทึก'}</button>
-          <button onClick={() => setActiveEdit(null)} style={{ flexShrink: 0, padding: '0 12px', borderRadius: 10, background: C.card, border: `1px solid ${C.line}`, cursor: 'pointer', color: C.ink2, fontFamily: thaiFont, fontSize: 13, fontWeight: 600 }}>ยกเลิก</button>
+          <button onClick={() => setActiveEdit(null)} style={{ flexShrink: 0, padding: '0 12px', borderRadius: 10, background: C.card, border: `1px solid ${C.line}`, cursor: 'pointer', color: C.ink2, fontFamily: thaiFontHeading, fontSize: 13, fontWeight: 600 }}>ยกเลิก</button>
         </div>
       )}
     </div>
@@ -412,7 +412,7 @@ const PasswordRow = ({ authEmail, activeEdit, setActiveEdit }) => {
           )}
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={handleSave} disabled={saving} style={{ flex: 1, padding: '10px', borderRadius: 10, background: `linear-gradient(180deg, ${C.primary}, ${C.primaryDark})`, border: 0, cursor: saving ? 'not-allowed' : 'pointer', color: '#fff', fontFamily: thaiFontSubheading, fontSize: 13, fontWeight: 700 }}>{saving ? 'กำลังตรวจสอบ...' : 'บันทึกรหัสผ่าน'}</button>
-            <button onClick={() => { setActiveEdit(null); setCurrentPw(''); setNewPw(''); setError(''); }} style={{ padding: '10px 14px', borderRadius: 10, background: C.card, border: `1px solid ${C.line}`, cursor: 'pointer', color: C.ink2, fontFamily: thaiFont, fontSize: 13, fontWeight: 600 }}>ยกเลิก</button>
+            <button onClick={() => { setActiveEdit(null); setCurrentPw(''); setNewPw(''); setError(''); }} style={{ padding: '10px 14px', borderRadius: 10, background: C.card, border: `1px solid ${C.line}`, cursor: 'pointer', color: C.ink2, fontFamily: thaiFontHeading, fontSize: 13, fontWeight: 600 }}>ยกเลิก</button>
           </div>
         </div>
       )}
@@ -489,7 +489,7 @@ const ProfileScreen = ({ user, onBack, onLogout }) => {
   const userInitial = user?.full_name?.[0]?.toUpperCase() || authEmail?.[0]?.toUpperCase() || 'U';
 
   return (
-    <div style={{ fontFamily: thaiFont, background: C.bg, width: '100%', minHeight: '100dvh', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+    <div style={{ fontFamily: thaiFontHeading, background: C.bg, width: '100%', minHeight: '100dvh', display: 'flex', flexDirection: 'column', position: 'relative' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '16px 18px 14px', background: C.card, borderBottom: `1px solid ${C.line}` }}>
         <button onClick={onBack} style={{ width: 38, height: 38, borderRadius: 12, background: 'transparent', border: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
