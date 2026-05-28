@@ -246,9 +246,9 @@ const ScheduleScreen = ({ onNavigate }) => {
           <div style={{ padding: '8px 20px 6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <div style={{ fontSize: 20, fontWeight: 800, fontFamily: thaiFontHeading, color: C.ink }}>{current?.month_label}</div>
-              <span style={{ padding: '3px 9px', borderRadius: 99, background: mode === 'air' ? C.primarySoft : C.successSoft, color: accent, fontSize: 11, fontWeight: 700 }}>{lots.length} ล็อต</span>
+              <span style={{ padding: '3px 9px', borderRadius: 99, background: mode === 'air' ? C.primarySoft : C.successSoft, color: accent, fontSize: 11, fontWeight: 700, fontFamily: thaiFontHeading }}>{lots.length} ล็อต</span>
             </div>
-            {current?.[updatedKey] && <div style={{ fontSize: 11, color: C.ink3 }}>อัปเดต {current[updatedKey]}</div>}
+            {current?.[updatedKey] && <div style={{ fontSize: 11, color: C.ink3, fontFamily: thaiFontHeading }}>อัปเดต {current[updatedKey]}</div>}
           </div>
           <div style={{ padding: '6px 20px 12px', display: 'flex', flexDirection: 'column', gap: 10 }}>
             {Array.from({ length: Math.ceil(lots.length / 2) }, (_, rowIdx) => {
