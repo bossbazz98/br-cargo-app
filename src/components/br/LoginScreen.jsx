@@ -108,6 +108,7 @@ const LoginScreen = ({ onLogin }) => {
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotErr, setForgotErr] = useState('');
   const [forgotOtp, setForgotOtp] = useState('');
+  const otpInputRef = React.useRef(null);
   const [forgotNewPw, setForgotNewPw] = useState('');
   const [forgotShowPw, setForgotShowPw] = useState(false);
 
@@ -402,7 +403,7 @@ const LoginScreen = ({ onLogin }) => {
     setForgotErr('');
     const e = forgotEmail.trim();
     const otp = forgotOtp.trim();
-    if (otp.length !== 8) return setForgotErr('กรุณากรอก OTP 6 หลักให้ครบถ้วน');
+    if (otp.length !== 8) return setForgotErr('กรุณากรอก OTP 8 หลักให้ครบถ้วน');
     if (forgotNewPw.length < 6) return setForgotErr('รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร');
     setLoading(true);
     try {
@@ -524,25 +525,39 @@ const LoginScreen = ({ onLogin }) => {
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 20, fontWeight: 800, color: P.ink, fontFamily: thFontHeading }}>ยืนยัน OTP</div>
             <div style={{ fontSize: 13, color: P.ink3, marginTop: 4, lineHeight: 1.6 }}>
-              กรอกรหัส OTP 6 หลักที่ส่งไปยัง<br/>
+              กรอกรหัส OTP 8 หลักที่ส่งไปยัง<br/>
               <span style={{ fontWeight: 700, color: P.ink2 }}>{forgotEmail}</span>
             </div>
           </div>
         </div>
         <ErrBox msg={forgotErr}/>
-        {/* OTP Input */}
+        {/* OTP Input — 6 ช่องแยก */}
         <div>
-          <div style={{ fontSize: 12, fontWeight: 700, color: P.ink2, marginBottom: 6 }}>รหัส OTP</div>
-          <div style={{ position: 'relative', background: P.surfaceAlt, border: `1.5px solid ${P.line2}`, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <input
-              type="text" inputMode="numeric" maxLength={8}
-              value={forgotOtp}
-              onChange={e => { setForgotOtp(e.target.value.replace(/\D/g, '')); setForgotErr(''); }}
-              placeholder="00000000"
-              autoFocus
-              style={{ width: '100%', padding: '14px', border: 0, outline: 'none', background: 'transparent', fontSize: 28, fontWeight: 800, color: P.ink, fontFamily: `'Inter', monospace`, textAlign: 'center', letterSpacing: 12 }}
-            />
+          <div style={{ fontSize: 12, fontWeight: 700, color: P.ink2, marginBottom: 10 }}>รหัส OTP</div>
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }} onClick={() => otpInputRef.current?.focus()}>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} style={{
+                width: 44, height: 52, borderRadius: 12,
+                border: `2px solid ${forgotOtp[i] ? P.blue : P.line2}`,
+                background: forgotOtp[i] ? 'oklch(0.97 0.02 245)' : P.surfaceAlt,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 22, fontWeight: 800, color: P.ink,
+                fontFamily: `'Inter', monospace`,
+                transition: 'border-color 0.15s, background 0.15s',
+                position: 'relative',
+              }}>
+                {forgotOtp[i] || (i === forgotOtp.length ? <span style={{ width: 2, height: 22, background: P.blue, borderRadius: 2, animation: 'blink 1s step-end infinite' }}/> : '')}
+              </div>
+            ))}
           </div>
+          <input
+            type="text" inputMode="numeric" maxLength={8}
+            value={forgotOtp}
+            onChange={e => { setForgotOtp(e.target.value.replace(/\D/g, '')); setForgotErr(''); }}
+            autoFocus
+            ref={otpInputRef} style={{ position: 'absolute', opacity: 0, width: 1, height: 1, pointerEvents: 'none' }}
+          />
+          <style>{`@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }`}</style>
         </div>
         {/* New Password */}
         <InputField
