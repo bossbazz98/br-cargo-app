@@ -22,6 +22,7 @@ const getLineAuthURL = () => {
 
 const thFont = `'Sarabun', 'Noto Sans KR', 'Noto Sans SC', 'Noto Sans JP', 'Noto Sans', 'Inter', -apple-system, system-ui, sans-serif`;
 const thFontHeading = `'Noto Sans Thai', 'Noto Sans KR', 'Noto Sans SC', 'Noto Sans JP', 'Noto Sans', 'Inter', -apple-system, system-ui, sans-serif`;
+const thFontSubheading = `'Noto Sans Thai', 'Noto Sans KR', 'Noto Sans SC', 'Noto Sans JP', 'Noto Sans', 'Inter', -apple-system, system-ui, sans-serif`;
 
 const P = {
   blue: 'oklch(0.58 0.18 245)',
@@ -71,7 +72,7 @@ const InputField = ({ label, type = 'text', value, onChange, placeholder, icon, 
 };
 
 const PrimaryBtn = ({ onClick, children, loading, disabled }) => (
-  <button onClick={onClick} disabled={loading || disabled} style={{ width: '100%', padding: '14px 16px', background: `linear-gradient(180deg, ${P.blue}, ${P.blueDeep})`, border: 0, borderRadius: 16, cursor: (loading || disabled) ? 'not-allowed' : 'pointer', color: '#fff', fontFamily: thaiFontSubheading, fontSize: 15, fontWeight: 700, boxShadow: `0 8px 22px -6px ${P.blueDeep}80`, opacity: disabled ? 0.55 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+  <button onClick={onClick} disabled={loading || disabled} style={{ width: '100%', padding: '14px 16px', background: `linear-gradient(180deg, ${P.blue}, ${P.blueDeep})`, border: 0, borderRadius: 16, cursor: (loading || disabled) ? 'not-allowed' : 'pointer', color: '#fff', fontFamily: thFontSubheading, fontSize: 15, fontWeight: 700, boxShadow: `0 8px 22px -6px ${P.blueDeep}80`, opacity: disabled ? 0.55 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
     {loading && <svg width="16" height="16" viewBox="0 0 24 24" style={{ animation: 'br-spin 0.9s linear infinite' }}><circle cx="12" cy="12" r="9" fill="none" stroke="#fff" strokeOpacity="0.25" strokeWidth="2.2"/><path d="M21 12a9 9 0 0 1-9 9" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round"/></svg>}
     {children}
   </button>
