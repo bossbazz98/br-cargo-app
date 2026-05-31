@@ -530,19 +530,33 @@ const LoginScreen = ({ onLogin }) => {
           </div>
         </div>
         <ErrBox msg={forgotErr}/>
-        {/* OTP Input */}
+        {/* OTP Input — 8 ช่องแยก */}
         <div>
-          <div style={{ fontSize: 12, fontWeight: 700, color: P.ink2, marginBottom: 6 }}>รหัส OTP</div>
-          <div style={{ position: 'relative', background: P.surfaceAlt, border: `1.5px solid ${P.line2}`, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <input
-              type="text" inputMode="numeric" maxLength={8}
-              value={forgotOtp}
-              onChange={e => { setForgotOtp(e.target.value.replace(/\D/g, '')); setForgotErr(''); }}
-              placeholder="00000000"
-              autoFocus
-              style={{ width: '100%', padding: '14px', border: 0, outline: 'none', background: 'transparent', fontSize: 28, fontWeight: 800, color: P.ink, fontFamily: `'Inter', monospace`, textAlign: 'center', letterSpacing: 12 }}
-            />
+          <div style={{ fontSize: 12, fontWeight: 700, color: P.ink2, marginBottom: 10 }}>รหัส OTP</div>
+          <div style={{ display: 'flex', gap: 6, justifyContent: 'center' }} onClick={() => document.getElementById('otp-hidden').focus()}>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} style={{
+                width: 36, height: 44, borderRadius: 10,
+                border: `2px solid ${forgotOtp[i] ? P.blue : P.line2}`,
+                background: forgotOtp[i] ? 'oklch(0.97 0.02 245)' : P.surfaceAlt,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 20, fontWeight: 800, color: P.ink,
+                fontFamily: `'Inter', monospace`,
+                transition: 'border-color 0.15s, background 0.15s',
+              }}>
+                {forgotOtp[i] || ''}
+              </div>
+            ))}
           </div>
+          <input
+            id="otp-hidden"
+            type="text" inputMode="numeric" maxLength={8}
+            value={forgotOtp}
+            onChange={e => { setForgotOtp(e.target.value.replace(/\D/g, '')); setForgotErr(''); }}
+            autoFocus
+            style={{ position: 'absolute', opacity: 0, width: 1, height: 1, pointerEvents: 'none' }}
+          />
+          <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}`}</style>
         </div>
         {/* New Password */}
         <InputField
