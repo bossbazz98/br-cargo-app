@@ -22,7 +22,6 @@ const getLineAuthURL = () => {
 
 const thFont = `'Sarabun', 'Noto Sans KR', 'Noto Sans SC', 'Noto Sans JP', 'Noto Sans', 'Inter', -apple-system, system-ui, sans-serif`;
 const thFontHeading = `'Noto Sans Thai', 'Noto Sans KR', 'Noto Sans SC', 'Noto Sans JP', 'Noto Sans', 'Inter', -apple-system, system-ui, sans-serif`;
-const thFontSubheading = `'Noto Sans Thai', 'Noto Sans KR', 'Noto Sans SC', 'Noto Sans JP', 'Noto Sans', 'Inter', -apple-system, system-ui, sans-serif`;
 
 const P = {
   blue: 'oklch(0.58 0.18 245)',
@@ -64,7 +63,7 @@ const InputField = ({ label, type = 'text', value, onChange, placeholder, icon, 
       <div style={{ position: 'relative', background: P.surfaceAlt, border: `1.5px solid ${focus ? P.blue : P.line2}`, borderRadius: 16, transition: 'border-color 0.15s', boxShadow: focus ? `0 0 0 4px ${P.blue}12` : 'none', display: 'flex', alignItems: 'center' }}>
         {icon && <div style={{ paddingLeft: 13, display: 'flex', color: focus ? P.blue : P.ink3 }}>{icon}</div>}
         <input type={type} value={value} onChange={e => onChange(e.target.value)} onFocus={() => setFocus(true)} onBlur={() => setFocus(false)} onKeyDown={onKeyDown} placeholder={placeholder} autoComplete={autoComplete || 'off'} maxLength={maxLength}
-          style={{ flex: 1, minWidth: 0, padding: icon ? '12px 12px 12px 10px' : '12px 14px', border: 0, outline: 'none', background: 'transparent', fontSize: 14.5, color: P.ink, fontFamily: thFontSubheading }}/>
+          style={{ flex: 1, minWidth: 0, padding: icon ? '12px 12px 12px 10px' : '12px 14px', border: 0, outline: 'none', background: 'transparent', fontSize: 14.5, color: P.ink, fontFamily: thFont }}/>
         {rightSlot}
       </div>
     </div>
@@ -72,7 +71,7 @@ const InputField = ({ label, type = 'text', value, onChange, placeholder, icon, 
 };
 
 const PrimaryBtn = ({ onClick, children, loading, disabled }) => (
-  <button onClick={onClick} disabled={loading || disabled} style={{ width: '100%', padding: '14px 16px', background: `linear-gradient(180deg, ${P.blue}, ${P.blueDeep})`, border: 0, borderRadius: 16, cursor: (loading || disabled) ? 'not-allowed' : 'pointer', color: '#fff', fontFamily: thFontSubheading, fontSize: 15, fontWeight: 700, boxShadow: `0 8px 22px -6px ${P.blueDeep}80`, opacity: disabled ? 0.55 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+  <button onClick={onClick} disabled={loading || disabled} style={{ width: '100%', padding: '14px 16px', background: `linear-gradient(180deg, ${P.blue}, ${P.blueDeep})`, border: 0, borderRadius: 16, cursor: (loading || disabled) ? 'not-allowed' : 'pointer', color: '#fff', fontFamily: thaiFontSubheading, fontSize: 15, fontWeight: 700, boxShadow: `0 8px 22px -6px ${P.blueDeep}80`, opacity: disabled ? 0.55 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
     {loading && <svg width="16" height="16" viewBox="0 0 24 24" style={{ animation: 'br-spin 0.9s linear infinite' }}><circle cx="12" cy="12" r="9" fill="none" stroke="#fff" strokeOpacity="0.25" strokeWidth="2.2"/><path d="M21 12a9 9 0 0 1-9 9" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round"/></svg>}
     {children}
   </button>
@@ -86,7 +85,7 @@ const ErrBox = ({ msg }) => msg ? (
 ) : null;
 
 const BackBtn = ({ onClick }) => (
-  <button onClick={onClick} style={{ background: 'transparent', border: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, color: P.ink2, fontFamily: thFontSubheading, fontSize: 13, fontWeight: 600, padding: '4px 0', marginBottom: 14 }}>
+  <button onClick={onClick} style={{ background: 'transparent', border: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, color: P.ink2, fontFamily: thFont, fontSize: 13, fontWeight: 600, padding: '4px 0', marginBottom: 14 }}>
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 6-6 6 6 6"/></svg>
     กลับ
   </button>
@@ -378,17 +377,14 @@ const LoginScreen = ({ onLogin }) => {
     if (!/^[\w.+-]+@[\w-]+\.[\w.-]+$/.test(e)) return setForgotErr('รูปแบบอีเมลไม่ถูกต้อง');
     setLoading(true);
     try {
-      // signInWithOtp โดยไม่ใส่ emailRedirectTo เพื่อให้ส่ง OTP 6 หลักแทน Magic Link
-      const { error } = await supabase.auth.signInWithOtp({
-        email: e,
-        options: { shouldCreateUser: false },
+      const res = await fetch('https://ohybaapjlbsxtiumdggb.supabase.co/functions/v1/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oeWJhYXBqbGJzeHRpdW1kZ2diIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MjE3MjgsImV4cCI6MjA5MzM5NzcyOH0.kbwIY5KfVMfSo_E6t5f3IBOB8JrpCAQfE-EUaZAU220' },
+        body: JSON.stringify({ action: 'send', email: e }),
       });
-      if (error) {
-        if (error.message?.includes('Too many requests') || error.message?.includes('rate limit')) {
-          setForgotErr('ส่ง OTP บ่อยเกินไป กรุณารอสักครู่แล้วลองใหม่');
-        } else {
-          setForgotErr('ส่ง OTP ไม่สำเร็จ กรุณาลองใหม่');
-        }
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        setForgotErr(data.error || 'ส่ง OTP ไม่สำเร็จ กรุณาลองใหม่');
         setLoading(false);
         return;
       }
@@ -406,24 +402,19 @@ const LoginScreen = ({ onLogin }) => {
     setForgotErr('');
     const e = forgotEmail.trim();
     const otp = forgotOtp.trim();
-    if (otp.length !== 8) return setForgotErr('กรุณากรอก OTP 8 หลักให้ครบถ้วน');
+    if (otp.length !== 6) return setForgotErr('กรุณากรอก OTP 6 หลักให้ครบถ้วน');
     if (forgotNewPw.length < 6) return setForgotErr('รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร');
     setLoading(true);
     try {
-      // verify OTP ด้วย type 'recovery' เพื่อให้ได้ session แล้วเปลี่ยนรหัสผ่านได้
-      const { error: verifyError } = await supabase.auth.verifyOtp({
-        email: e,
-        token: otp,
-        type: 'email',
+      // verify OTP ผ่าน Edge Function
+      const verifyRes = await fetch('https://ohybaapjlbsxtiumdggb.supabase.co/functions/v1/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oeWJhYXBqbGJzeHRpdW1kZ2diIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MjE3MjgsImV4cCI6MjA5MzM5NzcyOH0.kbwIY5KfVMfSo_E6t5f3IBOB8JrpCAQfE-EUaZAU220' },
+        body: JSON.stringify({ action: 'verify', email: e, otp }),
       });
-      if (verifyError) {
-        if (verifyError.message?.includes('expired') || verifyError.message?.includes('Token has expired')) {
-          setForgotErr('OTP หมดอายุแล้ว กรุณาขอใหม่');
-        } else if (verifyError.message?.includes('invalid') || verifyError.message?.includes('Invalid')) {
-          setForgotErr('OTP ไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง');
-        } else {
-          setForgotErr('ยืนยัน OTP ไม่สำเร็จ กรุณาลองใหม่');
-        }
+      const verifyData = await verifyRes.json();
+      if (!verifyRes.ok || verifyData.error) {
+        setForgotErr(verifyData.error || 'OTP ไม่ถูกต้องหรือหมดอายุ');
         setLoading(false);
         return;
       }
@@ -477,7 +468,7 @@ const LoginScreen = ({ onLogin }) => {
           <div style={{ flex: 1, height: 1, background: P.line2 }}/>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
-          <button onClick={handleGoogleLogin} disabled={loading} style={{ flex: 1, padding: '11px 14px', background: P.surface, border: `1.5px solid ${P.line2}`, borderRadius: 14, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: thFontSubheading, fontSize: 13.5, fontWeight: 700, color: P.ink, boxShadow: '0 1px 4px rgba(0,0,0,0.07)' }}>
+          <button onClick={handleGoogleLogin} disabled={loading} style={{ flex: 1, padding: '11px 14px', background: P.surface, border: `1.5px solid ${P.line2}`, borderRadius: 14, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: thFont, fontSize: 13.5, fontWeight: 700, color: P.ink, boxShadow: '0 1px 4px rgba(0,0,0,0.07)' }}>
             <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
             Google
           </button>
@@ -488,16 +479,16 @@ const LoginScreen = ({ onLogin }) => {
               return;
             }
             window.location.href = getLineAuthURL();
-          }} style={{ flex: 1, padding: '11px 14px', background: '#06C755', border: 'none', borderRadius: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: thFontSubheading, fontSize: 13.5, fontWeight: 700, color: '#fff', boxShadow: '0 1px 4px rgba(6,199,85,0.3)' }}>
+          }} style={{ flex: 1, padding: '11px 14px', background: '#06C755', border: 'none', borderRadius: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: thFont, fontSize: 13.5, fontWeight: 700, color: '#fff', boxShadow: '0 1px 4px rgba(6,199,85,0.3)' }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
             LINE
           </button>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 2 }}>
-          <button onClick={() => { setForgotEmail(email); setForgotErr(''); setStep('forgot'); }} style={{ background: 'transparent', border: 0, cursor: 'pointer', fontSize: 13, fontWeight: 600, color: P.blue, fontFamily: thFontSubheading, padding: 0 }}>ลืมรหัสผ่าน?</button>
+          <button onClick={() => { setForgotEmail(email); setForgotErr(''); setStep('forgot'); }} style={{ background: 'transparent', border: 0, cursor: 'pointer', fontSize: 13, fontWeight: 600, color: P.blue, fontFamily: thFont, padding: 0 }}>ลืมรหัสผ่าน?</button>
           <div>
             <span style={{ fontSize: 13, color: P.ink3 }}>ยังไม่มีบัญชี? </span>
-            <button onClick={() => setStep('register')} style={{ background: 'transparent', border: 0, cursor: 'pointer', fontSize: 13, fontWeight: 700, color: P.ink, fontFamily: thFontSubheading, padding: 0 }}>สมัครสมาชิก</button>
+            <button onClick={() => setStep('register')} style={{ background: 'transparent', border: 0, cursor: 'pointer', fontSize: 13, fontWeight: 700, color: P.ink, fontFamily: thFont, padding: 0 }}>สมัครสมาชิก</button>
           </div>
         </div>
       </div>
@@ -533,7 +524,7 @@ const LoginScreen = ({ onLogin }) => {
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 20, fontWeight: 800, color: P.ink, fontFamily: thFontHeading }}>ยืนยัน OTP</div>
             <div style={{ fontSize: 13, color: P.ink3, marginTop: 4, lineHeight: 1.6 }}>
-              กรอกรหัส OTP 8 หลักที่ส่งไปยัง<br/>
+              กรอกรหัส OTP 6 หลักที่ส่งไปยัง<br/>
               <span style={{ fontWeight: 700, color: P.ink2 }}>{forgotEmail}</span>
             </div>
           </div>
@@ -544,7 +535,7 @@ const LoginScreen = ({ onLogin }) => {
           <div style={{ fontSize: 12, fontWeight: 700, color: P.ink2, marginBottom: 6 }}>รหัส OTP</div>
           <div style={{ position: 'relative', background: P.surfaceAlt, border: `1.5px solid ${P.line2}`, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <input
-              type="text" inputMode="numeric" maxLength={8}
+              type="text" inputMode="numeric" maxLength={6}
               value={forgotOtp}
               onChange={e => { setForgotOtp(e.target.value.replace(/\D/g, '')); setForgotErr(''); }}
               placeholder="000000"
@@ -564,10 +555,10 @@ const LoginScreen = ({ onLogin }) => {
           rightSlot={<PassEye show={forgotShowPw} onToggle={() => setForgotShowPw(v => !v)}/>}
           onKeyDown={e => e.key === 'Enter' && handleVerifyOtp()}
         />
-        <PrimaryBtn onClick={handleVerifyOtp} loading={loading} disabled={forgotOtp.length !== 8 || forgotNewPw.length < 6}>
+        <PrimaryBtn onClick={handleVerifyOtp} loading={loading} disabled={forgotOtp.length !== 6 || forgotNewPw.length < 6}>
           ยืนยันและตั้งรหัสผ่านใหม่
         </PrimaryBtn>
-        <button onClick={handleSendOtp} disabled={loading} style={{ background: 'transparent', border: 0, cursor: 'pointer', fontSize: 13, color: P.blue, fontFamily: thFontSubheading, fontWeight: 600, textAlign: 'center' }}>
+        <button onClick={handleSendOtp} disabled={loading} style={{ background: 'transparent', border: 0, cursor: 'pointer', fontSize: 13, color: P.blue, fontFamily: thFont, fontWeight: 600, textAlign: 'center' }}>
           ไม่ได้รับ OTP? ส่งใหม่อีกครั้ง
         </button>
       </div>
@@ -608,7 +599,7 @@ const LoginScreen = ({ onLogin }) => {
         <PrimaryBtn onClick={handleRegister} loading={loading}>สมัครสมาชิก</PrimaryBtn>
         <div style={{ textAlign: 'center' }}>
           <span style={{ fontSize: 13, color: P.ink3 }}>มีบัญชีแล้ว? </span>
-          <button onClick={() => setStep('login')} style={{ background: 'transparent', border: 0, cursor: 'pointer', fontSize: 13, fontWeight: 700, color: P.blue, fontFamily: thFontSubheading, padding: 0 }}>เข้าสู่ระบบ</button>
+          <button onClick={() => setStep('login')} style={{ background: 'transparent', border: 0, cursor: 'pointer', fontSize: 13, fontWeight: 700, color: P.blue, fontFamily: thFont, padding: 0 }}>เข้าสู่ระบบ</button>
         </div>
       </div>
     );
@@ -629,7 +620,7 @@ const LoginScreen = ({ onLogin }) => {
   }
 
   return (
-    <div style={{ fontFamily: thFontSubheading, minHeight: '100dvh', position: 'relative', background: `linear-gradient(180deg, #ddeeff 0%, #c8e0f8 60%, #a8cff0 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ fontFamily: thFont, minHeight: '100dvh', position: 'relative', background: `linear-gradient(180deg, #ddeeff 0%, #c8e0f8 60%, #a8cff0 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <style>{`@keyframes br-spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }`}</style>
       <svg viewBox="0 0 414 120" preserveAspectRatio="none" style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: 120, zIndex: 0 }}>
         <path d="M0 60 Q60 20 120 60 Q180 100 240 60 Q300 20 360 60 Q390 80 414 60 L414 120 L0 120 Z" fill="rgba(255,255,255,0.35)"/>
